@@ -1,0 +1,205 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <title>エルドンオンライン</title>
+  <link rel="icon" href="favicon.ico" id="favicon">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width">
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="エルドンオンライン" />
+  <meta name="twitter:description" content="エルドンオンライン　ドンジャラ風のボードゲームです。" />
+  <meta name="twitter:image" content="https://eldontest.glitch.me/ss5.png" />
+  <style>
+    body {
+      background-image: url("don/elstudio_bg1.png");
+      background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        font-size: 16px;
+        font-family: 'メイリオ', Meiryo, 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', Helvetica, Arial, 'ＭＳ Ｐゴシック', sans-serif;
+    }
+.main{
+margin: 50px 0 0 0;
+  text-align: center;
+}
+.square{
+      margin: 40px 40px 12px 20px;
+    padding: 10px;
+    background-color:rgba(255,255,255,0.3);
+    border: 1px solid #333;
+}
+.canvas-wrapper{
+position: relative;
+/* margin: 0 auto; */
+overflow: hidden;
+padding-top: 75%;
+}
+.canvas-wrapper canvas{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+    .article{
+   margin: 40px 0 12px 0;
+  text-align: start;
+}
+    .parent{
+   margin: auto;
+  text-align: center;
+}
+    .child{
+   margin: 640px 0 12px 0;
+  text-align: center;
+}
+
+    .img-rounded,
+    .img-thumbnail {
+          margin: 6px;
+          }
+
+    .img-rounded {
+            -webkit-border-radius: 6px;
+            -moz-border-radius: 6px;
+            -ms-border-radius: 6px;
+            -o-border-radius: 6px;
+            border-radius: 6px;
+        }
+    .img-thumbnail {
+        padding: 3px;
+        border: #ccd1d9 solid 1px;
+        vertical-align: baseline;
+        line-height: 1;
+        display: -moz-inline-stack;
+        display: inline-block;
+        vertical-align: middle;
+        vertical-align: auto;
+        zoom: 1;
+        display: inline;
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        -ms-border-radius: 6px;
+        -o-border-radius: 6px;
+        border-radius: 6px;
+        }
+
+</style>
+</head>
+<body>
+    <div class="main">
+  <p>エルドンオンライン</p>
+   </div>
+<div class="canvas-wrapper">
+   <canvas id="canvas0" style="background-color: #eee;" ></canvas>
+   <canvas id="canvas1" ></canvas>
+   <canvas id="canvas2" ></canvas>
+   <canvas id="canvas3" ></canvas>
+   <canvas id="canvas4" ></canvas>
+   <canvas id="canvas5" ></canvas>
+</div>
+<div class="parent">
+  <span id="child"><h1>エルドン</h1></span>
+   </div>
+    <div class="article">
+      <div class="square">
+        <p style="text-align:center"><b><font size="5">【エルドン/for this game】</font><br></b></p>
+      <b>はじめに</b><br>
+      　エルソードに登場するキャラクターがパイになったドンジャラ風のボードゲームです。<br>
+      　マルチモードではおともだちと最大4人で遊べます。<br>
+      　<b>PCで動作確認。</b>スマートフォン端末では予期しない挙動をする可能性があります。<br>
+      　自動的にロードを行います。<br>
+      　BGM,SEが鳴ります。<br>
+      　ローカルストレージに自動セーブ機能付き。バックアップ用にデータを出力できます。<br><br>
+      <b>概要</b><br>
+      　9枚のパイを使って、役（特定のパイの組み合わせ）を揃えるゲームです。<br><br>
+      ①3ペア：同じキャラ（エルス、アイシャなど）を3枚1組として、3組（3キャラ）を揃える。<br>
+      ②ライン通貫：職ライン（1,2,3,4）が同じパイを9枚揃える。<br>
+      ③特殊な役：国士無双/クレストシリーズ等の特殊な役もあります。<br><br></div>
+    <div class="square">
+      <p style="text-align:center"><b><font size="5">【操作/how to play】</font><br></b></p>
+      <p>基本的にマウス操作です。ゲーム内プレイガイドもどうぞ。</p>
+     <b>対局中の操作（基本）</b><br>
+    「パイを切る」　手札のパイをクリック。<br>
+    「リーチ/ポン/カン/スキル」　各種ボタンをクリック。<br>
+    「ツモ/ロン」　ツモ・ロンボタンをクリック。<br><br>
+    <b>対局中の操作（応用）</b><br>
+    「マナブレイク」　MPゲージが1目盛以上緑色になるまで長押ししてパイを切ると、<br>　相手からパイが見えず、ポンやロンされないマナブレイクが発動します。<br>
+    「SORT」　手札のパイをキャラ順⇔職ライン順で並べ替えます。<br>
+    「残パイリスト」　クリックするとまだ場に出ていないパイを表示します。<br>
+    「シナジー」　クリックするとシナジー役一覧/所持パイで可能なシナジー役を表示します。<br>
+    「ツモ切り」　<b>手札のパイ以外の場所を</b>右クリック。（設定からオフにできます）<br><br>
+    <b>その他の操作</b><br>
+    「プロフィール変更」　虫眼鏡をクリックした先の画面で変更可能。ユーザー名は半角12文字以内。<br>
+    「設定→セーブデータ出力」　プレイデータをjson形式でダウンロードします。<br>
+    「ロード」　画面外下部「ファイルを選択」ボタンからjsonファイルをアップロード。<br><br></p>
+</div>
+<div class="square">
+  <p style="text-align:center"><b><font size="5">【対戦モードマニュアル】</font></b></p>
+  <p>　対戦モードの説明です。</p>
+<div onclick="obj=document.getElementById('open').style; obj.display=(obj.display=='none')?'block':'none';">
+  <div class="square"><a style="cursor:pointer;"><p style="text-align:center"><b>▼ クリックで展開 ▼</b></p></a>
+<div id="open" style="display:none;clear:both;">
+  <p><b>ルーム画面</b><br>
+  <img class="img-rounded article-img" src="don/ss4.png" width="640"/>
+  <p><b>ルーム長</b><br>
+    　☆がついている人。そのルームのホストです。いちばん最初に部屋を立てた人です。ルーム長が退室した場合、ルーム内の他の誰かがルーム長になります。</p>
+  <p><b>ルーム設定</b><br>
+  　持ち点や対局の長さなどのルール設定です。ルーム長のみ設定を変更できます。</p>
+  <p><b>対局開始（ホスト）、READYボタン（非ホスト）</b><br>
+  　ホスト：ルーム内のすべてのプレイヤーがREADY状態の場合に先に進めます。<br>
+  　非ホスト：READYボタンを押すとREADY状態となります。READY状態では退室ができません。</p>
+  <p><b>CPU</b><br>
+    　ルーム内のプレイヤー人数が4人未満の場合、ランダムにCPUキャラが参加します。<br>
+    CPUの対局設定は、ルーム長のデータのオプション設定が反映されます。<br>
+  <p></p>
+</div></div></div></div>
+<div class="square">
+  <p style="text-align:center"><b><font size="5">【得点表】</font></b></p>
+  <p>　細かすぎて伝わらない得点表です。満貫が75,000点、数え役満が330,000点くらいです。</p>
+  <img class="img-rounded article-img" src="don/Don_tokuten.png" width="640"/>
+</div>
+        <div class="square">
+          <p style="text-align:center"><b><font size="5">【出典/Credit】</font><br></b></p>
+   ・原作　ELSWORD<br>
+   　　　　※キャラクター「名無しさん」のみ全く関係ありません。<br>
+   ・画像　メッセージウインドウは「空想曲線」様の素材をお借りしました。<br>
+   ・音楽　一部の音楽は「フリーBGM DOVA-SYNDROME」からお借りしました。<br>
+  ・効果音　「効果音ラボ」「Pocket sound」ほか<br><br>
+  ・テストプレイ協力　インターネット老人会のみなさま<br><br>
+  </div>
+  <div class="square">
+      <p style="text-align:center"><b><font size="5">【更新情報/Update】</font><br></b></p>
+    ・fc2体験版公開(2022/08/12)<br>
+    ・season1 v0.95 (2023/12/31)<br>
+    ・season2 v1.00 (2025/02/02)<br><br>
+  </div>
+  <div class="square">
+    <p style="text-align:center"><b><font size="5">【不具合・バグ情報/Patch Notes】</font><br></b></p>
+    <b>＜発生中・検証中＞</b><br>
+    ・（対局の不具合）カンしたあと、3ペア役が表示されないことがある（検証中）<br>
+    ・（対局の不具合）手札に同じキャラのパイが5枚あるときにカンできないことがある（検証中）<br>
+    ・（対局の不具合）ポンもカンもできる状況の時、ポンできない（検証中）<br>
+    ・（バグ）魔界血戦終了後、メニュー画面で進行不能になる（検証中）<br>
+    ・（対戦）対戦で終局後、勝手に退室させられる場合がある（検証中）<br>
+    ・（対戦）特定の状況でルーム内に自分が2人存在する場合がある（検証中）<br><br>
+    <b>＜改訂履歴＞</b><br>
+    v1.10<br>
+    ・（追加）season2に移行- 4ライン追加、キャラ追加、カン追加<br>
+    ・（対戦）特定のタイミングで対局が止まる問題を修正（たぶん）<br>
+    ・（修正）若干レスポンシブ対応　スマホ端末でも遊べるように<br>
+    ・（追加）キャラクターを追加<br>
+      v1.20<br>
+    ・ちょこっと修正<br>
+  </div></div></div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.min.js"></script>
+<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+<script src="don/howler.js"></script>
+<script src="don/createjs.min.js"></script>
+<script src="don/donsword0.77.js"></script>
+</html>
