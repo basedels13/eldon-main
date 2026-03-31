@@ -8,11 +8,11 @@ window.onload = function(){
   
   function draw(){
   var titletext="v1.2/Click to START";
-  var debugmode=true;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
+  var debugmode=false;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
   if(debugmode){titletext+="　でばっぐも～ど"};
   var today = new Date();
   var fool=false;
-  if((today.getMonth()+1==4)&&(today.getDate()==1)){
+  if((today.getMonth()+1==4)&&(today.getDate()>=1)&&(today.getDate()<=30)){
     fool=true;
   }
   //epril fool
