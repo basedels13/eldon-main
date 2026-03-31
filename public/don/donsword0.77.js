@@ -14,6 +14,7 @@ window.onload = function(){
   var fool=false;
   if((today.getMonth()+1==4)&&(today.getDate()>=1)&&(today.getDate()<=30)){
     fool=true;
+    titletext+="　えいぷりるふ～る";
   }
   //epril fool
   (function () {
