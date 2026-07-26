@@ -2,13 +2,15 @@
 // npm run dev
 // 国士無双で進行不能になる？
 // 魔界血戦後に操作不能になる
+// スマホ対応に向けて
+// マナブレ暴発する？
 window.onload = function(){
   draw();
   };
   
   function draw(){
   var titletext="v1.2/Click to START";
-  var debugmode=false;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
+  var debugmode=true;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
   if(debugmode){titletext+="　でばっぐも～ど"};
   var today = new Date();
   var fool=false;
@@ -106,11 +108,12 @@ window.onload = function(){
   var Roomlist1=[];
   var Roomlist2=[];
   var Roomlist3=[];
+  var A;
   function IsHost(room=1){
   //リストIDが0の人をホストとする
   switch(room){
     case 1:
-    var A=Roomlist1.findIndex(value =>value.token==IAM.token);
+    A=Roomlist1.findIndex(value =>value.token==IAM.token);
     if(A==-1){
       console.log('roomlist1 error!');
     }else{
@@ -122,7 +125,7 @@ window.onload = function(){
     }
   break;
   case 2:
-    var A=Roomlist2.findIndex(value =>value.token==IAM.token);
+    A=Roomlist2.findIndex(value =>value.token==IAM.token);
     if(A==-1){
       console.log('roomlist2 error!');
     }else{
@@ -134,7 +137,7 @@ window.onload = function(){
     }
   break;
   case 3:
-    var A=Roomlist3.findIndex(value =>value.token==IAM.token);
+    A=Roomlist3.findIndex(value =>value.token==IAM.token);
     if(A==-1){
       console.log('roomlist3 error!');
     }else{
@@ -196,58 +199,40 @@ window.onload = function(){
   var Username = "player";
   var UsernameText = new createjs.Text(Username, "24px Arial", "white");
   var Usercrest = "称号なし";
-  const canvas = document.getElementById("canvas0");//ベースレイヤ。背景、置物
-  var canvas1 = document.getElementById("canvas1");//立ち絵,捨てパイ
-  var canvas2 = document.getElementById("canvas2");//パイ、ボタン
-  var canvas3 = document.getElementById("canvas3");//カーソル、
-  var canvas4 = document.getElementById("canvas4");//残パイ、アニメーション用
-  var canvas5 = document.getElementById("canvas5");//カーソルのアニメーション
+  const canvas = document.getElementById("canvas");//ベースレイヤ。背景、置物
     if ( ! canvas || ! canvas.getContext ) { return false; }
-    var cx = canvas.getContext("2d");
-    var cx1 = canvas1.getContext("2d");
-    var cx2 = canvas2.getContext("2d");
-    var cx3 = canvas3.getContext("2d");
-    var cx4 = canvas4.getContext("2d");
-    var cx5 = canvas5.getContext("2d");
-    // canvasのサイズの実験
-    function ResizeWindow(){
+  var cx = canvas.getContext("2d");
+  var cx2 = canvas.getContext("2d");
+function ResizeGame(){
     var window_scaleX = (window.innerWidth-20) / 800;
     var window_scaleY = (window.innerHeight-20) / 600;
     var window_scale=Math.min(window_scaleX,window_scaleY)
     canvas.width=800*window_scale;
     canvas.height=600*window_scale;
-    canvas1.width=800*window_scale;
-    canvas1.height=600*window_scale;
-    canvas2.width=800*window_scale;
-    canvas2.height=600*window_scale;
-    canvas3.width=800*window_scale;
-    canvas3.height=600*window_scale;
-    canvas4.width=800*window_scale;
-    canvas4.height=600*window_scale;
-    canvas5.width=800*window_scale;
-    canvas5.height=600*window_scale;
-    stage.scaleX=window_scale;
-    stage.scaleY=window_scale;
-    }
-    var stage = new createjs.Stage(canvas5);//Stage
-    ResizeWindow();
+    stage.scale=window_scale;
+}
+    var stage = new createjs.Stage(canvas);//Stage
+    if (createjs.Touch.isSupported() == true) {
+      createjs.Touch.enable(stage);
+      }
+    ResizeGame();
     var w = window.innerWidth
     window.addEventListener('resize', () => {
       if (w == window.innerWidth) return
       w = window.innerWidth
-      ResizeWindow();
+      ResizeGame();
     })
-    if (createjs.Touch.isSupported() == true) {
-      createjs.Touch.enable(stage);
-      //タップに対応するがcanvas.addeventlistenerが効かなくなる？→mouseXの修正で一部解決
-      }
     stage.enableMouseOver();//onmouseイベントに対応
     var backyard = new createjs.Container();//背景の緑芝
     stage.addChild(backyard);
-    var field = new createjs.Container();//タイトル、メイン画面
+    var field = new createjs.Container();//メイン
     stage.addChild(field);
+    stage.addChild(menu_main);//キャラ・実績画面で使用しているよ
+    var titleyard = new createjs.Container();//タイトル画面
+    stage.addChild(titleyard);
+    stage.addChild(guidemap);
     var textmap = new createjs.Container();//メッセージ
-    textmap.alpha=0;
+    textmap.visible=false;
     stage.addChild(textmap);
     var guidemap = new createjs.Container();//ラテ欄
     stage.addChild(guidemap);
@@ -266,26 +251,17 @@ window.onload = function(){
     stage.addChild(fieldpai);
     var soundmap = new createjs.Container();
     stage.addChild(soundmap); //sound ミュートボタン
-    //Configmap
-    var Configmap = new createjs.Container();
-    stage.addChild(Configmap); //設定ボタン
     var corsormap = new createjs.Container();//カーソル
     stage.addChild(corsormap);
     //テキスト欄
     var Textlist=[];
-    var underText = new createjs.Bitmap("don/Don_textwindow.png");
-    underText.y=520;  
-    textmap.addChild(underText);
-    var underText = new createjs.Text("　", "24px Arial", "black");
-    underText.x=80;
-    underText.y=530;
-    textmap.addChild(underText);
-    Textlist.push(underText);
-    var underText = new createjs.Text("　", "24px Arial", "black");
-    underText.x=80;
-    underText.y=560;
-    textmap.addChild(underText);
-    Textlist.push(underText);
+    var underTextA = new createjs.Bitmap("don/Don_textwindow.png");
+    underTextA.y=520;  
+    textmap.addChild(underTextA);
+    var underTextB=createText(textmap,"　",10,530,24,{font:"Arial",color:"#000920"});
+    Textlist.push(underTextB);
+    var underTextC=createText(textmap,"　",10,555,24,{font:"Arial",color:"#000920"});
+    Textlist.push(underTextC);
     var OKtext1 = new createjs.Text("OK (1)", "bold 16px 'メイリオ'", "white");
     OKtext1.x=760;
     OKtext1.y=500;
@@ -304,9 +280,9 @@ window.onload = function(){
     tumonameB.x=645;
     tumonameB.y=380;
     //soundボタン
-    var s = createButton("　", 78, 38);
+    var s = createButton("　", 88, 48);
     s.x=710;
-    s.y=10
+    s.y=2
     soundmap.addChild(s);
     s.addEventListener("click", {handleEvent:SoundConfig});
     var t = new createjs.Text("SOUND", "12px Arial", "#ffffff");
@@ -317,7 +293,7 @@ window.onload = function(){
     muteshape.x=730;
     muteshape.y=22;
     soundmap.addChild(muteshape);
-    soundmap.alpha=0;
+    soundmap.visible=false;
     var Resultary=[]
     //クリア時アニメーションに使用
     yakumap.alpha=0;
@@ -344,7 +320,7 @@ window.onload = function(){
   .to({alpha:0},600)
   .to({alpha:0.5},600);
   tweeNsquare.paused=true;
-  Csquare.alpha=0;
+  Csquare.visible=false;
   var CorsorKey;//カーソル1
   CorsorKey = new createjs.Shape();
   CorsorKey.graphics.beginStroke("#0088f0");
@@ -357,13 +333,13 @@ window.onload = function(){
   .to({alpha:0.2},400)
   .to({alpha:1},200);
   tweeNcor.paused=true;
-  CorsorKey.alpha=0;
+  CorsorKey.visible=false;
   var Clvup = new createjs.Bitmap("don/Don_Fight.png");
-  Clvup.alpha=0;
+  Clvup.visible=false;
   Clvup.scale=3;
   stage.addChild(Clvup);
   var Dlvup = new createjs.Bitmap("don/Don_aurus.png");
-  Dlvup.alpha=0;
+  Dlvup.visible=false;
   stage.addChild(Dlvup);
     //アップデートする
     createjs.Ticker.timingMode = createjs.Ticker.RAF;
@@ -420,7 +396,7 @@ window.onload = function(){
   var Buff =new Array(0,[],[],[],[])
   var Bufflist =new Array(0,[],[],[],[])
   var mode=0
-  var musicnum=0
+  var musicnum=0;
   var musictemp=0;//ランダム再生時
   var musicset=new Array(0,0,0);
   //通常時、自分の立直時、オーラス時
@@ -436,7 +412,7 @@ window.onload = function(){
   var Ronturn=[];
   //データベース
   var LPlist=new Array("一般","ヘル","デスマッチ","∞","魔界血戦")
-  var musiclist=new Array("ランダム","盲目のアストライア","Nine Jack","The Evil Sacrifice Archenemies","ロベリア","夜の迷宮の入口","決闘のテーマ","エルの樹の麓","リーチっぽい音楽","竜の道","ウォーリーの城メドレー","歎きの塔Phase3","狂乱のコンサート","リーチっぽい音楽R")
+  var musiclist=new Array("ランダム（試聴できません）","盲目のアストライア","Nine Jack","The Evil Sacrifice Archenemies","ロベリア","夜の迷宮の入口","決闘のテーマ","エルの樹の麓","リーチっぽい音楽","竜の道","ウォーリーの城メドレー","歎きの塔Phase3","狂乱のコンサート","リーチっぽい音楽R")
   var chrlist=new Array("名無しさん","エルス","アイシャ","レナ","レイヴン","イヴ","ラシェ","アラ","エリシス","エド")//"ラビィ"
   var chrimg_src= new Array("don/Don_chara0.png","don/Don_chara1.png","don/Don_chara2.png","don/Don_chara3.png","don/Don_chara4.png","don/Don_chara5.png","don/Don_chara6.png","don/Don_chara7.png","don/Don_chara8.png","don/Don_chara9.png");
   var chrimgR_src= new Array("don/Don_chara0.png","don/Don_chara1R.png","don/Don_chara2R.png","don/Don_chara3R.png","don/Don_chara4R.png","don/Don_chara5R.png","don/Don_chara6R.png","don/Don_chara7R.png","don/Don_chara8R.png","don/Don_chara9R.png");
@@ -452,15 +428,14 @@ window.onload = function(){
   eltear_src.push("don/Don_img46.png","don/Don_img47.png","don/Don_img48.png","don/Don_img49.png");
   eltear_src.push("don/Don_imgM1.png","don/Don_imgM2.png","don/Don_imgM3.png","don/Don_imgM4.png","don/Don_imgM5.png","don/Don_imgM6.png","don/Don_imgM7.png","don/Don_imgM8.png","don/Don_img44.png","don/Don_img45.png");
   //create用
-  var s;
-  var ary=[];
   console.log(eltear_src.length);
   //expected 62
   //バフアイコン
   var donicon_src= new Array("don/Don_buff.png","don/Don_mbicon.png","don/Don_fever.png")
+  var yakuicon_src= new Array("don/Yaku_Gaia.png","don/Yaku_Rosso.png","don/Yaku_Denif.png","don/Yaku_Adrian.png","don/Yaku_Solace.png","don/Yaku_Hernia.png","don/Yaku_Kokushi.png")
   var win_src= new Array("don/Don_menu1.png","don/Don_menu2.png","don/Don_menu3.png","don/Don_menu4.png","don/wintumo.png","don/winron.png","don/winreach.png","don/Don_Cutin.png");
   var musiclistDT=[
-  {title:"ランダム",elia:"ランダムにbgmが流れます",nod:"　"},
+  {title:"ランダム（試聴できません）",elia:"ランダムにbgmが流れます",nod:"　"},
   {title:"盲目のアストライア",elia:"ISAo",nod:"@ DOVA-SYNDROME"},
   {title:"Nine Jack",elia:"まんぼう二等兵",nod:"@ DOVA-SYNDROME"},
   {title:"The Evil Sacrifice Archenemies",elia:"ISAo",nod:"@ DOVA-SYNDROME"},
@@ -486,6 +461,30 @@ window.onload = function(){
   {fir:"克己-強",sec:"Iron Body - Strong",thr:"0"},
   {fir:"リバースサークル",sec:"Reverse Circle",thr:"0"},
   ]
+  var skilldetail_passive=[
+    {fig:"",name:"スキル①",sub:"スキルなし"},
+    {fig:"[パッシブ]",name:"ストーンスキン",sub:"リーチしている間、他の\nスキルの効果を受けない。"},
+    {fig:"[パッシブ]",name:"マナシールド",sub:"水パイを切る度に\nマナシールドを張る。\n-マナシールド：\n・受けるダメージ減少\n・最大3重複"},
+    {fig:"[パッシブ]",name:"ネイチャーフォース",sub:"①「強靭」番の時に風パイが\n初手で入りやすい。\n②風パイを切る度にNFバフを得る。\n-ネイチャーフォース：\n・和了時、符数増加\n・最大3重複"},
+    {fig:"[パッシブ]",name:"ナソードコア",sub:"太陽パイを切る度に、ナソード\nコアを生成する。\n-ナソードコア：\n・致死ダメージを受けた時、\n点数1で持ちこたえる\n・和了時戦闘力増加"},
+    {fig:"[パッシブ]",name:"チートコード",sub:"リーチが発生した時、\n危険パイを察知する。\n引いたばかりのパイは察知できず、\nその局で最初のリーチに\n対してのみ発動する。"},
+    {fig:"[パッシブ]",name:"変身",sub:"MPが3ゲージ溜まった状態で\nリーチすると、ゲージを全消費\nしてバーサクモードになる！\n-バーサクモード：\n・予告一発ツモ"},
+    {fig:"[パッシブ]",name:"連技-龍牙爆砕",sub:"1局に1度だけ、\n1,2,3,4ラインの順に\nパイを切ると、\nドラが1つ増える。"},
+    {fig:"[パッシブ]",name:"ウォープレリュード",sub:"連続で和了し続けるほど、\n初手で同じラインの\nパイが入りやすくなる。"},
+    {fig:"[パッシブ]",name:"量子化",sub:"ポンをした際の食い下がりが\n2翻から1翻に減る。"},
+  ];
+    var skilldetail_active=[
+    {fig:"",name:"スキル②",sub:"スキルなし"},
+    {fig:"[アクティブ]",name:"フレイムガイザー",sub:"MP消費：2ゲージ\nプレイヤー1人を選択して\n3巡の間「火傷」状態にする。\n-火傷：ポン・カン不可"},
+    {fig:"[アクティブ]",name:"メモライズ",sub:"MP消費：1ゲージ\n手札のパイをメモライズ\nしてから切る。メモしたパイは\nいつでも思い出せる。"},
+    {fig:"[アクティブ]",name:"フリージングアロー",sub:"MP消費：2ゲージ\nプレイヤー1人を選択して\n3巡の間「凍結」状態にする。\n-凍結：行動不可"},
+    {fig:"[アクティブ]",name:"グラウンドクラッシュ",sub:"MP消費：3ゲージ\n台パンによりこの局を流局にする。"},
+    {fig:"",name:"スキル②",sub:"スキルなし"},
+    {fig:"",name:"スキル②",sub:"スキルなし"},
+    {fig:"[パッシブ]",name:"花蓮",sub:"カンをした時、MPを1ゲージ\n消費して自動発動する。\nリーチ時は当たりパイを、\n非リーチ時はドラを必ず引く。"},
+    {fig:"[パッシブ]",name:"克己-強",sub:"リーチ時にMPが2ゲージ\n消費して自動発動する。\nその局の勝敗にかかわらず\n「ウォープレリュード」の効果を\n1局延長する。"},
+    {fig:"[アクティブ]",name:"リバースサークル",sub:"MP消費：1ゲージ\n逆転の空間を作り出し、\nその局の間、パイを切る順が\n逆回りになる。"},
+  ];
   //name->キャラsub->職、役判定で使用　line->ライン役判定に使用 0->all　color->1234567陽水風月土火E 0->all
   var donpai=[
   {name:"エルス",sub:"ナイトエンペラー",line:1,color:1},
@@ -716,7 +715,9 @@ window.onload = function(){
   var winrank=[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];//一般、ヘル、デスマッチ、予備、魔界血戦
   //winrank[0][4]をP切り替えに利用
   var highscore=[0,0,0,0,0,0];//0->通算プレイ回数 1->最大終了得点 2->1回の最大得点 3->連荘回数 4->対戦回数 5->予備
+  var highrate=Array(10).fill(0);//最強の点数が出たときのパイを記録 配列ゼロはその点数を出したモード
   var scoretemp=[0,0,0,0,0,0];//0->0:escで途中抜けした1-4:順位 3->最大火力 1->連荘 245未使用
+  var scoretemp_rate=[];
   var achievetemp=[];//name,達成回数,シナジーの場合はcountを記録
   //countミスってますがclearedに加算してください
   var achievetempB=[
@@ -751,9 +752,11 @@ window.onload = function(){
     "AchieveA":achieveA,
     "AchieveB":achieveB,
     "Highscore":highscore,
+    "Highrate":highrate,
     "MPV":mpVelocity,
     "DHS":dahaiSE,
     "tumoCon":tumoConfig,
+    "Sort":handsort,
     "PON":Ponrate,
     "FEV":Fever,
     "HiddenChr":HiddenChara,
@@ -784,9 +787,11 @@ window.onload = function(){
   var e15= new Image();
   var e16= new Image();
   //マナブレアイコン
-  var MBicon= new createjs.Bitmap("don/Don_mbicon.png");;
+  var MBicon= new createjs.Bitmap("don/Don_mbicon.png");
   var zoom=  new createjs.Bitmap("don/zoom650.png");
+  var pen=  new createjs.Bitmap("don/zoompen100.png");
   zoom.scale=0.4;
+  pen.scale=0.35;
   //ツモロンボタン
   var skilltext1
   var skilltext2
@@ -1086,7 +1091,6 @@ window.onload = function(){
     volume: 0.12,
   };
   var Bgm=new Music(bgm3data);
-  var musicnum=0;
     se1.load();
     se2.load();
     se3.load();
@@ -1126,9 +1130,6 @@ var queue = new createjs.LoadQueue(),
     };
     manifest.push('don/circle88.png')
     manifest.push('don/Don_aurus.png')
-    manifest.push('don/soL_option_bt2.png')
-    manifest.push('don/soL_option_bt3.png')
-    manifest.push('don/soL_option_bt4.png')
     console.log(manifest.length);
 // 同時接続数を設定
 queue.setMaxConnections(6);
@@ -1168,15 +1169,8 @@ function handleComplete() {
   field.removeAllChildren();
   loadtitle()
 }
-//mousedown, mouseup
-if(typeof window.ontouchstart === "undefined"){
-  canvas5.onmousedown = mouseDownListener;
-  canvas5.onmouseup = mouseUpListener;
-}else{
-  canvas5.ontouchstart = mouseDownListener;
-  canvas5.ontouchend = mouseUpListener;
-}
-//canvas5.onmousedown = mouseDownListener;
+canvas.addEventListener(`pointerdown`, mouseDownListener, false);
+canvas.addEventListener(`pointerup`, mouseUpListener, false);
 function mouseDownListener(e=-1) {
   createjs.Ticker.addEventListener("tick", MouseCircle);
   if(gamestate ==1 && cLock==1 && opLock>=0 && opLock !==2){
@@ -1184,7 +1178,6 @@ function mouseDownListener(e=-1) {
     mpmoving=true;
   }
 };
-//canvas5.onmouseup = mouseUpListener;
 function mouseUpListener(e=-1) {
   if(mpmoving){
     mpmoving=false;
@@ -1235,13 +1228,13 @@ function emitParticles() {
     particle.graphics
             .beginFill(createjs.Graphics.getHSL(218, 90, 50))
             .drawRect(-R/2, -R/2, R, R);
-    field.addChild(particle);
+    corsormap.addChild(particle);
     particle.compositeOperation = "lighter";
     particle.alpha=0.25;
     // パーティクルの発生場所
     particle.x = stage.mouseX*(1/stage.scaleX);
     particle.y = stage.mouseY*(1/stage.scaleY);
-    // 動的にプロパティーを追加します。
+    // 動的にプロパティーを追加します
     // 速度
     particle.vx = 3 * (Math.random() - 0.5);
     particle.vy = 3 * (Math.random() - 0.5);
@@ -1265,8 +1258,8 @@ function updateParticles() {
     particle.x += particle.vx;
     particle.y += particle.vy;
     // 地面
-    if (particle.y > stage.canvas.height) {
-      particle.y = stage.canvas.height; // 行き過ぎ補正
+    if (particle.y > 600) {
+      particle.y = 600; // 行き過ぎ補正
       particle.vy *= -1; // Y軸の速度を反転
     }
     // パーティクルのサイズをライフ依存にする
@@ -1277,40 +1270,116 @@ function updateParticles() {
     // 寿命の判定
     if (particle.life <= 0) {
       // ステージから削除
-      field.removeChild(particle);
+      corsormap.removeChild(particle);
       // 配列からも削除
       particles.splice(i, 1);
     }
   }
 }
   function load2(){
-  var shape = new createjs.Shape();
-  shape.graphics.beginFill("rgb(255,255,255)");
-  shape.graphics.drawRect(10, 170, 780, 200);
-  shape.alpha=0.5;
-  field.addChild(shape);
+  var shape = Panel(titleyard,10,170,780,200,0,0,"rgba(255, 255, 255, 0.5)");
   etitle.x=30;
   etitle.y=150;
-  field.addChild(etitle)
-  var shape = new createjs.Shape();
-  shape.graphics.beginFill("#007fd9");
-  shape.graphics.drawRect(100, 380, 600, 25);
-  field.addChild(shape);
-  var t = new createjs.Text(titletext, "24px 'Century Gothic'", "#e4e4e4");
-  t.textAlign="center"
-  t.x=400;
-  t.y=380;
-  field.addChild(t);
-  var shape = new createjs.Shape();
-  shape.graphics.beginFill("rgba(255,255,255,0.1)");
-  shape.graphics.drawRect(0, 0, 800, 600);
-  field.addChild(shape);
+  titleyard.addChild(etitle)
+  var shape = Panel(titleyard,100,380,600,25,0,2,"#007fd9");
+  var t = createText(titleyard, titletext, 400,380, 24, {align:"center",color:"#e4e4e4"});
+  var shape = Panel(titleyard,0,0,800,600,0,0,"rgba(255, 255, 255, 0.1)");
   shape.addEventListener("click", {handleEvent:LoadtoMenu});
   gamestate=10;
+  //サウンドボタン
+  var circle1 = new createjs.Shape();
+circle1.graphics.beginFill("#2c4a3f")
+.drawRoundRect(-50, -50, 100,100,8,8);
+circle1.x=610;
+circle1.y=315;
+titleyard.addChild(circle1);
+var circle2 = new createjs.Shape()
+circle2.graphics.beginFill("#2c4a3f")
+.drawRoundRect(-50, -50, 100,100,8,8);
+circle2.x=730;
+circle2.y=315;
+titleyard.addChild(circle2);
+var circle3 = new createjs.Shape();
+circle3.graphics.beginFill("#4cb58b")
+.drawRoundRect(-50, -50, 100,100,8,8);
+circle3.x=610;
+circle3.y=315;
+circle3.alpha=1;
+titleyard.addChild(circle3);
+var circle4 = new createjs.Shape()
+circle4.graphics.beginFill("#4cb58b")
+.drawRoundRect(-50, -50, 100,100,8,8);
+circle4.x=730;
+circle4.y=315;
+circle4.alpha=1;
+titleyard.addChild(circle4);
+if(mute=="OFF"){circle3.alpha=0;}else{circle4.alpha=0;};
+var sound1 = new createjs.Bitmap("don/soL_sound1.png");
+sound1.x=560;
+sound1.y=270;
+sound1.scale=1;
+titleyard.addChild(sound1);
+var sound2 = new createjs.Bitmap("don/soL_sound2.png");
+sound2.x=680;
+sound2.y=270;
+sound2.scale=1;
+titleyard.addChild(sound2);
+circle1.addEventListener("click", {card:1,handleEvent:Soundcircle});
+circle2.addEventListener("click", {card:2,handleEvent:Soundcircle});
+//mouseoverはhittestを使うことにする
+  createjs.Ticker.addEventListener("tick", ()=>{
+  var ptA=circle1.globalToLocal(stage.mouseX,stage.mouseY);
+  var isHitA=circle1.hitTest(ptA.x,ptA.y);
+  if(isHitA){
+  if(mute=="OFF"){circle3.alpha=0.6};
+  }else{
+  if(mute=="OFF"){circle3.alpha=0};
+  }
+  var ptB=circle2.globalToLocal(stage.mouseX,stage.mouseY);
+  var isHitB=circle2.hitTest(ptB.x,ptB.y);
+  if(isHitB){
+  if(mute=="ON"){circle4.alpha=0.6};
+  }else{
+  if(mute=="ON"){circle4.alpha=0};
+  }
+})
+function Soundcircle(){
+  switch(this.card){
+    case 1:
+      //soundをonにする
+    if(mute=="OFF"){
+    mute="ON";
+    circle3.alpha=1;
+    circle4.alpha=0;
+    SEbuffer();
+    Bgm.mute(false);
+    se3.play();
+    musicStart(musicnum);
+    muteshape.text=mute;
+    }
+    break;
+    case 2:
+    //soundをoffにする
+    if(mute=="ON"){
+    mute="OFF";
+    circle3.alpha=0;
+    circle4.alpha=1;
+    SEbuffer(-1)
+    Bgm.mute(true);
+    Bgm.stop();
+    mute="OFF";
+    muteshape.text=mute;
+    }
+    break;
+  } 
+}
   }
   function loadtitle(){
+  titleyard.removeAllChildren();
   Yakucheck();
   paiView();
+  var s;
+  var ary=[];
   for(var i=0;i<6;i++){
     var A=Math.floor(Math.random()*70);
     s = new createjs.Bitmap(queue.getResult(eltear_src[A]));
@@ -1325,18 +1394,18 @@ function updateParticles() {
     s.y=425;
     ary.push(s);
   }
-  field.addChild(ary[0]);
-  field.addChild(ary[1]);
-  field.addChild(ary[2]);
-  field.addChild(ary[3]);
-  field.addChild(ary[4]);
-  field.addChild(ary[5]);
-  field.addChild(ary[6]);
-  field.addChild(ary[7]);
-  field.addChild(ary[8]);
-  field.addChild(ary[9]);
-  field.addChild(ary[10]);
-  field.addChild(ary[11]);
+  titleyard.addChild(ary[0]);
+  titleyard.addChild(ary[1]);
+  titleyard.addChild(ary[2]);
+  titleyard.addChild(ary[3]);
+  titleyard.addChild(ary[4]);
+  titleyard.addChild(ary[5]);
+  titleyard.addChild(ary[6]);
+  titleyard.addChild(ary[7]);
+  titleyard.addChild(ary[8]);
+  titleyard.addChild(ary[9]);
+  titleyard.addChild(ary[10]);
+  titleyard.addChild(ary[11]);
   createjs.Tween.get(ary[0])
   .to({x:35},60)
   createjs.Tween.get(ary[1])
@@ -1364,15 +1433,14 @@ function updateParticles() {
   .call(load2); 
   };
   
-    canvas5.onmousemove = mouseMoveListener;
+    canvas.addEventListener(`pointermove`, mouseMoveListener, false);
     function mouseMoveListener(e=-1) {
       //カーソル
     mouseX=stage.mouseX*(1/stage.scaleX);
     mouseY=stage.mouseY*(1/stage.scaleY);
      corsor();
     }
-    canvas5.addEventListener(`contextmenu`, contextHandler, false);
-    //canvas5.addEventListener("click", clickHandler, false);
+    canvas.addEventListener(`contextmenu`, contextHandler, false);
   function contextHandler(e=-1){
     //右クリック無効、右クリックでツモ切り
       e.preventDefault();
@@ -1387,22 +1455,18 @@ function updateParticles() {
       }
     };
     function LoadtoMenu(){
-      for(var i=0; i<12 ; i++){
-        field.removeChild(ary[i]);
-      }
+      titleyard.removeAllChildren();
       ary=[];
       tweeNstar.paused=true;
       stage.removeChild(Cstar);
       pagestate=0;
       se6.play();
-      saveUP();
+      //saveUP();
       saveUP_Local();
       Menu();
-      soundmap.alpha=1;
+      soundmap.visible=true;
     }
     function clickInGame() {
-      //canvas5のaddeventでは上手く実装できなかったためその都度イベントを追加
-      //Menuから飛ぶ 
   socket.on("game-ready", (data)=>{
     if(IsHost(IAM.room)){
     var N=MEMBER.findIndex(value=>value.id==data.who);
@@ -1613,7 +1677,6 @@ function updateParticles() {
     }else if(gamestate ==3){//タイトルへ
       if(pvpmode==1 && gamestate !==10){
         console.log('ロビーに戻る',IAM.room);
-        //cx4.clearRect(0,0,800,600);
         if(!Bgm.mute()){
           Bgm =new Music(bgm17data);
           Bgm.playMusic();
@@ -1623,11 +1686,10 @@ function updateParticles() {
             opLock=0;
             pagestate=6;
             msgstate=2;
-            cx2.clearRect(0,0,800,600);
             field.removeAllChildren();
             //menuMap(4);
             field.addChild(menu_duel);
-            textmap.alpha=1;
+            textmap.visible=true;
             se2.play();
             if(!IsHost(IAM.room)){
               if(IAM.is_ready==1){IAM.is_ready=0};
@@ -1677,8 +1739,6 @@ function updateParticles() {
       }
       if(opLock==2){
         if(mouseX >460 && mouseY > 240 && mouseX <580 && mouseY <300){
-          cx4.clearRect(0,0,800,600)
-          Configmap.removeAllChildren();
           opLock=0;
           se3.play();
         }
@@ -1686,6 +1746,7 @@ function updateParticles() {
         if(mouseX >220 && mouseY > 240 && mouseX <340 && mouseY <300){
         se3.play();
         scoretemp[0]=-2;
+        scoretemp_rate=[];
         opLock=0;
         if(pvpmode==1){
         cx4.globalAlpha=1;
@@ -1703,7 +1764,6 @@ function updateParticles() {
       if(opLock==1){
         paiviewer.alpha=0;
         opLock=0;
-        //drawbuttom(400,10,"残パイリスト",0,130,44);
         se4.play();
         return false;
       }
@@ -1714,7 +1774,6 @@ function updateParticles() {
           se4.play();
           yakumap.alpha=1;       
           Yakucheck(0);
-          cx4.clearRect(10,100,610,400)
           return false;
           }
       }
@@ -1724,7 +1783,6 @@ function updateParticles() {
         opLock=1;
         se4.play();
         paiviewer.alpha=1;
-        //drawbuttom(400,10,"残パイリスト",1,130,44);
         Remaincheck();
         return false;
         }
@@ -1759,7 +1817,7 @@ function updateParticles() {
     }//gamestate
   }
   //画面を描画したものを用意しておく
-  var Cbt=canvas2.toDataURL();
+  var Cbt=canvas.toDataURL();
   var Cbutton = new createjs.Bitmap(Cbt);
   var menu_main = new createjs.Container();//メイン画面（実績等）
   var menu_solo = new createjs.Container();//ソロ受付
@@ -1768,128 +1826,132 @@ function updateParticles() {
   var menu_duel = new createjs.Container();//対戦
   var menu_solo_list=[];//createjsの可変リスト
   var menu_main_list=[];//createjsの可変リスト
+
 function menuMap(p=0){
+  //各画面の描画
   if(debugmode){console.log('menuMap',p,pagestate)}
   switch(p){
     case 0:
       //solo
+      //3970
       menu_solo.removeAllChildren();
       menu_solo_list=[]
       var rect = new createjs.Shape();
       rect.graphics
-        .beginFill("rgba(20,20,20,0.7)")
-        .drawRect(0, 0, 800, 510);
-      menu_solo.addChild(rect);
-      rect.addEventListener("click", {handleEvent:Menu}); 
+        .beginFill("#001c0d")
+        .drawRect(0, 0, 800, 600);
+        menu_solo.addChild(rect);
+      var solo = new createjs.Bitmap('don/Don_bg2.png');
+        solo.sourceRect={x:0,y:0,width:800,height:510};
+        solo.x=0;
+        solo.y=0;
+        solo.alpha=0.3;
+        menu_solo.addChild(solo);
+      var rect = new createjs.Shape();
+      rect.graphics
+        .beginFill("rgba(18, 110, 96, 0.9)")
+        .drawRect(2, 125, 148, 300)
+        .drawRect(152, 125, 148, 300)
+        .drawRect(302, 125, 148, 300)
+        .drawRect(452, 125, 148, 300);
+        menu_solo.addChild(rect);
       var solo = new createjs.Bitmap(queue.getResult(win_src[0]));
       solo.sourceRect={x:0,y:0,width:300,height:150};
       solo.x=1;
       solo.y=4;
       solo.scale=0.5;
       menu_solo.addChild(solo);
-      e4 = new createjs.Bitmap(queue.getResult(eltearB_src[0]));
-      e4.x=360;
-      e4.y=10;
-      e4.scale=1.4;
-      menu_solo.addChild(e4);
-      var bt = new createjs.Bitmap("don/Don_startbt.png");
-      bt.x=470;
-      bt.y=410;
+      var bt=createButton("対局開始",170,60,"#ffbb4d","#ff7b00","#ff7f4d","#3f281e")
+      bt.x=620;
+      bt.y=430;
       menu_solo.addChild(bt);
-      bt.addEventListener("click", {handleEvent:ToSetup});
-      function ToSetup(){
+      bt.addEventListener("click",  ()=>{
         if(gamestate!==1){
           gamestate=1;
           field.removeAllChildren();
-          textmap.alpha=0;
+          textmap.visible=false;
           musicnum=-1;
           Setup();
         }
-      }
-      var t = new createjs.Text("ルール", "26px 'Century Gothic'", "black");
-      t.x=390;
-      t.y=80;
-      menu_solo.addChild(t);
-      var t = new createjs.Text("プレイヤー", "26px 'Century Gothic'", "black");
-      t.x=390;
-      t.y=130;
-      menu_solo.addChild(t);
-      var t = new createjs.Text("ＣＰＵ", "26px 'Century Gothic'", "black");
-      t.x=390;
-      t.y=180;
-      menu_solo.addChild(t);
+      });
+      createText(menu_solo,"対局ルール",155,20,30,{bold:true,color:"#fff"});
+      createText(menu_solo,"ＣＰＵおまかせ",620,150,26);
       if(chara[0]==0){
-        var t = new createjs.Text("✓おまかせ", "26px 'Century Gothic'", "black");
+        var t = new createjs.Text("✓おまかせ", "26px 'Century Gothic'", "white");
         }else{
-        var t = new createjs.Text("　おまかせ", "26px 'Century Gothic'", "black");
+        var t = new createjs.Text("　おまかせ", "26px 'Century Gothic'", "white");
       }
-      t.x=520;
+      t.x=630;
       t.y=180;
       menu_solo.addChild(t);
       menu_solo_list.push(t);
-      var t = new createjs.Text("◀ "+LPlist[LP[0]], "24px 'Century Gothic'", "black");
-      t.x=520;
-      t.y=80;
-      menu_solo.addChild(t);
+      var t= createText(menu_solo,LPlist[LP[0]],440,20,32,{bold:true,align:"center",color:"#fff"});
       menu_solo_list.push(t);
-      var t = new createjs.Text("◀ "+chrlist[chara[1]], "24px 'Century Gothic'", "black");
-      t.x=520;
-      t.y=130;
+      var Ary=[[Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"],[chrlist[chara[1]],chrlist[chara[2]],chrlist[chara[3]],chrlist[chara[4]]]]
+     for(var i=0;i<4;i++){
+      var t = new createjs.Text(Ary[0][i], "24px 'Century Gothic'", "white");
+      t.x=2+150*i;
+      t.y=425;
       menu_solo.addChild(t);
-      menu_solo_list.push(t);
-      var t = new createjs.Text(" ▶", "24px 'Century Gothic'", "black");
-      t.x=670;
-      t.y=80;
+      var t = new createjs.Text(Ary[1][i], "24px 'Century Gothic'", "white");
+      t.x=2+150*i;
+      t.y=455;
       menu_solo.addChild(t);
-      var t = new createjs.Text(" ▶", "24px 'Century Gothic'", "black");
-      t.x=670;
-      t.y=130;
-      menu_solo.addChild(t);
-      var t = new createjs.Text(" ▶", "24px 'Century Gothic'", "black");
-      t.x=670;
-      t.y=350;
-      menu_solo.addChild(t);
-      var Ary=[["ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"],["◀ "+chrlist[chara[2]],"◀ "+chrlist[chara[3]],"◀ "+chrlist[chara[4]]],[" ▶"," ▶"," ▶"]]
-     for(var i=0;i<Ary.length;i++){
-      var t = new createjs.Text(Ary[0][i], "24px 'Century Gothic'", "black");
-      t.x=390;
-      t.y=230+40*i;
-      menu_solo.addChild(t);
-      var t = new createjs.Text(Ary[1][i], "24px 'Century Gothic'", "black");
-      t.x=520;
-      t.y=230+40*i;
-      if(chara[0]==0){t.alpha=0.4}else{t.alpha=1}
-      menu_solo.addChild(t);
-      menu_solo_list.push(t);
-      var t = new createjs.Text(Ary[2][i], "24px 'Century Gothic'", "black");
-      t.x=670;
-      t.y=230+40*i;
-      if(chara[0]==0){t.alpha=0.4}else{t.alpha=1}
-      menu_solo.addChild(t);
-      menu_solo_list.push(t);
      }
-      var t = new createjs.Text("スキル", "24px 'Century Gothic'", "black");
+      var t = new createjs.Text("スキル", "24px 'Century Gothic'", "white");
       t.x=390;
       t.y=350;
       menu_solo.addChild(t);
-      var Ary=["　◀禁止しない","　◀プレイヤーのみ","　◀全て禁止"]
+      var Ary=["　禁止しない","　プレイヤーのみ","　全て禁止"]
       //-1のときは禁止
       var t = new createjs.Text(Ary[-skillswitch[0]], "24px 'Century Gothic'", "black");
       t.x=460;
       t.y=350;
       menu_solo.addChild(t);
       menu_solo_list.push(t);
+      for(var i=1;i<5;i++){
+      createText(menu_solo,"？",30+150*(i-1),250,84,{bold:true,color:"#fff"})
       if(fool){
-        e10 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[1]]));          
+        e10 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[i]]));          
       }else{
-        e10 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[1]]));
+        e10 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[i]]));
       }
-      e10.sourceRect={x:400,y:0,width:350,height:510}
-      e10.x=10;
-      e10.y=0;
-      e10.scale=1;
+      e10.sourceRect={x:400,y:0,width:300,height:600}
+      e10.x=2+150*(i-1);
+      e10.y=125;
+      e10.scale=148/300;
       menu_solo.addChild(e10);
       menu_solo_list.push(e10);
+      if(i>=2){
+        if(chara[0]==0){e10.alpha=0};
+      var shape = Panel(menu_solo,2+150*(i-1),485,75,25,3,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_solo,18,-10,18,10);
+      option_arrow.x=20+150*(i-1);
+      option_arrow.y=498;
+      menu_solo.addChild(option_arrow);
+      shape.addEventListener("click",{card:i,handleEvent:charaSelA});
+      var shape = Panel(menu_solo,77+150*(i-1),485,75,25,3,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_solo,-18,-10,-18,10);
+      option_arrow.x=130+150*(i-1);
+      option_arrow.y=498;
+      menu_solo.addChild(option_arrow);
+      shape.addEventListener("click",{card:i,handleEvent:charaSelB});
+        };
+      };
+      function charaSelA(){
+        if(chara[0]==1){
+        se3.play();
+        if(chara[this.card]==0){chara[this.card]=HiddenChara}else{chara[this.card]-=1}
+        menuMap(0)
+        }
+      };
+      function charaSelB(){
+        if(chara[0]==1){
+        se3.play();
+        if(chara[this.card]==HiddenChara){chara[this.card]=0}else{chara[this.card]+=1}
+        menuMap(0)
+        };
+      };
       var btn1 = createButton("もどる", 148, 40);
       btn1.x = 2;
       btn1.y = 80;
@@ -1901,160 +1963,241 @@ function menuMap(p=0){
         Menu();
       };
       break;
-    case 1:
-      //setting
+    case 1://設定画面 case closed
       menu_setting.removeAllChildren();
-      cx2.clearRect(0,0,800,600);
       var e = new createjs.Bitmap(queue.getResult(epic_src[0]));
       e.x=50;
       e.y=30;
       e.scale=1.1;
       menu_setting.addChild(e);
-      e.addEventListener("click", {handleEvent:Menu}); 
       var e = new createjs.Bitmap(queue.getResult(epic_src[0]));
       e.x=400;
       e.y=30;
       e.scale=1.1;
       menu_setting.addChild(e);   
-      e.addEventListener("click", {handleEvent:Menu}); 
-      if(musicnum==musicset[0] || musicset[0]==0){
-        drawbuttom(690,200,"Play",1,60,40)
-        }else{
-        drawbuttom(690,200,"Play",0,60,40)
-      }
-      if(musicnum==musicset[1] || musicset[1]==0){
-        drawbuttom(690,270,"Play",1,60,40)
-        }else{
-        drawbuttom(690,270,"Play",0,60,40)
-      }
-      if(musicnum==musicset[2] || musicset[2]==0){
-        drawbuttom(690,340,"Play",1,60,40)
-      }else{
-        drawbuttom(690,340,"Play",0,60,40)
-      }
-      if(mpVelocity==1){
-        drawbuttom(80,310,"おそめ",1,80,40)
-      }else{
-        drawbuttom(80,310,"おそめ",0,80,40)
-      }
-      if(mpVelocity==1.5){
-      drawbuttom(170,310,"ふつう",1,80,40)
-      }else{
-      drawbuttom(170,310,"ふつう",0,80,40)
-      }
-      if(mpVelocity==2){
-      drawbuttom(260,310,"はやめ",1,80,40)
-      }else{
-      drawbuttom(260,310,"はやめ",0,80,40)
-      }
-      if(dahaiSE==1){
-        drawbuttom(250,370,"A",1,40,40)
-        drawbuttom(290,370,"B",0,40,40)
-        }else if(dahaiSE==2){
-        drawbuttom(250,370,"A",0,40,40)
-        drawbuttom(290,370,"B",1,40,40)
+      var solo = new createjs.Bitmap(queue.getResult(win_src[3]));
+      solo.sourceRect={x:0,y:0,width:300,height:150};
+      solo.x=50;
+      solo.y=30;
+      solo.scale=0.45;
+      menu_setting.addChild(solo);
+      var btn1 = createButton("OK", 120, 85);
+        btn1.x = 600;
+        btn1.y = 425;
+        menu_setting.addChild(btn1);
+        btn1.addEventListener("click", {handleEvent:BackMenu, card:1}); 
+        function BackMenu(){
+          if(musicnum!==0){
+            musicnum=0;
+            Bgm.fade(0.05*vBar, 0, 500);
+            Bgm.on("fade", ()=>{
+            Bgm.stop();
+            });
+            }
+            pagestate=0;
+            opLock=0;
+            switch(this.card){
+              case 1:
+                se2.play();
+                save_Local();
+                break;
+              case 2:
+                //ばつ　設定を破棄して戻る場合の処理
+                se2.play();
+                break;
+            }
+            Menu();
         }
-      drawbuttom2(600,450,"OK",0,100,40,1)
-      drawbuttom2(400,450,"デフォルトに戻す",0,180,40,1)
-      cx2.fillStyle = "black";
-      cx2.fillRect(360,70,2,400);
-      cx2.font = "26px 'Century Gothic'";
-      cx2.fillText("ユーザー補助",60,100)
-      cx2.fillText("対局設定",60,200)
-      cx2.fillText("音量設定",390,100)
-      cx2.fillText("対局BGM設定",390,198)
-      cx2.font = "18px 'Century Gothic'";
-      cx2.fillText("（注意：対局設定について）",60,440)
-      cx2.fillText("対戦モードではルーム長の設定が",65,460)
-      cx2.fillText("全体に反映されます。",65,480)
-      cx2.font = "24px 'Century Gothic'";
-      if(tumoConfig==0){
-        cx2.fillText("右クリック　ツモ切り",90,130);
-      }else if(tumoConfig==-1){
-      cx2.fillText("右クリック　何もしない",90,130);
+      var btn1 = createButton("デフォルトに戻す", 180, 40,"#ffbb4d","#ff7b00","#ff7f4d","#3f281e");
+        btn1.x = 400;
+        btn1.y = 425;
+        menu_setting.addChild(btn1);
+        btn1.addEventListener("click", {handleEvent:ToSaveDel,card:0}); 
+      var btn1 = createButton("データ初期化", 180, 40,"#ff4d4d","#6b0e0e","#c93a3a","#3a0a0a");
+      btn1.x = 400;
+      btn1.y = 470;
+      menu_setting.addChild(btn1);
+        btn1.addEventListener("click", {handleEvent:ToSaveDel,card:1}); 
+        function ToSaveDel(){
+          switch(this.card){
+            case 0:
+              //デフォルトに戻す
+              tumoConfig=0;
+              handsort=0;
+              Ponrate=0.4;
+              mpVelocity=1;
+              dahaiSE=1;
+              se3.play();
+              musicset=[0,0,0];
+              menuMap(1);
+              break;
+            case 1:
+            if(JSON.parse(localStorage.getItem('UserData_Don')) === null){
+              se2.play();
+              return false;
+            }
+              se3.play();
+            var btn2=alertButton(menu_setting,"本当にセーブデータを初期化しますか？");
+                  btn2.addEventListener("click", {handleEvent:ToSaveDel,card:2}); 
+            break;
+            case 2:
+              se3.play();
+              opLock=0;
+              menu_setting.removeChild(btn2);
+                var result = window.confirm('セーブデータを削除します!!（この操作は取り消しできません）');
+                if(result) {
+                console.log('save delete');
+                saveDel();
+                }else{
+                console.log('save delete cancelled');
+                }
+              break;
+          }
+        }
+      createText(menu_setting,"ユーザー補助",60,100,26);
+      createText(menu_setting,"対局設定",60,200,26);
+      createText(menu_setting,"音量設定",390,85,26);
+      createText(menu_setting,"対局BGM設定",390,188);
+      createText(menu_setting,"（注意：対局設定について）",60,440,18)
+      createText(menu_setting,"対戦モードではルーム長の設定が",65,460,18)
+      createText(menu_setting,"全体に反映されます。",65,480,18)
+      createText(menu_setting,"右クリック",90,130,22)
+      createText(menu_setting,"手札ソート",90,160,22)
+      var tumoaryA=["ツモ切り","何もしない"]
+      var tumoaryB=["キャラ順","ライン順"]
+      var dahaiT=["0","タイプA","タイプB"]
+      var MPveloT=["おそい","ふつう","はやい"]
+      var btn1 = createButton("　", 120, 28);
+        btn1.x = 240;
+        btn1.y = 127;
+        menu_setting.addChild(btn1);
+      var tumoT=createText(menu_setting,tumoaryA[tumoConfig],250,130,20,{color:"#ffffff"})
+        btn1.addEventListener("click", () =>{
+           se3.play();
+            if(tumoConfig==0){
+              tumoConfig=1;
+              }else{
+                tumoConfig=0
+              }
+          tumoT.text=tumoaryA[tumoConfig];
+        });
+      var btn2 = createButton("　", 120, 28);
+        btn2.x = 240;
+        btn2.y = 157;
+        menu_setting.addChild(btn2);
+      var sortT=createText(menu_setting,tumoaryB[handsort],250,160,20,{color:"#ffffff"})
+        btn2.addEventListener("click", () =>{
+           se3.play();
+            if(handsort==0){
+              handsort=1;
+              }else{
+                handsort=0
+              }
+          sortT.text=tumoaryB[handsort];
+        });
+      createText(menu_setting,"CPUのポン頻度",100,230);
+      var shape = Panel(menu_setting,100,260,40,25,3,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_setting,18,-10,18,10);
+      option_arrow.x=110;
+      option_arrow.y=273;
+      menu_setting.addChild(option_arrow);
+      shape.addEventListener("click", {card:0,handleEvent:PonBar});
+      var shape = Panel(menu_setting,320,260,40,25,3,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_setting,-18,-10,-18,10);
+      option_arrow.x=350;
+      option_arrow.y=273;
+      menu_setting.addChild(option_arrow);
+      shape.addEventListener("click", {card:1,handleEvent:PonBar});
+      var PonSettingList=[]
+            var A=Math.floor(Ponrate*5);
+      for(var i=0;i<5;i++){
+      var t = Panel(menu_setting,145+35*i,260,28,28,3,2,createjs.Graphics.getRGB(46, 147+30*i, 241),"#68ceed");
+      PonSettingList.push(t);
+      if(i<A){PonSettingList[i].alpha=1}else{PonSettingList[i].alpha=0};
       }
-      cx2.fillText("CPUのポン頻度",100,230);
-      cx2.fillText("◀",120,260)
-      cx2.fillText("▶",260,260)
-      var A=(1-Ponrate)*5;
-      for (var i=0;i<A;i++){
-        cx2.fillText("■",140+i*24,260);
-      };
-      cx2.fillText("MPチャージ速度",100,300);
-      cx2.fillText("打牌音",100,400)
-      //soundbar
-                //音量の設定
-                Barlist=[];
-                var shape = new createjs.Shape();
-                shape.graphics.beginFill("#0080ff");
-                shape.graphics.beginStroke("#68ceed");
-                shape.graphics.setStrokeStyle(3);
-                shape.graphics.drawRect(500, 110, 90*vBar, 25);
-                menu_setting.addChild(shape);
-                Barlist.push(shape);      
-                var shape = new createjs.Shape();
-                shape.graphics.beginFill("#0080ff");
-                shape.graphics.beginStroke("#68ceed");
-                shape.graphics.setStrokeStyle(3);
-                shape.graphics.drawRect(500, 140, 90*sBar, 25);
-                menu_setting.addChild(shape);
-                Barlist.push(shape);       
-                var t=new createjs.Text("BGM","24px 'Century Gothic","black");
-                t.x=410;
-                t.y=110;
-                menu_setting.addChild(t);
-                var t=new createjs.Text("SE","24px 'Century Gothic","black");
-                t.x=410;
-                t.y=140;
-                menu_setting.addChild(t);
-                var option_arrow = new createjs.Shape();
-                option_arrow.graphics.beginFill("#0080ff")
-                        .beginStroke("#68ceed")
-                        .setStrokeStyle(2)
-                        .moveTo(0, 0)
-                        .lineTo(18, -12)
-                        .lineTo(18, 12)
-                        .lineTo(0, 0)
-                option_arrow.x=475;
-                option_arrow.y=122.5;
-                menu_setting.addChild(option_arrow);
-                option_arrow.addEventListener("click", {card:1,handleEvent:SoundBar});
-                var option_arrow = new createjs.Shape();
-                option_arrow.graphics.beginFill("#0080ff")
-                        .beginStroke("#68ceed")
-                        .setStrokeStyle(2)
-                        .moveTo(0, -12)
-                        .lineTo(18, 0)
-                        .lineTo(0, 12)
-                        .lineTo(0, -12)
-                option_arrow.x=635;
-                option_arrow.y=122.5;
-                menu_setting.addChild(option_arrow);
-                option_arrow.addEventListener("click", {card:2,handleEvent:SoundBar});
-                var option_arrow = new createjs.Shape();
-                option_arrow.graphics.beginFill("#0080ff")
-                        .beginStroke("#68ceed")
-                        .setStrokeStyle(2)
-                        .moveTo(0, 0)
-                        .lineTo(18, -12)
-                        .lineTo(18, 12)
-                        .lineTo(0, 0)
-                option_arrow.x=475;
-                option_arrow.y=152.5;
-                menu_setting.addChild(option_arrow);
-                option_arrow.addEventListener("click", {card:3,handleEvent:SoundBar});
-                var option_arrow = new createjs.Shape();
-                option_arrow.graphics.beginFill("#0080ff")
-                        .beginStroke("#68ceed")
-                        .setStrokeStyle(2)
-                        .moveTo(0, -12)
-                        .lineTo(18, 0)
-                        .lineTo(0, 12)
-                        .lineTo(0, -12)
-                option_arrow.x=635;
-                option_arrow.y=152.5;
-                menu_setting.addChild(option_arrow);
-                option_arrow.addEventListener("click", {card:4,handleEvent:SoundBar});
+      function PonBar(){
+        switch(this.card){
+          case 0:
+            Ponrate-=0.2;
+            if(Ponrate<0){Ponrate=0};
+            se3.play();
+            var A=Math.floor(Ponrate*5);
+            console.log(A);
+            for (var i=0;i<5;i++){
+            if(i<A){PonSettingList[i].alpha=1}else{PonSettingList[i].alpha=0};
+            };
+            break;
+          case 1:
+            Ponrate+=0.2;
+            if(Ponrate>1){Ponrate=1};
+            se3.play();
+            var A=Math.floor(Ponrate*5);
+            for (var i=0;i<5;i++){
+            if(i<A){PonSettingList[i].alpha=1}else{PonSettingList[i].alpha=0};
+            };
+            break;
+        }
+      }
+      createText(menu_setting,"MPチャージ速度",100,300);
+      var btn2 = createButton("　", 120, 40);
+        btn2.x = 240;
+        btn2.y = 330;
+        menu_setting.addChild(btn2);
+      var B=Math.floor(mpVelocity*2-2);
+      var sortTT=createText(menu_setting,MPveloT[B],270,340,22,{color:"#ffffff"})
+        btn2.addEventListener("click", () =>{
+          mpVelocity+=0.5;
+          if(mpVelocity>2){mpVelocity=1};
+          se3.play();
+          var B=Math.floor(mpVelocity*2-2);
+          sortTT.text=MPveloT[B];
+        });
+      createText(menu_setting,"打牌音",100,400)
+      var btn2 = createButton("　", 120, 40);
+        btn2.x = 240;
+        btn2.y = 395;
+        menu_setting.addChild(btn2);
+      var sortTTT=createText(menu_setting,dahaiT[dahaiSE],260,405,22,{color:"#ffffff"})
+        btn2.addEventListener("click", () =>{
+            if(dahaiSE==1){
+              dahaiSE=2;
+              se16.play();
+              }else{
+              dahaiSE=1;
+              se4.play();
+              }
+          sortTTT.text=dahaiT[dahaiSE];
+        });
+      //BGM,SEの設定
+        Barlist=[];
+        var shape = Panel(menu_setting,510,115,130*vBar,25,3,2,"#0080ff","#68ceed")
+        Barlist.push(shape);      
+        var shape = Panel(menu_setting,510,145,130*sBar,25,3,2,"#0080ff","#68ceed")
+        Barlist.push(shape);
+        createText(menu_setting,"BGM",410,115)
+        createText(menu_setting,"SE",410,145)
+        var shape = Panel(menu_setting,470,115,40,25,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_setting,18,-10,18,10);
+        option_arrow.x=480;
+        option_arrow.y=127.5;
+        shape.addEventListener("click", {card:1,handleEvent:SoundBar});
+        var shape = Panel(menu_setting,692,115,40,25,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_setting,-18,-10,-18,10);
+        option_arrow.x=720;
+        option_arrow.y=127.5;
+        shape.addEventListener("click", {card:2,handleEvent:SoundBar});
+        var shape = Panel(menu_setting,470,145,40,25,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_setting,18,-10,18,10);
+        option_arrow.x=480;
+        option_arrow.y=157.5;
+        menu_setting.addChild(option_arrow);
+        shape.addEventListener("click", {card:3,handleEvent:SoundBar});
+        var shape = Panel(menu_setting,692,145,40,25,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_setting,-18,-10,-18,10);
+        option_arrow.x=720;
+        option_arrow.y=157.5;
+        menu_setting.addChild(option_arrow);
+        shape.addEventListener("click", {card:4,handleEvent:SoundBar});
         function SoundBar(){
           switch(this.card){
             case 1:
@@ -2062,26 +2205,16 @@ function menuMap(p=0){
               se3.play();
               musicVolume();
               var B=Barlist[0];
-                var shape = new createjs.Shape();
-                shape.graphics.beginFill("#0080ff");
-                shape.graphics.beginStroke("#68ceed");
-                shape.graphics.setStrokeStyle(3);
-                shape.graphics.drawRect(500, 110, 90*vBar, 25);
-                menu_setting.addChild(shape);
-                menu_setting.removeChild(B);
-                Barlist[0]=shape;
+              var shape = Panel(menu_setting,510,115,130*vBar,25,3,2,"#0080ff","#68ceed")
+              menu_setting.removeChild(B);
+              Barlist[0]=shape;
               break;
             case 2:
               if(vBar>=1.4){vBar=1.4}else{vBar+=0.2}
               se3.play();
               musicVolume();
               var B=Barlist[0];
-              var shape = new createjs.Shape();
-              shape.graphics.beginFill("#0080ff");
-              shape.graphics.beginStroke("#68ceed");
-              shape.graphics.setStrokeStyle(3);
-              shape.graphics.drawRect(500, 110, 90*vBar, 25);
-              menu_setting.addChild(shape);
+              var shape = Panel(menu_setting,510,115,130*vBar,25,3,2,"#0080ff","#68ceed")
               menu_setting.removeChild(B);
               Barlist[0]=shape;
               break;
@@ -2090,12 +2223,7 @@ function menuMap(p=0){
                 SEbuffer();
                 se3.play();
                 var B=Barlist[1];
-                var shape = new createjs.Shape();
-                shape.graphics.beginFill("#0080ff");
-                shape.graphics.beginStroke("#68ceed");
-                shape.graphics.setStrokeStyle(3);
-                shape.graphics.drawRect(500, 140, 90*sBar, 25);
-                menu_setting.addChild(shape);
+                var shape = Panel(menu_setting,510,145,130*sBar,25,3,2,"#0080ff","#68ceed")
                 menu_setting.removeChild(B);
                 Barlist[1]=shape;
               break;
@@ -2104,39 +2232,163 @@ function menuMap(p=0){
               SEbuffer();
               se3.play();
               var B=Barlist[1];
-              var shape = new createjs.Shape();
-              shape.graphics.beginFill("0080ff");
-              shape.graphics.beginStroke("#68ceed");
-              shape.graphics.setStrokeStyle(3);
-              shape.graphics.drawRect(500, 140, 90*sBar, 25);
-              menu_setting.addChild(shape);
+              var shape = Panel(menu_setting,510,145,130*sBar,25,3,2,"#0080ff","#68ceed")
               menu_setting.removeChild(B);
               Barlist[1]=shape;
               break;
           }
         }
-      cx2.fillText("通常",430,230)
-      cx2.fillText("リーチ",430,300)
-      cx2.fillText("オーラス",430,370)
-      cx2.font = "20px 'Century Gothic'";
-      cx2.textAlign = "center";
-      cx2.fillText(musiclist[musicset[0]],560,260)
-      cx2.fillText(musiclist[musicset[1]],560,330)
-      cx2.fillText(musiclist[musicset[2]],560,400)
-      cx2.textAlign = "start";
-      cx2.fillText("◀ ",380,260)
-      cx2.fillText("◀ ",380,330)
-      cx2.fillText("◀ ",380,400)
-      cx2.fillText(" ▶",720,260)
-      cx2.fillText(" ▶",720,330)
-      cx2.fillText(" ▶",720,400)         
-      Cbt=canvas2.toDataURL();
-      Cbutton = new createjs.Bitmap(Cbt);
-      menu_setting.addChild(Cbutton);
+      //サウンドテスト
+      createText(menu_setting,"通常",470,220)
+      createText(menu_setting,"リーチ",470,290)
+      createText(menu_setting,"オーラス",470,360)
+      var ary=[];
+      var aryA=[];
+      var aryT=[];
+      var shape = Panel(menu_setting,380,245,50,32,0,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_setting,18,-12,18,12);
+      option_arrow.x=390;
+      option_arrow.y=260;
+      shape.addEventListener("click", {card:10,handleEvent:MusicSelect});
+      var shape = Panel(menu_setting,692,245,50,32,0,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_setting,-18,-12,-18,12);
+      option_arrow.x=730;
+      option_arrow.y=260;
+      shape.addEventListener("click", {card:13,handleEvent:MusicSelect});
+      var shape = Panel(menu_setting,380,315,50,32,0,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_setting,18,-12,18,12);
+      option_arrow.x=390;
+      option_arrow.y=330;
+      shape.addEventListener("click", {card:11,handleEvent:MusicSelect});
+      var shape = Panel(menu_setting,692,315,50,32,0,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_setting,-18,-12,-18,12);
+      option_arrow.x=730;
+      option_arrow.y=330;
+      shape.addEventListener("click", {card:14,handleEvent:MusicSelect});
+      var shape = Panel(menu_setting,380,385,50,32,0,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_setting,18,-12,18,12);
+      option_arrow.x=390;
+      option_arrow.y=400;
+      shape.addEventListener("click", {card:12,handleEvent:MusicSelect});
+      var shape = Panel(menu_setting,690,385,50,32,0,2,"#092038be","#68ceed");
+      var option_arrow =createArrow(menu_setting,-18,-12,-18,12);
+      option_arrow.x=730;
+      option_arrow.y=400;
+      shape.addEventListener("click", {card:15,handleEvent:MusicSelect})
+
+       for(var i=0;i<3;i++){
+        var shape = Panel(menu_setting,410,245+i*70,302,32,0,0,"#3f3f3f","#68ceed");
+        var T=createText(menu_setting,musiclist[musicset[i]],560,253+i*70,20,{align:"center",color:"#fffffff1"});
+        aryT.push(T)
+       }
+      var btn_normal = createButton("Play", 60, 30);
+        btn_normal.x = 400;
+        btn_normal.y = 215;
+        menu_setting.addChild(btn_normal);
+        btn_normal.addEventListener("click", {card:0, handleEvent:MusicSelect});
+        var btn_reach = createButton("Play", 60, 30);
+        btn_reach.x = 400;
+        btn_reach.y = 285;
+        menu_setting.addChild(btn_reach);
+        btn_reach.addEventListener("click", {card:1, handleEvent:MusicSelect});
+        var btn_aurus = createButton("Play", 60, 30);
+        btn_aurus.x = 400;
+        btn_aurus.y = 355;
+        menu_setting.addChild(btn_aurus);
+        btn_aurus.addEventListener("click", {card:2, handleEvent:MusicSelect});
+        var btn_normalA = createButton("Stop", 60, 30,"#352494","#000533","#31a7c5","#1a7894");
+        btn_normalA.x = 400;
+        btn_normalA.y = 215;
+        menu_setting.addChild(btn_normalA);
+        btn_normalA.addEventListener("click", {card:0, handleEvent:MusicSelect});
+        var btn_reachA = createButton("Stop", 60, 30,"#352494","#000533","#31a7c5","#1a7894");
+        btn_reachA.x = 400;
+        btn_reachA.y = 285;
+        menu_setting.addChild(btn_reachA);
+        btn_reachA.addEventListener("click", {card:1, handleEvent:MusicSelect});
+        var btn_aurusA = createButton("Stop", 60, 30,"#352494","#000533","#31a7c5","#1a7894");
+        btn_aurusA.x = 400;
+        btn_aurusA.y = 355;
+        menu_setting.addChild(btn_aurusA);
+        btn_aurusA.addEventListener("click", {card:2, handleEvent:MusicSelect});
+        btn_normalA.alpha=0;
+        btn_reachA.alpha=0;
+        btn_aurusA.alpha=0;
+        ary.push(btn_normal);
+        ary.push(btn_reach);
+        ary.push(btn_aurus);
+        aryA.push(btn_normalA);
+        aryA.push(btn_reachA);
+        aryA.push(btn_aurusA);
+          function MusicSelect(){
+          se3.play();
+          switch(this.card){
+            case 0:
+            case 1:
+            case 2:
+              if(musicset[this.card]==0){return false;}
+              if(musicnum==musicset[this.card]){
+                Bgm.stop();
+                for(var i=0;i<ary.length;i++){
+                if(musicset[i]==musicnum){
+                ary[i].alpha=1;
+                aryA[i].alpha=0;
+                  }
+                }
+                musicnum=0;
+              }else{
+                Bgm.stop()
+                musicnum=musicset[this.card];
+                musicStart(musicnum);
+              for(var i=0;i<ary.length;i++){
+              if(musicset[i]==musicnum){
+                ary[i].alpha=0;
+                aryA[i].alpha=1;
+                }
+              }
+              }  
+            break;
+            case 10:
+            case 11:
+            case 12:
+            var t=this.card-10;
+            if(musicset[t]==0){musicset[t]=musiclist.length-1}else{musicset[t]-=1};
+            aryT[t].text=musiclist[musicset[t]];
+              for(var i=0;i<ary.length;i++){
+            if(musicset[i]>0){
+              if(musicset[i]==musicnum){
+                ary[i].alpha=0;
+                aryA[i].alpha=1;
+                }else{
+                ary[i].alpha=1;
+                aryA[i].alpha=0;    
+                }
+              }
+            }
+            break;
+            case 13:
+            case 14:
+            case 15:
+            var t=this.card-13;
+              if(musicset[t]==musiclist.length-1){musicset[t]=0}else{musicset[t]+=1}
+              aryT[t].text=musiclist[musicset[t]];
+              for(var i=0;i<ary.length;i++){
+            if(musicset[i]>0){
+              if(musicset[i]==musicnum){
+                ary[i].alpha=0;
+                aryA[i].alpha=1;
+                }else{
+                ary[i].alpha=1;
+                aryA[i].alpha=0;    
+                }
+              }
+            }
+            break;
+          };
+        }
       break;
-    case 2:
+    case 2://実績画面 case closed
       menu_main.removeAllChildren();
-          cx2.clearRect(0,0,800,600);
           var e = new createjs.Bitmap(queue.getResult(epic_src[0]));
           e.x=50;
           e.y=50;
@@ -2149,25 +2401,99 @@ function menuMap(p=0){
           e.scale=1.1;
           menu_main.addChild(e);
           e.addEventListener("click", {handleEvent:Menu}); 
-          cx2.font = "32px 'Century Gothic'";
-          cx2.fillStyle = "black";
-          cx2.fillText("　×",680,80)
+          var option_bt5 = new createjs.Bitmap('don/soL_batu.png');
+          option_bt5.x=700;
+          option_bt5.y=60;
+          option_bt5.scale=0.4;
+          menu_main.addChild(option_bt5);
+          option_bt5.addEventListener("click", ()=>{
+              if(msgstate !==-1){
+              pagestate=0;
+              msgstate=0;
+              se2.play();
+              menu_main.removeAllChildren();
+              Menu();
+              }
+          });
+          var btn1=createButton("キャラクター",130,45);
+          btn1.x = 60;
+          btn1.y = 80;
+          menu_main.addChild(btn1);
+          btn1.addEventListener("click", ()=>{
+            if(msgstate!==0){
+            se3.play();
+            msgstate=0;
+            menuMap(2);
+            }
+          });
+          var btn1=createButton("称号/実績",130,45);
+          btn1.x = 60;
+          btn1.y = 130;
+          menu_main.addChild(btn1);
+          btn1.addEventListener("click", ()=>{
+            if(msgstate!==1){
+            se3.play();
+            msgstate=1;
+            menuMap(2);
+            }
+          });
+          var btn1=createButton("戦績",130,45);
+          btn1.x = 60;
+          btn1.y = 180;
+          menu_main.addChild(btn1);
+          btn1.addEventListener("click", ()=>{
+            if(msgstate!==2){
+            se3.play();
+            msgstate=2;
+            menuMap(2);
+            }
+          });
+          var btn1=createButton("達成役一覧1",130,45);
+          btn1.x = 60;
+          btn1.y = 230;
+          menu_main.addChild(btn1);
+          btn1.addEventListener("click", ()=>{
+            if(msgstate!==3){
+            se3.play();
+            msgstate=3;
+            menuMap(2);
+            }
+          });
+          var btn1=createButton("達成役一覧2",130,45);
+          btn1.x = 60;
+          btn1.y = 280;
+          menu_main.addChild(btn1);
+          btn1.addEventListener("click", ()=>{
+            if(msgstate!==4){
+            se3.play();
+            msgstate=4;
+            menuMap(2);
+            }
+          });
       switch(msgstate){
         case 0:
           //プロフィール
-          Textlist[0].text="今までの主な戦績です。";
-          Textlist[1].text="ニックネームやキャラクターを変更できます。";
+          var btn1=createButton("キャラクター",130,45,"#352494","#000533","#352494","#000533");
+          btn1.x = 60;
+          btn1.y = 80;
+          menu_main.addChild(btn1);
+          Textlist[0].text="キャラクター画面です。";
+          Textlist[1].text="ニックネームや使用キャラクターを変更できます。";
           //名前入力欄
-          var rect = new createjs.Shape()
-          rect.graphics
-              .beginFill("rgba(0,0,0,0.8)")
-              .drawRect(530, 90, 200, 40);
-          rect.addEventListener("click", {handleEvent:NameChange});
-          menu_main.addChild(rect);
+          Panel(menu_main,200,80,200,40,0,0,"rgba(0,0,0,0.8)")
+          var btn1 = createButton("　", 40, 40);
+          btn1.x = 360;
+          btn1.y = 80;
+          menu_main.addChild(btn1);
+          btn1.addEventListener("click", {handleEvent:NameChange});
+          pen.x=362;
+          pen.y=82;
+          menu_main.addChild(pen);
           UsernameText.text=Username;
-          UsernameText.x=532;
-          UsernameText.y=98;
+          UsernameText.x=202;
+          UsernameText.y=88;
           menu_main.addChild(UsernameText);
+          createText(menu_main,"称号："+Usercrest,200,125,18);
           var AryX=[500,500,500,530,480,520,490,400,510,500]
           var AryY=[50,100,80,50,90,60,100,100,130,70]
           for(var i=0;i<chrimg_src.length;i++){
@@ -2193,7 +2519,7 @@ function menuMap(p=0){
             e11.scale=1/4;
             menu_main.addChild(e11);
             }
-          }
+          };
           var rect = new createjs.Shape();//キャラ設定欄
           rect.graphics
               .beginFill("rgba(0, 35, 133, 0.7)")
@@ -2207,47 +2533,97 @@ function menuMap(p=0){
           }else{
             e10 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[1]]));
           }
-          e10.sourceRect={x:400,y:0,width:350,height:400}
-          e10.x=530;
-          e10.y=120;
-          e10.scale=20/35;
+          e10.sourceRect={x:400,y:0,width:400,height:500}
+          e10.x=200;
+          e10.y=140;
+          e10.scale=0.8;
           menu_main.addChild(e10);
           menu_main_list.push(e10);
-          drawbuttom(60,80,"戦績",1,130,44);
-          drawbuttom(60,125,"実績リスト",0,130,44);
-          drawbuttom(60,170,"達成役1",0,130,44);
-          drawbuttom(60,215,"達成役2",0,130,44);
+          var t = createText(menu_main,chrlist[chara[1]],205,470,40, {color:"#f9fafa"});
+          t.outline=4;
+          t.rotation=5;
+          var t = createText(menu_main,chrlist[chara[1]],205,470,40);
+          t.rotation=5;
+          Panel(menu_main,500,80,180,30,2,3,"#005acf","#74c7ff")
+          createText(menu_main,"スキル",510,85,20,{color:"#fff"});
+          var t = skilldetail_passive[chara[1]].fig+skilldetail_passive[chara[1]].name+"\n"+skilldetail_passive[chara[1]].sub;
+          t += "\n\n"+skilldetail_active[chara[1]].fig+skilldetail_active[chara[1]].name+"\n"+skilldetail_active[chara[1]].sub;
+          createText(menu_main,t,500,115,16);
+          break;
+        case 1:
+          //実績リスト
+          var btn1=createButton("称号/実績",130,45,"#352494","#000533","#352494","#000533");
+          btn1.x = 60;
+          btn1.y = 130;
+          menu_main.addChild(btn1);
+          Textlist[0].text="解放された実績リストです。";
+          Textlist[1].text="クリックすると称号として装着することができます。（効果はない）"
+          var A=achieveA.findIndex(value=>value.name==Usercrest);
+          if(A>=0){
+            if(A<20){
+            Panel(menu_main,195,109+20*A,225,20,3,3,"rgba(5, 6, 68, 0.47)","rgba(255, 231, 95, 0.75)")
+            }else{
+            Panel(menu_main,475,89+20*(A-20),225,20,3,3,"rgba(5, 6, 68, 0.47)","rgba(255, 231, 95, 0.75)")
+            }
+          }
+            var A=achieveA.filter(value=>value.cleared>0);
+            createText(menu_main,"実績 "+A.length+"/"+achieveA.length,200,85,20,{bold:true,color:"black"})
+            var X=200;
+            var Y=110;
+            for(var i=0;i<achieveA.length; i++){
+            Panel(menu_main,X-5,Y-1,225,20,1,3,"rgba(134, 135, 187, 0.3)")
+              if(achieveA[i].cleared==0){
+              createText(menu_main,"？？？",X,Y,18,{color:"black"})
+              }else{
+              createText(menu_main,achieveA[i].name,X,Y,18,{bold:true,color:"black"})
+              }
+              Y+=20;
+              if(Y>=510){
+                X+=280;
+                Y=90;
+              }
+            }
+          break;
+        case 2:
+          var btn1=createButton("戦績",130,45,"#352494","#000533","#352494","#000533");
+          btn1.x = 60;
+          btn1.y = 180;
+          menu_main.addChild(btn1);
+          //戦績等はこちらへ移動
+          Textlist[0].text="これまでの戦績です。";
+          Textlist[1].text="瞬間最大火力を出した和了パイが表示されます。"
           var wT=winrank[winrank[0][4]][0]+winrank[winrank[0][4]][1]+winrank[winrank[0][4]][2]+winrank[winrank[0][4]][3]
           var winrate=0;
           if(wT>0){
             winrate=Math.floor(winrank[winrank[0][4]][0]/wT*1000)/10  
           }
-          var X=200;
-          cx2.font = "22px 'Century Gothic'";
-          cx2.fillStyle = "black";
-          cx2.fillText( "打数　ソロ："+highscore[0]+"回 /対戦："+highscore[4]+"回",X,105);
-          cx2.fillText( "勝率："+winrate+"%",X,135);
-          cx2.textAlign="center";
-          cx2.fillText( LPlist[winrank[0][4]],450,135);
-          cx2.textAlign="start";
-          cx2.fillText( "最大戦闘力："+highscore[1],X,185);
-          cx2.fillText( "瞬間最大火力："+highscore[2],X,215);
-          cx2.font = "18px 'Century Gothic'";
-          cx2.fillText( "順位別　1位："+winrank[winrank[0][4]][0]+" /2位："+winrank[winrank[0][4]][1]+" /3位："+winrank[winrank[0][4]][2]+" /4位："+winrank[winrank[0][4]][3],X,155);
-          var option_arrow = new createjs.Shape();
-                option_arrow.graphics.beginFill("#0080ff").beginStroke("#68ceed").setStrokeStyle(2)
-                        .moveTo(0, 0).lineTo(18, -12).lineTo(18, 12).lineTo(0, 0)
-                option_arrow.x=370;
-                option_arrow.y=125;
-                menu_main.addChild(option_arrow);
-                option_arrow.addEventListener("click", {card:1,handleEvent:SoundBar});
-                var option_arrow = new createjs.Shape();
-                option_arrow.graphics.beginFill("#0080ff").beginStroke("#68ceed").setStrokeStyle(2)
-                        .moveTo(0, -12).lineTo(18, 0).lineTo(0, 12).lineTo(0, -12)
-                option_arrow.x=510;
-                option_arrow.y=125;
-                menu_main.addChild(option_arrow);
-                option_arrow.addEventListener("click", {card:2,handleEvent:SoundBar});
+          //最強の一手
+          createText(menu_main,"プレイデータ ",200,85,20,{bold:true,color:"black"})
+          if(highrate.length){
+          for (var i=1;i<highrate.length;i++){
+          var drawcard=new createjs.Bitmap(queue.getResult(eltear_src[highrate[i]]));
+          drawcard.x=200+50*(i-1);
+          drawcard.y=110;
+          drawcard.scaleX=5/12;
+          drawcard.scaleY=5/12;
+          menu_main.addChild(drawcard);
+          }};
+          createText(menu_main,"瞬間最大火力："+highscore[2],200,180,22);
+          createText(menu_main,"最大戦闘力："+highscore[1],450,180,22);
+          createText(menu_main,"打数　ソロ："+highscore[0]+"回 /対戦："+highscore[4]+"回",200,210,22);
+          createText(menu_main, "勝率："+winrate+"%",200,240,22);
+          createText(menu_main,LPlist[winrank[0][4]],450,240,22,{align:"center"});
+          createText(menu_main,"順位別　1位："+winrank[winrank[0][4]][0]+" /2位："+winrank[winrank[0][4]][1]+" /3位："+winrank[winrank[0][4]][2]+" /4位："+winrank[winrank[0][4]][3],200,270,22);
+          var option_arrow = createArrow(menu_main,18,-10,18,10)
+          option_arrow.x=370;
+          option_arrow.y=250;
+          menu_main.addChild(option_arrow);
+            option_arrow.addEventListener("click", {card:1,handleEvent:SoundBar});
+          var option_arrow = createArrow(menu_main,-18,-10,-18,10)
+          option_arrow.x=550;
+          option_arrow.y=250;
+          menu_main.addChild(option_arrow);
+          option_arrow.addEventListener("click", {card:2,handleEvent:SoundBar});
                 function SoundBar(){
                   if(this.card==1){
                     se3.play()
@@ -2261,94 +2637,43 @@ function menuMap(p=0){
                     if(winrank[0][4]==3){winrank[0][4]=4};
                     if(winrank[0][4]==5){winrank[0][4]=0};
                   }
-                  menuMap(2);
+          menuMap(2);
                 };
           var achieveC=achieveB.filter(value=>value.sub=="その他");
-          X+=10;
-          var Y=245
-          cx2.fillStyle = "black"; 
-          cx2.font = "20px 'Century Gothic'";
-          cx2.fillText("最大連荘",X,Y);
-          cx2.fillText(highscore[3]+"回",X+130,Y);
-          Y+=22;
+          var X=200
+          var Y=342;
+          createText(menu_main,"最大連荘",200,320,20);
+          createText(menu_main,highscore[3]+"回",330,320,20);
           for(var i=0;i<achieveC.length; i++){
-              cx2.fillText(achieveC[i].name,X,Y);
-              cx2.fillText(achieveC[i].cleared+"回",X+130,Y);
+          createText(menu_main,achieveC[i].name,X,Y,20);
+          createText(menu_main,achieveC[i].cleared+"回",X+130,Y,20);
             Y+=22;
-            if(Y>510){
+            if(Y>490){
               X+=280;
-              Y=110;
+              Y=320;
             }
           }
           break;
-        case 1:
-          //実績リスト
-          Textlist[0].text="解放された実績リストです。";
-          Textlist[1].text="クリックで装着することができます。（効果はない）"
-          var A=achieveA.findIndex(value=>value.name==Usercrest);
-          if(A>=0){
-            if(A<=20){
-              cx2.fillStyle = "rgba(0,0,0,0.3)";
-              cx2.fillRect(190,92+20*A,240,20);
-            }else{
-              cx2.fillStyle = "rgba(0,0,0,0.3)";
-              cx2.fillRect(470,92+20*(A-21),240,20);
-            }
-          }
-            drawbuttom(60,80,"戦績",0,130,44);
-            drawbuttom(60,125,"実績リスト",1,130,44);
-            drawbuttom(60,170,"達成役1",0,130,44);
-            drawbuttom(60,215,"達成役2",0,130,44);
-            var A=achieveA.filter(value=>value.cleared>0);
-            cx2.font = "bold 20px 'Century Gothic'";
-            cx2.fillStyle = "black";
-            cx2.fillText("実績 "+A.length+"/"+achieveA.length,200,85) 
-            var X=200;
-            var Y=110
-            cx2.fillStyle = "black"; 
-            for(var i=0;i<achieveA.length; i++){
-              if(achieveA[i].cleared==0){
-                cx2.font = "18px 'Century Gothic'";
-                cx2.fillText("？？？",X,Y);
-              }else{
-                cx2.font = "bold 18px 'Century Gothic'";
-                cx2.fillText(achieveA[i].name,X,Y);
-                cx2.font = "18px 'Century Gothic'";
-              }
-              Y+=20;
-              if(Y>=520){
-                X+=280;
-                Y=110;
-              }
-            }
-          break;
-        case 2:
-          //達成役一覧
+        case 3:
+          //達成役一覧1
+          var btn1=createButton("達成役一覧1",130,45,"#352494","#000533","#352494","#000533");
+          btn1.x = 60;
+          btn1.y = 230;
+          menu_main.addChild(btn1);
           Textlist[0].text="達成役一覧です。";
           Textlist[1].text="かっこ内は達成した回数です。"
-            drawbuttom(60,80,"戦績",0,130,44);
-            drawbuttom(60,125,"実績リスト",0,130,44);
-            drawbuttom(60,170,"達成役1",1,130,44);
-            drawbuttom(60,215,"達成役2",0,130,44);
             var achieveC=achieveB.filter(value=>value.sub=="アガリ形");
             var A=achieveC.filter(value=>value.cleared>0);
-            cx2.font = "bold 20px 'Century Gothic'";
-            cx2.fillStyle = "black";
-            cx2.fillText("一般 "+A.length+"/"+achieveC.length,200,85) 
+            createText(menu_main,"一般 "+A.length+"/"+achieveC.length,200,85,20,{bold:true});
             var X=200;
             var Y=110
             for(var i=0;i<achieveC.length; i++){
               if(achieveC[i].cleared==0){
-                cx2.fillStyle = "#8c8c8c";
-                cx2.font = "18px 'Century Gothic'";
-                cx2.fillText(achieveC[i].name,X,Y);
-                cx2.fillText(" ("+achieveC[i].cleared+")",X+200,Y);
+                createText(menu_main,achieveC[i].name,200,Y,18,{color:"#8c8c8c"});
+                createText(menu_main," ("+achieveC[i].cleared+")",400,Y,18,{color:"#8c8c8c"});
               }else{
-                cx2.fillStyle = "black"; 
-                cx2.font = "bold 18px 'Century Gothic'";
-                cx2.fillText(achieveC[i].name,X,Y);
-                cx2.font = "18px 'Century Gothic'";
-                cx2.fillText(" ("+achieveC[i].cleared+")",X+200,Y);
+                createText(menu_main,achieveC[i].name,200,Y,18,{bold:true});
+                createText(menu_main," ("+achieveC[i].cleared+")",400,Y,18,);
               }
               Y+=20;
               if(Y>=500){
@@ -2356,34 +2681,25 @@ function menuMap(p=0){
               }
             }
           break;
-          case 3:
-            //達成役一覧
+          case 4:
+            //達成役一覧2
+          var btn1=createButton("達成役一覧2",130,45,"#352494","#000533","#352494","#000533");
+          btn1.x = 60;
+          btn1.y = 280;
+          menu_main.addChild(btn1);
             Textlist[0].text="達成役一覧です。";
             Textlist[1].text="かっこ内は達成した回数です。"
-              drawbuttom(60,80,"戦績",0,130,44);
-              drawbuttom(60,125,"実績リスト",0,130,44);
-              drawbuttom(60,170,"達成役1",0,130,44);
-              drawbuttom(60,215,"達成役2",1,130,44);
               var achieveC=achieveB.filter(value=>value.sub=="シナジー役");
               var A=achieveC.filter(value=>value.cleared>0);
-              cx2.font = "bold 20px 'Century Gothic'";
-              cx2.fillStyle = "black";
-              cx2.fillText("シナジー "+A.length+"/"+achieveC.length,200,85) 
+              createText(menu_main,"シナジー "+A.length+"/"+achieveC.length,200,85,20,{bold:true});
               var X=200;
               var Y=110
               for(var i=0;i<achieveC.length; i++){
                 if(achieveC[i].cleared==0){
-                  cx2.fillStyle = "#8c8c8c";
-                  cx2.font = "18px 'Century Gothic'";
-                  cx2.fillText(achieveC[i].name,X,Y);
-                  //cx2.fillText(achieveC[i].count+"/"+achieveC[i].max,X+150,Y);
+                createText(menu_main,achieveC[i].name,X,Y,18,{color:"#8c8c8c"});
                 }else{
-                  cx2.fillStyle = "black"; 
-                  cx2.font = "bold 18px 'Century Gothic'";
-                  cx2.fillText(achieveC[i].name,X,Y);
-                  cx2.font = "18px 'Century Gothic'";
-                  //cx2.fillText(achieveC[i].count+"/"+achieveC[i].max+" ("+achieveC[i].cleared+")",X+150,Y);
-                  cx2.fillText(" ("+achieveC[i].cleared+")",X+150,Y);
+                createText(menu_main,achieveC[i].name,X,Y,18,{bold:true});
+                createText(" ("+achieveC[i].cleared+")",X+150,Y,18,{bold:true});
                 }
                 Y+=20;
                 if(Y>=500){
@@ -2393,22 +2709,15 @@ function menuMap(p=0){
               }
               var achieveD=achieveB.filter(value=>value.sub=="キャラ役");
               var B=achieveD.filter(value=>value.cleared>0);
-              cx2.font = "bold 20px 'Century Gothic'";
-              cx2.fillStyle = "black";
-              cx2.fillText("属性ペア "+B.length+"/"+achieveD.length,380,85) 
+              createText(menu_main,"属性ペア "+B.length+"/"+achieveD.length,380,85,20,{bold:true});
               Y+=10;
               for(var i=0;i<achieveD.length; i++){
                 if(achieveD[i].cleared==0){
-                  cx2.fillStyle = "#8c8c8c";
-                  cx2.font = "18px 'Century Gothic'";
-                  cx2.fillText(achieveD[i].name,X,Y);
-                  cx2.fillText(" ("+achieveD[i].cleared+")",X+200,Y);
+                  createText(menu_main,achieveD[i].name,X,Y,18,{color:"#8c8c8c"});
+                  createText(menu_main," ("+achieveD[i].cleared+")",X+200,Y,18,{color:"#8c8c8c"});
                 }else{
-                  cx2.fillStyle = "black"; 
-                  cx2.font = "bold 18px 'Century Gothic'";
-                  cx2.fillText(achieveD[i].name,X,Y);
-                  cx2.font = "18px 'Century Gothic'";
-                  cx2.fillText(" ("+achieveD[i].cleared+")",X+200,Y);
+                  createText(menu_main,achieveD[i].name,X,Y,18,{bold:true});
+                  createText(menu_main," ("+achieveD[i].cleared+")",X+200,Y,18,{bold:true});
                 }
                 Y+=20;
                 if(Y>=500){
@@ -2418,12 +2727,8 @@ function menuMap(p=0){
               }
             break;
       }
-      var Cb=canvas2.toDataURL();
-      Cbb = new createjs.Bitmap(Cb);
-      menu_main.addChild(Cbb);
     break;
-    case 3:
-    //プレイガイド
+    case 3://プレイガイド not fixed
     menu_guide.removeAllChildren();
     var e = new createjs.Bitmap(queue.getResult(epic_src[0]));
     e.x=50;
@@ -2894,8 +3199,7 @@ function menuMap(p=0){
                         break;
     }
     break;
-    case 4:
-//たいせん
+    case 4://たいせん
 menu_duel.removeAllChildren();
 switch(msgstate){
   case 0:
@@ -3068,8 +3372,8 @@ function NameChange(){
     window.alert("未入力です")
     return false;
   }
-    let len = 0;
-    for (let i = 0; i < user.length; i++) {
+    var len = 0;
+    for (var i = 0; i < user.length; i++) {
     (user[i].match(/[ -~]/)) ? len += 1 : len += 2;
     }
     if(len>12){
@@ -3083,92 +3387,6 @@ function NameChange(){
     UsernameText.text=Username;
     menuMap(2);
   };
-  function OptionConfig(){
-    if(opLock==0 && pagestate==1){
-    opLock=3;
-    se11.play();
-    Configmap.removeAllChildren();
-    var shape = new createjs.Shape();
-    shape.graphics.beginFill("black");
-    shape.graphics.drawRect(300, 200, 220, 250);
-    shape.alpha=0.7;
-    Configmap.addChild(shape);
-    var option_bt2 = new createjs.Bitmap(queue.getResult('don/soL_option_bt2.png'));
-    option_bt2.x=310;
-    option_bt2.y=280;
-    option_bt2.scale=1.2;
-    Configmap.addChild(option_bt2)
-    var option_bt3 = new createjs.Bitmap(queue.getResult('don/soL_option_bt3.png'));
-    option_bt3.x=310;
-    option_bt3.y=330;
-    option_bt3.scale=1.2;
-    Configmap.addChild(option_bt3)
-    var option_bt4 = new createjs.Bitmap(queue.getResult('don/soL_option_bt4.png'));
-    option_bt4.x=310;
-    option_bt4.y=380;
-    option_bt4.scale=1.2;
-    Configmap.addChild(option_bt4)
-    var option_bt5 = new createjs.Bitmap('don/soL_batu.png');
-    option_bt5.x=475;
-    option_bt5.y=200;
-    option_bt5.scale=0.4;
-    Configmap.addChild(option_bt5)
-    option_bt2.addEventListener("click", {card:2,handleEvent:OptionConfig});
-    option_bt3.addEventListener("click", {card:3,handleEvent:OptionConfig});
-    option_bt4.addEventListener("click", {card:4,handleEvent:OptionConfig});
-    option_bt5.addEventListener("click", {card:5,handleEvent:OptionConfig});
-    //
-    return false;
-    }
-    if(opLock==3){
-      switch(this.card){
-        case 2:
-          pagestate=-2;
-          se5.play();
-          menuMap(1);
-          Configmap.removeAllChildren();
-          Configmap.addChild(menu_setting);
-          break;
-        case 3:
-            //セーブ
-            se5.play();
-            //Configmap.removeAllChildren();
-            saveDLcomfirm();
-            function saveDLcomfirm(){
-            var result = window.confirm('セーブファイルをダウンロードします！');
-            if( result) {
-            console.log('save');
-            saveDL();
-                }else{
-            console.log('save cancelled');
-                }
-            }
-          break;
-        case 4:
-            //データ初期化
-            //Configmap.removeAllChildren();
-            if(JSON.parse(localStorage.getItem('UserData_Don')) === null){
-              se2.play();
-            }else{
-              se5.play();
-                var result = window.confirm('セーブデータを削除します!!（この操作は取り消しできません）');
-                if(result) {
-                console.log('save delete');
-                saveDel();
-                }else{
-                console.log('save delete cancelled');
-                }
-            }
-          break;
-        case 5:
-          //閉じる
-          se2.play();
-          Configmap.removeAllChildren();
-          opLock=0;
-          break;
-      }
-    }
-  }
   function Menubutton(){
     if(debugmode){console.log('Menubutton',this.card,cLock,opLock,pagestate)};
   if(opLock==0 && pagestate==1){
@@ -3189,7 +3407,12 @@ function NameChange(){
           field.addChild(menu_solo);
         break;
       case 3:
-        //設定->optionconfigへ
+        //設定
+          pagestate=2;
+          msgstate=0;
+          se5.play();
+          menuMap(1);
+          field.addChild(menu_setting);
         break;
       case 4:
         //たいせん
@@ -3510,27 +3733,21 @@ function NameChange(){
     }
     //画像ID
     e4 = new createjs.Bitmap(queue.getResult(eltearB_src[0]));
+    var chrIcon_img;
     if(fool){
-      e10 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[1]]));          
+      chrIcon_img = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[1]]));          
     }else{
-      e10 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[1]]));
+      chrIcon_img = new createjs.Bitmap(queue.getResult(chrimg_src[chara[1]]));
     }
-    //bitmap
-    textmap.alpha=1;
+    //ここから
+    textmap.visible=true;
     field.removeAllChildren();
     etitle.x=400;
     etitle.y=40;
     etitle.scale=0.5;
     field.addChild(etitle)
-    var rect = new createjs.Shape();
-    rect.graphics
-      .beginFill("rgba(0,0,0,0.8)")
-      .drawRect(40, 50, 360, 60);
-    field.addChild(rect);
-    rect.graphics
-    .beginFill("rgba(20,20,20,0.7)")
-    .drawRect(410, 210, 350, 240);
-    field.addChild(rect);
+    Panel(field,40,50,360,60,0,0,"rgba(0,0,0,0.8)");
+    Panel(field,410,210,350,240,0,0,"rgba(0,0,0,0.7)");
     var Container = new createjs.Container();
     field.addChild(Container);
     var shapeMask = new createjs.Shape();
@@ -3543,20 +3760,20 @@ function NameChange(){
       .lineTo(0, 0);
       Container.addChild(shapeMask);
       Container.mask = shapeMask;
-          var s = new createjs.Shape();
+    var s = new createjs.Shape();
       s.graphics
       .beginFill("#6e92f5")
       .moveTo(30, 160)
       .lineTo(220, 0)
       .lineTo(200, 0)
       .lineTo(30, 160);
-    var Ary=[500,500,500,500,500,500,500,400,430,460];
-    var Ary2=[0,50,0,0,60,0,60,0,80,50];
-        e10.sourceRect={x:Ary[chara[1]],y:Ary2[chara[1]]+45,width:300,height:300}
-    e10.x=0;
-    e10.y=0;
-    e10.scale=0.6;
-    Container.addChild(e10);
+    var Ary=[500,500,500,500,500,520,500,400,550,460];
+    var Ary2=[0,50,0,0,20,0,60,0,80,50];
+    chrIcon_img.sourceRect={x:Ary[chara[1]],y:Ary2[chara[1]]+45,width:300,height:300}
+    chrIcon_img.x=0;
+    chrIcon_img.y=0;
+    chrIcon_img.scale=0.6;
+    Container.addChild(chrIcon_img);
     Container.addChild(s);
     var t = new createjs.Text(Username, "24px 'Century Gothic'", "white");
     t.x=232;
@@ -3595,55 +3812,88 @@ function NameChange(){
     setting.sourceRect={x:0,y:150,width:300,height:150};
     setting.scale=0.5;
     field.addChild(setting);
+    shapeMask.addEventListener("click", {card:5,handleEvent:Menubutton});
     solo.addEventListener("click", {card:2,handleEvent:Menubutton});
     multi.addEventListener("click", {card:4,handleEvent:Menubutton});
     howto.addEventListener("click", {card:1,handleEvent:Menubutton});
-    setting.addEventListener("click", {handleEvent:OptionConfig});
-        solo.addEventListener("mouseover", {card:0,handleEvent:menuBtLighter});
-    solo.addEventListener("mouseout", {card:1,handleEvent:menuBtLighter});
-        multi.addEventListener("mouseover", {card:2,handleEvent:menuBtLighter});
-    multi.addEventListener("mouseout", {card:3,handleEvent:menuBtLighter});
-        howto.addEventListener("mouseover", {card:4,handleEvent:menuBtLighter});
-    howto.addEventListener("mouseout", {card:5,handleEvent:menuBtLighter});
-        setting.addEventListener("mouseover", {card:6,handleEvent:menuBtLighter});
-    setting.addEventListener("mouseout", {card:7,handleEvent:menuBtLighter});
-    //ボタン
-    function menuBtLighter(){
-    switch(this.card){
-      case 0:
-            solo.sourceRect={x:0,y:0,width:300,height:150};
-              Textlist[0].text="CPUと自由対局を行うフリーバトルモードです。";
-              Textlist[1].text="基本的に半荘戦（全員が親を2回行うと終了）です。"; 
-        break;
-      case 1:
-            solo.sourceRect={x:0,y:150,width:300,height:150};
-        break;
-      case 2:
-            multi.sourceRect={x:0,y:0,width:300,height:150};
-              Textlist[0].text="対戦ルームで友達とドンジャラができます。";
-              Textlist[1].text="不足人数分はCPUが入ります。";  
-        break;
-      case 3:
-            multi.sourceRect={x:0,y:150,width:300,height:150};
-        break;
-      case 4:
-            howto.sourceRect={x:0,y:0,width:300,height:150};
-              Textlist[0].text="読んでもよく分からないマニュアル。";
-              Textlist[1].text="エルコレドンジャラのルール説明です。"; 
-        break;
-      case 5:
-            howto.sourceRect={x:0,y:150,width:300,height:150};
-        break;
-      case 6:
-            setting.sourceRect={x:0,y:0,width:300,height:150};
-              Textlist[0].text="対局の設定や音楽の設定などができます。";
-              Textlist[1].text="セーブデータの外部出力や初期化もこちら。";  
-        break;
-      case 7:
-            setting.sourceRect={x:0,y:150,width:300,height:150};
-        break;
+    setting.addEventListener("click", {card:3,handleEvent:Menubutton});
+    shapeMask.isHover=false;
+    solo.isHover=false;
+    multi.isHover=false;
+    howto.isHover=false;
+    setting.isHover=false;
+    shapeMask.updateHover = function(){
+      if(pagestate!==1){return false;}
+          const pt = this.globalToLocal(stage.mouseX, stage.mouseY);
+          const hit = this.hitTest(pt.x, pt.y);
+          if (hit === this._isHover) return;
+          this._isHover = hit;
+      if(hit){
+        Textlist[0].text="キャラや称号を変更できます。";
+        Textlist[1].text="実績なども閲覧できます。"; 
+        createjs.Tween.get(chrIcon_img)
+              .to({y:-15,x:-15,scale:0.65},100, createjs.Ease.cubicInOut);
+      }else{
+        createjs.Tween.get(chrIcon_img)
+              .to({y:0,x:0,scale:0.6},100, createjs.Ease.cubicInOut);
+      }
     }
-    };
+    solo.updateHover = function(){
+      if(pagestate!==1){return false;}
+          const pt = this.globalToLocal(stage.mouseX, stage.mouseY);
+          const hit = this.hitTest(pt.x, pt.y);
+          if (hit === this._isHover) return;
+          this._isHover = hit;
+      if(hit){
+        solo.sourceRect={x:0,y:0,width:300,height:150};
+        Textlist[0].text="CPUと自由対局を行うフリーバトルモードです。";
+        Textlist[1].text="基本的に半荘戦（全員が親を2回行うと終了）です。"; 
+      }else{
+      solo.sourceRect={x:0,y:150,width:300,height:150};
+      }
+    }
+    multi.updateHover = function(){
+      if(pagestate!==1){return false;}
+          const pt = this.globalToLocal(stage.mouseX, stage.mouseY);
+          const hit = this.hitTest(pt.x, pt.y);
+          if (hit === this._isHover) return;
+          this._isHover = hit;
+      if(hit){
+        multi.sourceRect={x:0,y:0,width:300,height:150};
+        Textlist[0].text="対戦ルームで友達とドンジャラができます。";
+        Textlist[1].text="不足人数分はCPUが入ります。";  
+      }else{
+      multi.sourceRect={x:0,y:150,width:300,height:150};
+      }
+    }
+    howto.updateHover = function(){
+      if(pagestate!==1){return false;}
+          const pt = this.globalToLocal(stage.mouseX, stage.mouseY);
+          const hit = this.hitTest(pt.x, pt.y);
+          if (hit === this._isHover) return;
+          this._isHover = hit;
+      if(hit){
+        howto.sourceRect={x:0,y:0,width:300,height:150};
+        Textlist[0].text="読んでもよく分からないマニュアル。";
+        Textlist[1].text="エルコレドンジャラのルール説明です。"; 
+      }else{
+      howto.sourceRect={x:0,y:150,width:300,height:150};
+      }
+    }
+    setting.updateHover = function(){
+      if(pagestate!==1){return false;}
+          const pt = this.globalToLocal(stage.mouseX, stage.mouseY);
+          const hit = this.hitTest(pt.x, pt.y);
+          if (hit === this._isHover) return;
+          this._isHover = hit;
+      if(hit){
+        setting.sourceRect={x:0,y:0,width:300,height:150};
+        Textlist[0].text="対局の設定や音楽の設定などができます。";
+        Textlist[1].text="対局BGMを変更すると好みのBGMを流せます。";  
+      }else{
+      setting.sourceRect={x:0,y:150,width:300,height:150};
+      }
+    }
     var wT=winrank[winrank[0][4]][0]+winrank[winrank[0][4]][1]+winrank[winrank[0][4]][2]+winrank[winrank[0][4]][3]
     var winrate=0;
     if(wT>0){
@@ -3737,185 +3987,10 @@ function NameChange(){
             var Ary=["　◀禁止しない","　◀プレイヤーのみ","　◀全て禁止"]
             menu_solo_list[9].text=Ary[-skillswitch[0]]
             }
-          if(mouseX >670 && mouseX <705 && mouseY >230 && mouseY <260){
-            if(chara[0]==1){
-            se3.play();
-            if(chara[2]==HiddenChara){chara[2]=0}else{chara[2]+=1}
-            menu_solo_list[3].text="◀ "+chrlist[chara[2]]
-            }
-            }
-          if(mouseX >670 && mouseX <705 && mouseY >270 && mouseY <300){
-            if(chara[0]==1){
-            se3.play();
-            if(chara[3]==HiddenChara){chara[3]=0}else{chara[3]+=1}
-            menu_solo_list[5].text="◀ "+chrlist[chara[3]]
-            }
-            }
-          if(mouseX >670 && mouseX <705 && mouseY >310 && mouseY <340){
-            if(chara[0]==1){
-            se3.play();
-            if(chara[4]==HiddenChara){chara[4]=0}else{chara[4]+=1}
-            menu_solo_list[7].text="◀ "+chrlist[chara[4]]
-            }
-            }
-            if(mouseX >510 && mouseX <560 && mouseY >230 && mouseY <260){
-              if(chara[0]==1){
-              se3.play();
-              if(chara[2]==0){chara[2]=HiddenChara}else{chara[2]-=1}
-              menu_solo_list[3].text="◀ "+chrlist[chara[2]]
-              }
-              }
-            if(mouseX >510 && mouseX <560 && mouseY >270 && mouseY <300){
-              if(chara[0]==1){
-              se3.play();
-              if(chara[3]==0){chara[3]=HiddenChara}else{chara[3]-=1}
-              menu_solo_list[5].text="◀ "+chrlist[chara[3]]
-              }
-              }
-            if(mouseX >510 && mouseX <560 && mouseY >310 && mouseY <340){
-              if(chara[0]==1){
-              se3.play();
-              if(chara[4]==0){chara[4]=HiddenChara}else{chara[4]-=1}
-              menu_solo_list[7].text="◀ "+chrlist[chara[4]]
-              }
-              }
         corsor();
         break;
         case 2:
           //オプション画面
-          if(mouseX >600 && mouseX <700 && mouseY >450 && mouseY <490){
-            if(musicnum!==0){
-            musicnum=0;
-            Bgm.fade(0.05*vBar, 0, 500);
-            Bgm.on("fade", ()=>{
-            Bgm.stop();
-            });
-            }
-            pagestate=0;
-            Configmap.removeAllChildren();
-            opLock=0;
-            se2.play();
-            save_Local();
-            Menu();
-          }
-          if(mouseX >400 && mouseX <580 && mouseY >450 && mouseY <490){
-            //デフォルトに戻す
-            tumoConfig=0;
-            Ponrate=0.4;
-            mpVelocity=1;
-            dahaiSE=1;
-              se3.play();
-              musicset=[0,0,0];
-          }
-          if(mouseX >250 && mouseX <290 && mouseY >370 && mouseY <410){
-            if(dahaiSE!==1){
-            dahaiSE=1;
-            se4.play();
-            }
-          }
-          if(mouseX >290 && mouseX <330 && mouseY >370 && mouseY <410){
-            if(dahaiSE!==2){
-            dahaiSE=2;
-            se16.play();
-            }
-          }
-          if(mouseX >80 && mouseX <160 && mouseY >310 && mouseY <350){
-            if(mpVelocity!==1){
-            mpVelocity=1;
-            se3.play();
-            }
-          }
-          if(mouseX >170 && mouseX <260 && mouseY >310 && mouseY <350){
-            if(mpVelocity!==1.5){
-            mpVelocity=1.5;
-            se3.play();
-            }
-          }
-          if(mouseX >260 && mouseX <340 && mouseY >310 && mouseY <350){
-            if(mpVelocity!==2){
-            mpVelocity=2;
-            se3.play();
-            }
-          }
-          if(mouseX >80 && mouseX <360 && mouseY >100 && mouseY <170){
-            se3.play();
-            if(tumoConfig==0){
-              tumoConfig=-1;
-              }else{
-                tumoConfig=0
-              }
-          }
-          if(mouseX >110 && mouseX <150 && mouseY >230 && mouseY <270){
-            //ponrate
-            se3.play();
-            Ponrate+=0.2;
-            if(Ponrate>1){Ponrate=1};
-          }
-          if(mouseX >250 && mouseX <300 && mouseY >230 && mouseY <270){
-            se3.play();
-            Ponrate-=0.2;
-            if(Ponrate<0){Ponrate=0};
-          }
-            if(mouseX >370 && mouseX <430 && mouseY >240 && mouseY <270){
-              //bgm
-              se3.play();
-              if(musicset[0]==0){musicset[0]=musiclist.length-1}else{musicset[0]-=1}
-            }
-            if(mouseX >370 && mouseX <430 && mouseY >310 && mouseY <340){
-              se3.play();
-              if(musicset[1]==0){musicset[1]=musiclist.length-1}else{musicset[1]-=1}
-            }
-            if(mouseX >370 && mouseX <430 && mouseY >380 && mouseY <410){
-              se3.play();
-              if(musicset[2]==0){musicset[2]=musiclist.length-1}else{musicset[2]-=1}
-            }
-            if(mouseX >690 && mouseX <750 && mouseY >240 && mouseY <270){
-              se3.play();
-              if(musicset[0]==musiclist.length-1){musicset[0]=0}else{musicset[0]+=1}
-            }
-            if(mouseX >690 && mouseX <750 && mouseY >310 && mouseY <340){
-              se3.play();
-              if(musicset[1]==musiclist.length-1){musicset[1]=0}else{musicset[1]+=1}
-            }
-            if(mouseX >690 && mouseX <750 && mouseY >380 && mouseY <410){
-              se3.play();
-              if(musicset[2]==musiclist.length-1){musicset[2]=0}else{musicset[2]+=1}
-            }
-          if(mouseX >690 && mouseX <750 && mouseY >200 && mouseY <240){
-            //通常play
-            if(musicnum==musicset[0]){
-              musicnum=0;
-              Bgm.stop()       
-            }else{
-              Bgm.stop()
-              musicnum=musicset[0];
-              musicStart(musicnum);
-            }      
-          }
-          if(mouseX >690 && mouseX <750 && mouseY >270 && mouseY <310){
-            //リーチplay
-            if(musicnum==musicset[1]){
-              musicnum=0;
-              Bgm.stop()        
-            }else{
-              Bgm.stop()
-              musicnum=musicset[1];
-              musicStart(musicnum);
-            }      
-          }
-          if(mouseX >690 && mouseX <750 && mouseY >340 && mouseY <380){
-            //オーラスplay
-            if(musicnum==musicset[2]){
-              musicnum=0;
-              Bgm.stop()          
-            }else{
-              Bgm.stop()
-              musicnum=musicset[2];
-              musicStart(musicnum);
-            }
-          }
-          menuMap(1);
-          corsor();
           break;
           case 4:
             //ガイド　シナジーのスクロールのみこちらで対応
@@ -3949,41 +4024,7 @@ function NameChange(){
             }
             break;
           case 5:
-              //実績
-            if(mouseX >700 && mouseX <750 && mouseY >50 && mouseY <100){
-              if(msgstate !==-1){
-              pagestate=0;
-              msgstate=0;
-              se2.play();
-              menu_main.removeAllChildren();
-              Menu();
-              }
-              return false;
-            }
-            if(mouseX >60 && mouseX <190 && mouseY >80 && mouseY <125){
-              if(msgstate>0){
-              msgstate=0;
-              se4.play();
-              }
-            }
-            if(mouseX >60 && mouseX <190 && mouseY >125 && mouseY <170){
-              if(msgstate!==1 && msgstate !==-1){
-              msgstate=1;
-              se4.play();
-              }
-            }
-            if(mouseX >60 && mouseX <190 && mouseY >170 && mouseY <215){
-              if(msgstate!==2 && msgstate !==-1){
-              msgstate=2;
-              se4.play();
-              }
-            }
-            if(mouseX >60 && mouseX <190 && mouseY >215 && mouseY <260){
-              if(msgstate!==3 && msgstate !==-1){
-              msgstate=3;
-              se4.play();
-              }
-            }
+            //実績
             switch(msgstate){
               case 0:
                 if(mouseX >530 && mouseX <730 && mouseY >350 && mouseY <400){
@@ -4012,9 +4053,8 @@ function NameChange(){
                 }
               break;
             case 1:
-              if(mouseX >195 && mouseX <380 && mouseY >95 && mouseY <515){
-                var I=Math.floor((mouseY-95)/20);
-                cx3.strokeRect(190,92+I*20,240,20);
+              if(mouseX >200 && mouseX <440 && mouseY >110 && mouseY <515){
+                var I=Math.floor((mouseY-110)/20);
                 if(achieveA[I].cleared>0 && Usercrest!==achieveA[I].name){
                   se3.play();
                   Usercrest=achieveA[I].name;
@@ -4022,8 +4062,8 @@ function NameChange(){
                   Usercrest="称号なし";
                 };
               }
-              if(mouseX >475 && mouseX <660 && mouseY >95 && mouseY <515){
-                var I=Math.floor((mouseY-95)/20)+21;
+              if(mouseX >460 && mouseX <700 && mouseY >90 && mouseY <515){
+                var I=Math.floor((mouseY-90)/20)+20;
                 if(I>=achieveA.length){
                   return false;
                 }
@@ -4284,11 +4324,11 @@ function NameChange(){
           menu_duel.addChild(t);
         }
         if(IsHost(IAM.room)){
-          var btn1 = createButton("対局開始", 170, 60,"#ffbb4d","#ff7b00","#372d23","#5e5e5e");
+          var btn1 = createButton("対局開始", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn1.x = 260;
           btn1.y = 420;
           menu_duel.addChild(btn1);   
-          var btn2 = createButton("退出する", 170, 60,"#ffbb4d","#ff7b00","#372d23","#5e5e5e");
+          var btn2 = createButton("退出する", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn2.x = 440;
           btn2.y = 420;
           menu_duel.addChild(btn2);   
@@ -4301,22 +4341,22 @@ function NameChange(){
               A=0;
             }
             if(A>0 && data.list[A].ready){
-          var btn1 = createButton("Quit", 170, 60,"#ffbb4d","#ff7b00","#372d23","#5e5e5e");
+          var btn1 = createButton("Quit", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn1.x = 260;
           btn1.y = 420;
           menu_duel.addChild(btn1);   
-          var btn2 = createButton("退出する", 170, 60,"#ffbb4d","#ff7b00","#372d23","#5e5e5e");
+          var btn2 = createButton("退出する", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn2.x = 440;
           btn2.y = 420;
           menu_duel.addChild(btn2);  
           btn1.addEventListener("click", {card:1,handleEvent:getReady}); 
           btn2.addEventListener("click", {card:-1,handleEvent:getReady}); 
             }else if(A>0){
-          var btn1 = createButton("Ready", 170, 60,"#ffbb4d","#ff7b00","#372d23","#5e5e5e");
+          var btn1 = createButton("Ready", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn1.x = 260;
           btn1.y = 420;
           menu_duel.addChild(btn1);   
-          var btn2 = createButton("退出する", 170, 60,"#ffbb4d","#ff7b00","#372d23","#5e5e5e");
+          var btn2 = createButton("退出する", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn2.x = 440;
           btn2.y = 420;
           menu_duel.addChild(btn2);  
@@ -4422,70 +4462,19 @@ function NameChange(){
         key27=1;
         if(pvpmode==1){
           if(IsHost(IAM.room)){
-//対局を止める
-if(opLock==0 && gamestate ==1){
-  opLock=2;
-  cx4.globalAlpha=1;
-  se2.play();
-  cx4.fillStyle = "rgba(20,20,20,0.7)";
-  cx4.fillRect(0,0,800,600)
-  cx4.font = "bold 26px 'メイリオ'";
-  cx4.fillStyle = "black";
-  cx4.strokeStyle ="rgba(250,250,250,0.9)";
-  cx4.lineWidth=5;
-  cx4.strokeText("タイトル画面に戻りますか？",240,200);
-  cx4.fillText("タイトル画面に戻りますか？",240,200);
-  cx4.fillStyle="#ff3838";
-  cx4.strokeRect(220,240,120,60)
-  cx4.fillRect(220,240,120,60)
-  cx4.fillStyle = "#f0f0f0";
-  cx4.font = "bold 24px 'メイリオ'";
-  cx4.fillText("YES",250,280);
-  cx4.fillStyle="#3898ff";
-  cx4.strokeRect(460,240,120,60)
-  cx4.fillRect(460,240,120,60)
-  cx4.fillStyle = "#f0f0f0";
-  cx4.fillText("NO",500,280);
-  }
-  Configmap.removeAllChildren();
-  Cbt=canvas4.toDataURL();
-  Cbutton = new createjs.Bitmap(Cbt);
-  Configmap.addChild(Cbutton);
-  Cbutton.addEventListener("click", {handleEvent:Menu}); 
- }
-      }else{
-        //対局を止める
-        if(opLock==0 && gamestate ==1){
-        opLock=2;
-        cx4.globalAlpha=1;
-        se2.play();
-        cx4.fillStyle = "rgba(20,20,20,0.7)";
-        cx4.fillRect(0,0,800,600)
-        cx4.font = "bold 26px 'メイリオ'";
-        cx4.fillStyle = "black";
-        cx4.strokeStyle ="rgba(250,250,250,0.9)";
-        cx4.lineWidth=5;
-        cx4.strokeText("タイトル画面に戻りますか？",240,200);
-        cx4.fillText("タイトル画面に戻りますか？",240,200);
-        cx4.fillStyle="#ff3838";
-        cx4.strokeRect(220,240,120,60)
-        cx4.fillRect(220,240,120,60)
-        cx4.fillStyle = "#f0f0f0";
-        cx4.font = "bold 24px 'メイリオ'";
-        cx4.fillText("YES",250,280);
-        cx4.fillStyle="#3898ff";
-        cx4.strokeRect(460,240,120,60)
-        cx4.fillRect(460,240,120,60)
-        cx4.fillStyle = "#f0f0f0";
-        cx4.fillText("NO",500,280);
-        Configmap.removeAllChildren();
-        Cbt=canvas4.toDataURL();
-        Cbutton = new createjs.Bitmap(Cbt);
-        Configmap.addChild(Cbutton);
-        Cbutton.addEventListener("click", {handleEvent:Menu}); 
-        }}
+          //pvp
+          if(opLock==0 && gamestate ==1){
+            var Cbutton=alertButton(field,"タイトル画面に戻りますか？"); 
+            Cbutton.addEventListener("click", {handleEvent:Menu}); 
+          }}
+        }else{
+          //pve
+          if(opLock==0 && gamestate ==1){
+          var Cbutton=alertButton(field,"タイトル画面に戻りますか？"); 
+          Cbutton.addEventListener("click", {handleEvent:Menu}); 
+          }}
       }
-      }
+    }
   var yakumapYmax;
   var yakubar;
   //シナジー改変後
@@ -4508,7 +4497,6 @@ if(opLock==0 && gamestate ==1){
         yakumap.addChild(yakumapMask);
         yakumapY=0;
         yakumapMask.y=0;
-        cx2.clearRect(0,0,800,600);
         if(shiagytemp==0){
           var btn1 = createButton("一覧", 100, 45);
           btn1.x = 300;
@@ -4516,7 +4504,7 @@ if(opLock==0 && gamestate ==1){
           yakumap.addChild(btn1);
           btn1.addEventListener("click", {handleEvent:Menu});     
         }else{ 
-          var btn1 = createButton("所持パイ", 100, 45,"#ffbb4d","#ff7b00","#372d23","#5e5e5e");
+          var btn1 = createButton("所持パイ", 100, 45,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn1.x = 300;
           btn1.y = 55;
           yakumap.addChild(btn1);
@@ -4707,7 +4695,7 @@ if(opLock==0 && gamestate ==1){
     deckText.x=540;
     deckText.y=20;
     field.addChild(deckText);
-    var btn1 = createButton("シナジー", 100, 45,"#ffbb4d","#ff7b00","#372d23","#5e5e5e");
+    var btn1 = createButton("シナジー", 100, 45,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
         btn1.x = 300;
         btn1.y = 10;
         field.addChild(btn1);
@@ -4747,7 +4735,6 @@ if(opLock==0 && gamestate ==1){
     }
     function opening(){
       //vs表示する
-        cx2.clearRect(0,0,800,600);
         field.removeAllChildren();
       var rect = new createjs.Shape();
         rect.graphics
@@ -4862,7 +4849,6 @@ if(opLock==0 && gamestate ==1){
       function deckHandler(){
         //ゲームスタート時の配牌と画面
         console.log('deckhandler')
-        cx2.clearRect(0,0,800,600);
         field.removeAllChildren();
         guidemap.removeAllChildren();
         guidemap.alpha=1;
@@ -4910,7 +4896,7 @@ if(opLock==0 && gamestate ==1){
             console.log(MEMBER[i].turnflag)
           };
           if(LP_PVP.Length[0]==1 && skillusage2[0]==4){
-            cx1.fillText("オーラス"+(skillusage2[5]),10,88);
+            cx.fillText("オーラス"+(skillusage2[5]),10,88);
             auras=1;
             Dlvup.alpha=0;
             Dlvup.x=-60;
@@ -4922,7 +4908,7 @@ if(opLock==0 && gamestate ==1){
             .wait(1000)
             .to({scale:1.5,x:-200,y:-150,alpha:0},250,createjs.Ease.backOut);
           }else if(LP_PVP.Length[0]==2 && skillusage2[0]==8){
-            cx1.fillText("オーラス"+(skillusage2[5]),10,88);
+            cx.fillText("オーラス"+(skillusage2[5]),10,88);
             auras=1;
             Dlvup.alpha=0;
             Dlvup.x=-60;
@@ -4933,7 +4919,7 @@ if(opLock==0 && gamestate ==1){
             .to({scale:1,x:0,y:0,alpha:1},150,createjs.Ease.backOut)
             .wait(1000)
             .to({scale:1.5,x:-200,y:-150,alpha:0},250,createjs.Ease.backOut);
-          }else{cx1.fillText("第"+(skillusage2[0])+"局 "+(skillusage2[5])+"本場",10,88);
+          }else{cx.fillText("第"+(skillusage2[0])+"局 "+(skillusage2[5])+"本場",10,88);
                }
         }
         var t = new createjs.Text("第"+(skillusage2[0])+"局 "+(skillusage2[5])+"本場", "24px 'Century Gothic'", "white");
@@ -5197,7 +5183,7 @@ if(opLock==0 && gamestate ==1){
         rect.graphics.beginFill("rgba(20,20,20,0.5)")
                       .drawRect(630, 400, 160, 80)
         field.addChild(rect);
-        handsort=0;
+        //handsort=0;
         var btn1 = createButton("SORT", 80, 40);
         btn1.x = 10;
         btn1.y = 550;
@@ -5883,7 +5869,6 @@ if(opLock==0 && gamestate ==1){
           }
           if(hand1[0]==-2){
             se6.play();
-            //cx2.clearRect(630,400,80,40)
             turntemp =turn
             turn=4;
             var btn1=createCircleButton("ロン",50);
@@ -5970,7 +5955,6 @@ if(opLock==0 && gamestate ==1){
         }
         if(hand1[0]==-2){
           se6.play();
-          //cx2.clearRect(630,400,80,40)
           turntemp =turn
           turn=4
           var btn1=createCircleButton("ロン",50);
@@ -6494,7 +6478,7 @@ if(opLock==0 && gamestate ==1){
           drawDP(player);
           skillusage[player]=1;
           skillswitch[player]=0;
-          skillusage2[player]+=1;
+          skillusage2[player]+=2;
           };
         }
         ReachAnimation(player);
@@ -6548,13 +6532,23 @@ if(opLock==0 && gamestate ==1){
         if(op==1 && h==hand1.length-1){
           e1.x=690;
           e1.y=500;
-          e1.addEventListener("mouseover", {card:100,handleEvent:handOnCorsor});
-          e1.addEventListener("mouseout", {card:-1,handleEvent:handOnCorsor});
+          if(typeof window.ontouchstart === "undefined"){
+            e1.addEventListener("mouseover", {card:100,handleEvent:handOnCorsor});
+            e1.addEventListener("mouseout", {card:-1,handleEvent:handOnCorsor});
+          }else{
+            e1.addEventListener("mousedown", {card:100,handleEvent:handOnCorsor});
+            e1.addEventListener("pressup", {card:-1,handleEvent:handOnCorsor});
+          }
         }else{
           e1.x=100+size*(h-1);
           e1.y=500;
-          e1.addEventListener("mouseover", {card:h,handleEvent:handOnCorsor});
-          e1.addEventListener("mouseout", {card:-1,handleEvent:handOnCorsor});
+          if(typeof window.ontouchstart === "undefined"){
+            e1.addEventListener("mouseover", {card:h,handleEvent:handOnCorsor});
+            e1.addEventListener("mouseout", {card:-1,handleEvent:handOnCorsor});
+          }else{
+            e1.addEventListener("mousedown", {card:h,handleEvent:handOnCorsor});
+            e1.addEventListener("pressup", {card:-1,handleEvent:handOnCorsor});
+          }
         }
         e1.addEventListener("click", {card:h,handleEvent:paiCut});
         e1.scale=7/12;
@@ -6580,8 +6574,13 @@ if(opLock==0 && gamestate ==1){
         e1.scale=7/12;
         field.addChild(e1);
         handlist.push(e1);
-        e1.addEventListener("mouseover", {card:h,handleEvent:handOnCorsor});
-        e1.addEventListener("mouseout", {card:-1,handleEvent:handOnCorsor});
+        if(typeof window.ontouchstart === "undefined"){
+          e1.addEventListener("mouseover", {card:h,handleEvent:handOnCorsor});
+          e1.addEventListener("mouseout", {card:-1,handleEvent:handOnCorsor});
+        }else{
+          e1.addEventListener("mousedown", {card:h,handleEvent:handOnCorsor});
+          e1.addEventListener("pressup", {card:-1,handleEvent:handOnCorsor});
+        }
         e1.addEventListener("click", {card:h,handleEvent:paiCut});
         }
           se11.play();
@@ -6631,7 +6630,7 @@ if(opLock==0 && gamestate ==1){
       se1.play();
     }else{
       field.removeAllChildren();
-      textmap.alpha=0;
+      textmap.visible=false;
       musicnum=-1;
       if(pvpmode!==1){
         pvpmode=1;
@@ -6648,7 +6647,8 @@ if(opLock==0 && gamestate ==1){
       {kill:0,assist:0,death:0,Admg:[0,0,0,0],Bdmg:[0,0,0,0]},
       {kill:0,assist:0,death:0,Admg:[0,0,0,0],Bdmg:[0,0,0,0]},
     ];
-    scoretemp=[0,0,0,0,0,0]
+    scoretemp=[0,0,0,0,0,0];
+    scoretemp_rate=[];
     achievetemp=[];
     for(var i=0 ; i<achievetempB.length; i++){
       achievetempB[i].count=0;
@@ -6851,9 +6851,9 @@ if(opLock==0 && gamestate ==1){
   if(turn ==0 && ctl[1]==0){
   if(ippatu[1]==1){ippatu[1]=2}
   if(reach[1] ==2){
-  cx1.font = "bold 16px 'Century Gothic'";
-  cx1.fillStyle = "orange";
-  cx1.fillText("リーチ",640,465)
+  cx.font = "bold 16px 'Century Gothic'";
+  cx.fillStyle = "orange";
+  cx.fillText("リーチ",640,465)
   ippatu[1]=1;
   reach[1]=3;
   }
@@ -7051,8 +7051,13 @@ if(opLock==0 && gamestate ==1){
       .to({alpha: 1,y:500},300)
       .call(drawstep);
   function drawstep(){
+        if(typeof window.ontouchstart === "undefined"){
     drawcard.addEventListener("mouseover", {card:100,handleEvent:handOnCorsor});
     drawcard.addEventListener("mouseout", {card:-1,handleEvent:handOnCorsor});
+    }else{
+    drawcard.addEventListener("mousedown", {card:100,handleEvent:handOnCorsor});
+    drawcard.addEventListener("pressup", {card:-1,handleEvent:handOnCorsor});
+    }
     drawcard.addEventListener("click", {card:hand1.length-1,handleEvent:paiCut});
     ponkanmap.removeAllChildren();
     if(reach[1] <3){
@@ -8342,7 +8347,10 @@ if(opLock==0 && gamestate ==1){
           achievetemp[A].cleared+=1;
         }
         if(num==0){PB("ツモ");}else{PB("ロン");};
-        if(score>scoretemp[3]){scoretemp[3]=score};
+        if(score>scoretemp[3]){
+          scoretemp[3]=score;
+          scoretemp_rate=vichand.concat();
+        };
       }else{
         if(num==1){
           PB("放銃",1,1);
@@ -8363,7 +8371,6 @@ if(opLock==0 && gamestate ==1){
         PB("跳満");}
         if(rootscore==50000){
         PB("満貫");}
-      cx4.clearRect(0,0,800,600)
       opLock=-1;
       //gamestate =2;
       tweeNsquare.paused=true;
@@ -8529,7 +8536,7 @@ if(opLock==0 && gamestate ==1){
         cx2.fillText(chrlist[chara[4]],630,460)
         cx2.fillText(LPtemp[4],630,490)  
         N1= cx2.getImageData(10, 100, 780, 400);
-        var C=canvas2.toDataURL();
+        var C=canvas.toDataURL();
         var Cb = new createjs.Bitmap(C);
         Cb.x=raidscore[1]*800;
         fieldmap.addChild(Cb);
@@ -8757,7 +8764,7 @@ if(opLock==0 && gamestate ==1){
         cx2.fillText(LPtemp[3],430,490)
         cx2.fillText(chrlist[chara[4]],630,460)
         cx2.fillText(LPtemp[4],630,490)
-        var C=canvas2.toDataURL();
+        var C=canvas.toDataURL();
         var Cb = new createjs.Bitmap(C);
         handmap.addChild(Cb);
       }
@@ -8903,9 +8910,9 @@ if(opLock==0 && gamestate ==1){
             var As=death[i-1].Bdmg.concat();
             var Bs=maxIndex1(As);
             function maxIndex1(a) {
-              let index = 0
-              let value = -Infinity
-              for (let i = 0, l = a.length; i < l; i++) {
+              var index = 0
+              var value = -Infinity
+              for (var i = 0, l = a.length; i < l; i++) {
                 if (value < a[i]) {
                   value = a[i]
                   index = i
@@ -10810,7 +10817,6 @@ if(opLock==0 && gamestate ==1){
       OKtext2.text="OK ("+MM+")";
     }
     yakumap.alpha=0;
-    cx4.clearRect(0,0,800,600)
     opLock=-1;
     se10.play();
     var s = new createjs.Shape();
@@ -11290,16 +11296,15 @@ if(opLock==0 && gamestate ==1){
         break;
       }
     }
+    var corsorX=createText(corsormap,"　",2,2,12,{color:"#ffffff"});
+    var corsorY=createText(corsormap,"　",2,16,12,{color:"#ffffff"});
     function corsor(){
+      if(debugmode){
+        corsorX.text="X座標："+Math.floor(mouseX)+" /Y座標"+Math.floor(mouseY);
+        corsorY.text="FPS："+createjs.Ticker.getMeasuredFPS()+" /Obj："+stage.numChildren;
+      }
       if(gamestate ==10){
         switch(pagestate){
-          case 1:
-            //usercrest
-              if(mouseX >40 && mouseX <400 && mouseY >90 && mouseY < 205){
-                Textlist[0].text="あなたのプロフィールです。";
-                Textlist[1].text="クリックすると実績画面に移動します。";
-              }
-          break;
           case 3:
             //フリーバトル
           if(mouseX >470 && mouseX <640 && mouseY >410 && mouseY <470){
@@ -11343,78 +11348,53 @@ if(opLock==0 && gamestate ==1){
             break;
           case 2:
             //オプション
-            if(mouseX >380 && mouseX <750 && mouseY >200 && mouseY <260){
+            if(mouseX >380 && mouseX <750 && mouseY >200 && mouseY <280){
               //通常テキスト
               Textlist[0].text="通常対局時に流れるBGMを変更できます。";
               Textlist[1].text=musiclistDT[musicset[0]].title+", "+musiclistDT[musicset[0]].elia+", "+musiclistDT[musicset[0]].nod;  
             }
-            if(mouseX >380 && mouseX <750 && mouseY >270 && mouseY <330){
+            if(mouseX >380 && mouseX <750 && mouseY >280 && mouseY <360){
               //リーチテキスト
               Textlist[0].text="オーラスを除くリーチ時に流れるBGMを変更できます。";
               Textlist[1].text=musiclistDT[musicset[1]].title+", "+musiclistDT[musicset[1]].elia+", "+musiclistDT[musicset[1]].nod;
             }
-            if(mouseX >380 && mouseX <750 && mouseY >340 && mouseY <400){
+            if(mouseX >380 && mouseX <750 && mouseY >340 && mouseY <410){
               //オーラステキスト
               Textlist[0].text="オーラス時に流れるBGMを変更できます。";
               Textlist[1].text=musiclistDT[musicset[2]].title+", "+musiclistDT[musicset[2]].elia+", "+musiclistDT[musicset[2]].nod;
             }
-            if(mouseX >50 && mouseX <360 && mouseY >100 && mouseY <170){
-              Textlist[0].text="対局中に右クリックした時にツモ切りする";
-              Textlist[1].text="ショートカット機能の使用設定です。"
+            if(mouseX >50 && mouseX <360 && mouseY >100 && mouseY <190){
+              Textlist[0].text="右クリックでツモ切りができます（PCプレイ時のみ）";
+              Textlist[1].text="下段は手札の自動ソート順の設定です（対局中も変更可能）"
             }
-            if(mouseX >50 && mouseX <300 && mouseY >200 && mouseY <260){
+            if(mouseX >50 && mouseX <360 && mouseY >200 && mouseY <300){
               Textlist[0].text="CPUのポンのしやすさを調節します。";
               Textlist[1].text="右に行くほどCPUがポンしやすくなるようです。"
             }
-            if(mouseX >50 && mouseX <350 && mouseY >260 && mouseY <350){
+            if(mouseX >50 && mouseX <360 && mouseY >300 && mouseY <380){
               Textlist[0].text="パイを切った時にMPが溜まる速度です。";
               Textlist[1].text="MPはスキルやマナブレイクに使用します。"
             }
-            if(mouseX >50 && mouseX <350 && mouseY >350 && mouseY <400){
+            if(mouseX >50 && mouseX <360 && mouseY >380 && mouseY <440){
               Textlist[0].text="パイを切った時に鳴る効果音です。";
               Textlist[1].text="A：トランプっぽい音　B：麻雀牌っぽい音"
             }
-            if(mouseX >600 && mouseX <700 && mouseY >450 && mouseY <490){
+            if(mouseX >600 && mouseX <720 && mouseY >430 && mouseY <490){
               Textlist[0].text="現在の設定を反映して戻ります。";
-              Textlist[1].text="　"
+              Textlist[1].text="（オートセーブされます）"
             }
-            if(mouseX >400 && mouseX <580 && mouseY >450 && mouseY <490){
+            if(mouseX >400 && mouseX <580 && mouseY >430 && mouseY <460){
               Textlist[0].text="オプションを初回起動時の設定に戻します。";
               Textlist[1].text="※『音量設定』のみ初期化されません。"
+            }
+            if(mouseX >400 && mouseX <580 && mouseY >460 && mouseY <510){
+              Textlist[0].text="ローカルストレージに保存されている";
+              Textlist[1].text="これまでのプレイデータをすべて削除します。"
             }
           break;
           case 4:
             //プレイガイド
             switch(msgstate){
-              case 0:
-                if(mouseX >700 && mouseX <750 && mouseY >50 && mouseY <90){
-                  cx3.strokeRect(710,55,30,30)
-                }
-                if(mouseX >50 && mouseX <250 && mouseY >70 && mouseY <110){
-                  cx3.strokeRect(52,70,200,40)
-                }
-                if(mouseX >50 && mouseX <250 && mouseY >110 && mouseY <150){
-                  cx3.strokeRect(52,110,200,40)
-                }
-                if(mouseX >50 && mouseX <250 && mouseY >150 && mouseY <190){
-                  cx3.strokeRect(52,150,200,40)
-                }
-                if(mouseX >50 && mouseX <250 && mouseY >190 && mouseY <230){
-                  cx3.strokeRect(52,190,200,40)
-                }
-                if(mouseX >50 && mouseX <250 && mouseY >230 && mouseY <270){
-                  cx3.strokeRect(52,230,200,40)
-                }
-                if(mouseX >50 && mouseX <250 && mouseY >270 && mouseY <310){
-                  cx3.strokeRect(52,270,200,40)
-                }
-                if(mouseX >50 && mouseX <250 && mouseY >310 && mouseY <350){
-                  cx3.strokeRect(52,310,200,40)
-                }
-                if(mouseX >50 && mouseX <250 && mouseY >350 && mouseY <390){
-                  cx3.strokeRect(52,350,200,40)
-                }
-                break;
               case 1:
                 if(mouseX >90 && mouseX <200 && mouseY >60 && mouseY <100){
               Textlist[0].text="ここにはドラパイが表示されます。";
@@ -11451,8 +11431,8 @@ if(opLock==0 && gamestate ==1){
             //実績
             switch(msgstate){
               case 1:
-              if(mouseX >195 && mouseX <380 && mouseY >95 && mouseY <515){
-                var I=Math.floor((mouseY-95)/20);
+              if(mouseX >200 && mouseX <430 && mouseY >95 && mouseY <515){
+                var I=Math.floor((mouseY-110)/20);
                 if(achieveA[I].cleared>0){
                 Textlist[0].text=achieveA[I].name;
                 Textlist[1].text=achieveA[I].sub;
@@ -11461,17 +11441,17 @@ if(opLock==0 && gamestate ==1){
                   Textlist[1].text=achieveA[I].sub;
                 }
               }
-              if(mouseX >475 && mouseX <660 && mouseY >95 && mouseY <515){
-                var I=Math.floor((mouseY-95)/20);
+              if(mouseX >460 && mouseX <700 && mouseY >90 && mouseY <515){
+                var I=Math.floor((mouseY-90)/20);
                 if(I>=achieveA.length){
                   return false;
                 }
-                if(achieveA[I+21].cleared>0){
-                  Textlist[0].text=achieveA[I+21].name;
-                  Textlist[1].text=achieveA[I+21].sub;
+                if(achieveA[I+20].cleared>0){
+                  Textlist[0].text=achieveA[I+20].name;
+                  Textlist[1].text=achieveA[I+20].sub;
                 }else{
                   Textlist[0].text="？？？";
-                  Textlist[1].text=achieveA[I+21].sub;
+                  Textlist[1].text=achieveA[I+20].sub;
                 }
               }
                 break;
@@ -11722,7 +11702,7 @@ if(opLock==0 && gamestate ==1){
         SEbuffer();
         Bgm.mute(false);
         mute="ON";
-        se11.play();
+        se3.play();
         musicStart(musicnum);
         }else{
         Bgm.mute(true);
@@ -11731,10 +11711,115 @@ if(opLock==0 && gamestate ==1){
     }
     muteshape.text=mute;
     };
-    function createButton(text, width, height, keyColorA="#68ceed", keyColorB="#0080ff", keyColorC="#233237", keyColorD="#043342"){
+    //テキスト
+function createText(parent, text, x, y, size = 24, option = {}) {
+    const t = new createjs.Text(
+        text,
+        (option.bold ? "bold " : "") +
+        size + "px " +
+        (option.font || "'Century Gothic'"),
+        option.color || "#000"
+    );
+    t.x = x;
+    t.y = y;
+    t.textAlign = option.align || "left";
+    t.textBaseline = option.baseline || "top";
+    if(option.alpha!=null) t.alpha=option.alpha;
+    parent.addChild(t);
+    return t;
+}
+function VLine(parent,x,y,h,color="#000"){
+var s=new createjs.Shape();
+    s.graphics
+        .beginFill(color)
+        .drawRect(x,y,2,h);
+    parent.addChild(s);
+    return s;
+}
+function HLine(parent,x,y,w,color="#000"){
+    var s=new createjs.Shape();
+    s.graphics
+        .beginFill(color)
+        .drawRect(x,y,w,2);
+    parent.addChild(s);
+    return s;
+}
+function Panel(parent,x,y,w,h,L=3,R=8,fillcolor="rgba(20,20,20,.7)",strokecolor="rgba(20,20,20,.7)"){
+    var s=new createjs.Shape();
+    s.graphics
+        .beginFill(fillcolor);
+    if(L>0){
+    s.graphics
+        .setStrokeStyle(L)
+        .beginStroke(strokecolor)
+    };
+    s.graphics.drawRoundRect(x,y,w,h,R);
+    parent.addChild(s);
+    return s;
+}
+function createArrow(parent,x1,y1,x2,y2,linelength=2,colorA="#0080ff",colorB="#68ceed"){
+    var s=new createjs.Shape();
+    s.graphics
+        .beginFill(colorA)
+        .beginStroke("#68ceed")
+        .setStrokeStyle(linelength)
+        .moveTo(0, 0)
+        .lineTo(x1, y1)
+        .lineTo(x2, y2)
+        .lineTo(0, 0)
+    parent.addChild(s);
+    return s;
+}
+function alertButton(parent,text){
+  //確認のYES/NOを出すボタン
+  //クリックイベントはYESのみ入る
+  opLock=2;//それ以外の操作を禁止
+  var button = new createjs.Container();
+      var s=new createjs.Shape();
+    s.graphics
+        .beginFill("rgba(20,20,20,0.7)")
+        .drawRoundRect(0,0,800,600,3);
+    button.addChild(s);
+  createText(button,text,400,100,28,{font:"'メイリオ'",align:"center",color:"#f8f6f6"});
+      var btnNo = createButton("NO", 180, 50,"#ff4d4d","#6b0e0e","#ff4d4d","#3a0a0a");
+      btnNo.x = 460;
+      btnNo.y = 240;
+      button.addChild(btnNo);
+      btnNo.addEventListener("click", {handleEvent:exit_alert}); 
+        function exit_alert(){
+          se3.play();
+          opLock=0;
+          parent.removeChild(button);
+        }
+      var btnYes = createButton("YES", 180, 50);
+      btnYes.x = 220;
+      btnYes.y = 240;
+      button.addChild(btnYes);
+      btnYes.addEventListener("click", {handleEvent:exit_alert}); 
+  parent.addChild(button);
+  return btnYes;  
+};
+    createjs.Ticker.on("tick",function(){
+      updateHover(stage);
+      });
+    function updateHover(parent){
+        for(let i = 0; i < parent.numChildren; i++){
+            const child = parent.getChildAt(i);
+            // ボタンなら更新
+            if(typeof child.updateHover === "function"){
+                child.updateHover();
+            }
+            // Containerならさらに中を見る
+            if(child instanceof createjs.Container){
+                updateHover(child);
+            }
+        }
+    };
+    function createButton(text, width, height, keyColorA="#68ceed", keyColorB="#0080ff", keyColorC="#688bed", keyColorD="#043342"){
       // ボタン要素をグループ化 keycolor A,B：通常時　C,D：活性化時
-      var button = new createjs.Container();
-      button.name = text; // ボタンに参考までに名称を入れておく(必須ではない)
+      let button = new createjs.Container();
+      button.mouseChildren=false;
+      button.corsor="pointer";
       // 通常時の座布団を作成
       var bgUp = new createjs.Shape();
       bgUp.graphics
@@ -11753,7 +11838,7 @@ if(opLock==0 && gamestate ==1){
       .lineTo(1,height*5/12-1)
       .lineTo(1,1)
       button.addChild(bgUp);
-      bgUp.visible = true; // 表示する
+      bgUp.alpha = 1; // 表示する
       // ロールオーバー時の座布団を作成
       var bgOver = new createjs.Shape();
       bgOver.graphics
@@ -11761,7 +11846,7 @@ if(opLock==0 && gamestate ==1){
       .beginStroke(keyColorC)
       .beginFill(keyColorD)
       .drawRoundRect(0.5, 0.5, width - 1.0, height - 1.0, 2)
-      .beginFill(keyColorA)
+      .beginFill(keyColorC)
       .moveTo(1,1)
       .lineTo(width*3/7-1,1)
       .lineTo(1,height*4/15-1)
@@ -11771,9 +11856,8 @@ if(opLock==0 && gamestate ==1){
       .lineTo(width*5/17-1,1)
       .lineTo(1,height*5/12-1)
       .lineTo(1,1)
-      bgOver.visible = false; // 非表示にする
+      bgOver.alpha = 0;
       button.addChild(bgOver);
-
       // ラベルを作成
       var label = new createjs.Text(text, "18px sans-serif", "#ffffff");
       label.x = width / 2;
@@ -11781,22 +11865,26 @@ if(opLock==0 && gamestate ==1){
       label.textAlign = "center";
       label.textBaseline = "middle";
       button.addChild(label);
-
       // ロールオーバーイベントを登録
-      button.addEventListener("mouseover", handleMouseOver);
-      button.addEventListener("mouseout", handleMouseOut);
       function handleMouseOver(event) {
-        bgUp.visble = false;
-        bgOver.visible = true;
+        bgUp.alpha = 0;
+        bgOver.alpha = 1;
         label.color = "white";
       }
-
       function handleMouseOut(event) {
-        bgUp.visble = true;
-        bgOver.visible = false;
+        bgUp.alpha = 1;
+        bgOver.alpha = 0;
         label.color = "white";
       }
-
+      button._isHover = false;
+      button.updateHover = function(){
+          const pt = this.globalToLocal(stage.mouseX, stage.mouseY);
+          const hit = this.hitTest(pt.x, pt.y);
+           if (hit === this._isHover) return;
+          this._isHover = hit;
+          bgUp.alpha   = hit ? 0 : 1;
+          bgOver.alpha = hit ? 1 : 0;
+      }
       return button;      
     }
     function createCircleButton(text, width, keyColorA="rgb(255,155,135)", keyColorB="rgb(221,84,72)", keyColorC="rgb(255,255,150)", keyColorD="rgb(223,163,0)"){
@@ -11837,23 +11925,27 @@ if(opLock==0 && gamestate ==1){
       label.textBaseline = "middle";
       button.addChild(label);
       // ロールオーバーイベントを登録
-      button.addEventListener("mouseover", handleMouseOver);
-      button.addEventListener("mouseout", handleMouseOut);
+      if(typeof window.ontouchstart === "undefined"){
+        button.addEventListener("mouseover", handleMouseOver);
+        button.addEventListener("mouseout", handleMouseOut);
+      }else{
+        button.addEventListener("mousedown", handleMouseOver);
+        button.addEventListener("pressup", handleMouseOut);
+      }
       function handleMouseOver(event) {
-        bgUp.visble = false;
+        bgUp.visible = false;
         bgOver.visible = true;
         label.color = "white";
       }
-
       function handleMouseOut(event) {
-        bgUp.visble = true;
+        bgUp.visible = true;
         bgOver.visible = false;
         label.color = "white";
       }
 
       return button;      
     }
-      function drawbuttom(x,y,word,type=0,w=80,z=40,R=0,context=cx2){
+      function drawbuttom(x,y,word,type=0,w=80,z=40,R=0,context=cx){
         //type->活性化時1に
         context.lineWidth = 2;
         if(type==0){
@@ -11891,7 +11983,7 @@ if(opLock==0 && gamestate ==1){
             break;
         }
         }
-        function drawbuttom2(x,y,word,type=0,w=170,z=60,R=0,context=cx2){
+        function drawbuttom2(x,y,word,type=0,w=170,z=60,R=0,context=cx){
           //オレンジボタン Rを大きくすると文字の大きさを小さくします
           context.lineWidth = 2;
           if(type==0){
@@ -12776,7 +12868,6 @@ if(opLock==0 && gamestate ==1){
     Csquare.alpha=0;
     tweeNcor.paused=true;
     CorsorKey.alpha=0;
-    Configmap.removeAllChildren();
     guidemap.removeAllChildren();
     handmap.removeAllChildren();
     ponkanmap.removeAllChildren();
@@ -12785,7 +12876,6 @@ if(opLock==0 && gamestate ==1){
     jingle2.play();
     if(musicset[1]<=0){musicset[1]=0};
     if(pvpmode==1){
-      cx4.clearRect(0,0,800,500);
       if(IsHost(IAM.room)){
         socket.emit("game_over", {Token:IAM.token,room:RoomName[IAM.room],type:0,scoretemp:scoretemp[0]});
       }
@@ -13029,7 +13119,13 @@ if(opLock==0 && gamestate ==1){
             winrank[N][scoretemp[0]-1]+=1;
         }
         };
-        if(scoretemp[3]>highscore[2]){highscore[2]=scoretemp[3]};
+        if(scoretemp[3]>highscore[2]){
+          highscore[2]=scoretemp[3];
+          if(scoretemp_rate.length){
+            highrate=scoretemp_rate.concat();
+            highrate[0]=LP_PVP.Rule[0];
+          }
+        };
         for(var i=0;i<achievetemp.length;i++){
             var A=achieveB.findIndex(value=>value.name==achievetemp[i].name);
             achieveB[A].cleared+=achievetemp[i].cleared;
@@ -13340,7 +13436,7 @@ if(opLock==0 && gamestate ==1){
             cx2.fillText("ネイチャーフォース"+A.length, 635, y);
             cx2.font = "14px Arial";
             y+=20;
-            cx2.fillText(" 勝利時戦闘力増加", 635, y);
+            cx2.fillText(" 和了時戦闘力増加", 635, y);
             y+=22
             break;
           case 4:
@@ -13348,7 +13444,7 @@ if(opLock==0 && gamestate ==1){
             cx2.fillText("ナソードコア"+A.length, 635, y);
             cx2.font = "14px Arial";
             y+=20;
-            cx2.fillText(" 勝利時追加ダメージ", 635, y);
+            cx2.fillText(" 和了時追加ダメージ", 635, y);
             y+=20
             cx2.fillText(" 1度だけ,致死ダメージ", 635, y);
             y+=20
@@ -13376,12 +13472,20 @@ if(opLock==0 && gamestate ==1){
             cx2.fillText("環境　魔界"+A.length, 635, y);
             cx2.font = "14px Arial";
             y+=20;
-            cx2.fillText(" 和了時の戦闘力が低下.", 635, y);
+            cx2.fillText(" 和了時の戦闘力低下.", 635, y);
             y+=20;
             cx2.fillText(" だんだん適応していく.", 635, y);
             y+=20;
             cx2.fillText(" (1局ごとに重複数減少)", 635, y);
             y+=22
+            break;
+          case 8:
+            cx2.font = "bold 16px Arial";
+            cx2.fillText("ウォープレリュード"+A.length, 635, y);
+            cx2.font = "14px Arial";
+            y+=20;
+            cx2.fillText(" 同ライン初手率↑.", 635, y);
+            y+=20;
             break;
           case 11:
             cx2.font = "bold 16px Arial";
@@ -13399,7 +13503,7 @@ if(opLock==0 && gamestate ==1){
     break;
   }
   guidemap.removeAllChildren();
-  var C=canvas2.toDataURL();
+  var C=canvas.toDataURL();
   var Cb = new createjs.Bitmap(C);
   guidemap.addChild(Cb);
   };
@@ -13445,9 +13549,11 @@ if(opLock==0 && gamestate ==1){
         "AchieveA":achieveA,
         "AchieveB":achieveB,
         "Highscore":highscore,
+        "Highrate":highrate,
         "MPV":mpVelocity,
         "DHS":dahaiSE,
         "tumoCon":tumoConfig,
+        "Sort":handsort,
         "PON":Ponrate,
         "FEV":Fever,
         "HiddenChr":HiddenChara,
@@ -13471,8 +13577,9 @@ if(opLock==0 && gamestate ==1){
   sBar=getdata.SEVolume;
   winrank=getdata.Rank.concat();
   mpVelocity=getdata.MPV;
-  dahaiSE=getdata.DHS
+  dahaiSE=getdata.DHS;
   tumoConfig=getdata.tumoCon;
+  handsort=getdata.Sort;
   Ponrate=getdata.PON;
   Fever=getdata.FEV;
   HiddenChara=getdata.HiddenChr;
@@ -13488,6 +13595,9 @@ if(opLock==0 && gamestate ==1){
   }
   if (tumoConfig === void 0) {
     tumoConfig=0;
+  }
+  if (handsort === void 0) {
+    handsort=0;
   }
   if (Fever === void 0) {
     Fever=-1;
@@ -13515,7 +13625,8 @@ if(opLock==0 && gamestate ==1){
     var B=[0,0];
     highscore=highscore.concat(B);
   }
-  SEbuffer();
+  highrate=getdata.Highrate.concat();
+  if(mute=="ON"){SEbuffer()};
   PopAnm("データロード完了",800,200);
   console.log('Userdata loaded');
     }catch(e){
@@ -13532,7 +13643,9 @@ if(opLock==0 && gamestate ==1){
   musicset=new Array(0,0,0);
   winrank=[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
   highscore=[0,0,0,0,0,0];
+  highrate=Array(10).fill(0);
   tumoConfig=0;
+  handsort=0;
   Ponrate=0.4;
   mpVelocity=1;
   dahaiSE=1;
@@ -13546,7 +13659,9 @@ if(opLock==0 && gamestate ==1){
     achieveB[i].count=0;
   }
   SEbuffer();
-  //PopAnm("データ初期化完了",800,200);メッセージが流れない
+  PopAnm("データ初期化完了",800,200);
+  jingle.seek(1);
+  jingle.play();
     try{
       localStorage.clear();
       console.log('localStorage cleared');
@@ -13555,144 +13670,7 @@ if(opLock==0 && gamestate ==1){
         }catch(e){
           console.log('ねこ')
       }
-  }
-  //セーブ&ロード
-  function saveDL(){//*
-    var json_obj = {
-      "Title": Savetitle[0],
-      "Name": Username,
-      "Crest": Usercrest,
-      "Chara":chara,
-      "Volume":vBar,
-      "SEVolume":sBar,
-      "Config":musicset,
-      "Rank":winrank,
-      "AchieveA":achieveA,
-      "AchieveB":achieveB,
-      "Highscore":highscore,
-      "MPV":mpVelocity,
-      "DHS":dahaiSE,
-      "tumoCon":tumoConfig,
-      "PON":Ponrate,
-      "FEV":Fever,
-      "HiddenChr":HiddenChara,
-    }
-    console.log(json_obj)
-    var write_json=JSON.stringify(json_obj);
-    var blob=new Blob([write_json],{type: 'application/json'});
-    var a =document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download='eldon_save.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    alert("【セーブデータ】\nファイル名／「eldon_save.json」\n保存方法／ファイルの中身や拡張子は変更しないでください。\n※セーブデータを読み込む際は、メニュー画面の状態で、画面枠外下部に記載の『ファイル選択』ボタンから、ダウンロードしたファイルを選んでくださいね。");
-    }
-    function saveUP(){
-    var data; // 読込むデータ
-    var button_read=document.createElement('input');
-    button_read.setAttribute('type', 'file');
-    // 参照要素を取得
-    var sp2 = document.getElementById("child")
-    // 親要素を取得
-    var parentDiv = sp2.parentNode
-    // 新しい要素を sp2 の手前に挿入
-    parentDiv.insertBefore(button_read, sp2)
-    //ボタン追加ここまで
-    button_read.addEventListener("change" , function(){
-        if(!(button_read.value)) return; // ファイルが選択されない場合
-        var file_list=button_read.files;
-        if(!file_list) return; // ファイルリストが選択されない場合
-        var file=file_list[0];
-        if(!file) return; // ファイルが無い場合
-        if(pagestate!==1){
-          alert("❌　セーブデータはメインメニュー画面の状態で読み込んでください");
-          button_read.value = "";
-          return;
-        }
-        if(JSON.parse(localStorage.getItem('UserData_Don')) !== null){
-          var result = window.confirm('現在プレイ中のデータが上書きされますがよろしいですか？');
-        if(!result) {
-          console.log('upload cancelled');
-          button_read.value = "";
-          return;
-            }
-          }
-        var file_reader=new FileReader();
-        file_reader.readAsText(file);
-        file_reader.onload=function(){
-        if(file_reader.result.slice(1, 74)=='"Title":"This is savedata of <https://azurelsword.web.fc2.com/ronan.html>'){
-        // .jsonの確認
-    data=JSON.parse(file_reader.result); // 読込んでdataを上書き
-    sp2.innerHTML = "<h1>Welcome Back!</h1>"
-    //各々グローバル変数に代入していく
-    Username=data.Name
-    Usercrest=data.Crest
-    chara=data.Chara.concat();
-    musicset=data.Config.concat();
-    vBar=data.Volume;
-    sBar=data.SEVolume;
-    winrank=data.Rank.concat();
-    mpVelocity=data.MPV;
-    dahaiSE=data.DHS;
-    tumoConfig=data.tumoCon;
-    Ponrate=data.PON;
-    Fever=data.FEV;
-    HiddenChara=data.HiddenChr;
-    //追加データ部分　undefinedなら初期値にしておく
-    if(!winrank[0].length){
-      winrank=[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
-    }
-    if (mpVelocity === void 0) {
-      mpVelocity=1;
-    }
-    if (dahaiSE === void 0){
-      dahaiSE=1;
-    }
-    if (tumoConfig === void 0) {
-      tumoConfig=0;
-    }
-    if (Fever === void 0) {
-      Fever=-1;
-    }
-    if (HiddenChara === void 0) {
-      HiddenChara=3;
-    }
-    if (Ponrate === void 0) {
-      Ponrate=0.4;
-    }
-    //achieveA=data.AchieveA.concat();
-    //dataにある分だけ上書き
-    for(var i=0; i<data.AchieveA.length; i++){
-      A=achieveA.findIndex(value=>value.name==data.AchieveA[i].name);
-      if(A!==-1){
-        achieveA[A].cleared=data.AchieveA[i].cleared;
-      }
-    }
-    for(var i=0; i<data.AchieveB.length; i++){
-      A=achieveB.findIndex(value=>value.name==data.AchieveB[i].name);
-      if(A!==-1){
-        achieveB[A].cleared=data.AchieveB[i].cleared;
-      }
-    }
-    highscore=data.Highscore.concat();
-    if(highscore.length==4){
-      var B=[0,0];
-      highscore=highscore.concat(B);
-    }
-    SEbuffer();
-      jingle.seek(1);
-      jingle.play();
-      PopAnm("✅「"+Username+"」さんの　セーブデータを読み込みました",1200,500,35,30,55);
-    console.log(Username,musicset);
-    save_Local();
-    pagestate=0;
-    Menu();
-    }  
-    else{
-        alert("❌　ファイルが異なります。");
-        button_read.value = "";
-    }}});
-    }
+  };
     function SEbuffer(p=0){
       if(p!==0){
         se1.volume(0);
