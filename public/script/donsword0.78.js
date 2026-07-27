@@ -3,11 +3,10 @@
 // 国士無双で進行不能になる？
 // 魔界血戦後に操作不能になる
 // スマホ対応に向けて
-// マナブレ暴発する？
+// 描画修正中...
 window.onload = function(){
   draw();
   };
-  
   function draw(){
   var titletext="v1.2/Click to START";
   var debugmode=true;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
@@ -462,28 +461,28 @@ function ResizeGame(){
   {fir:"リバースサークル",sec:"Reverse Circle",thr:"0"},
   ]
   var skilldetail_passive=[
-    {fig:"",name:"スキル①",sub:"スキルなし"},
-    {fig:"[パッシブ]",name:"ストーンスキン",sub:"リーチしている間、他の\nスキルの効果を受けない。"},
-    {fig:"[パッシブ]",name:"マナシールド",sub:"水パイを切る度に\nマナシールドを張る。\n-マナシールド：\n・受けるダメージ減少\n・最大3重複"},
-    {fig:"[パッシブ]",name:"ネイチャーフォース",sub:"①「強靭」番の時に風パイが\n初手で入りやすい。\n②風パイを切る度にNFバフを得る。\n-ネイチャーフォース：\n・和了時、符数増加\n・最大3重複"},
-    {fig:"[パッシブ]",name:"ナソードコア",sub:"太陽パイを切る度に、ナソード\nコアを生成する。\n-ナソードコア：\n・致死ダメージを受けた時、\n点数1で持ちこたえる\n・和了時戦闘力増加"},
-    {fig:"[パッシブ]",name:"チートコード",sub:"リーチが発生した時、\n危険パイを察知する。\n引いたばかりのパイは察知できず、\nその局で最初のリーチに\n対してのみ発動する。"},
-    {fig:"[パッシブ]",name:"変身",sub:"MPが3ゲージ溜まった状態で\nリーチすると、ゲージを全消費\nしてバーサクモードになる！\n-バーサクモード：\n・予告一発ツモ"},
-    {fig:"[パッシブ]",name:"連技-龍牙爆砕",sub:"1局に1度だけ、\n1,2,3,4ラインの順に\nパイを切ると、\nドラが1つ増える。"},
-    {fig:"[パッシブ]",name:"ウォープレリュード",sub:"連続で和了し続けるほど、\n初手で同じラインの\nパイが入りやすくなる。"},
-    {fig:"[パッシブ]",name:"量子化",sub:"ポンをした際の食い下がりが\n2翻から1翻に減る。"},
+    {height:0,fig:"スキルなし",name:"スキル①",sub:""},
+    {height:16,fig:"[パッシブ]",name:"ストーンスキン",sub:"リーチしている間、他の\nスキルの効果を受けない。"},
+    {height:48,fig:"[パッシブ]",name:"マナシールド",sub:"水パイを切る度にマナ\nシールドを張る（最大3重複）。\n-マナシールド：\n・受けるダメージ減少"},
+    {height:80,fig:"[パッシブ]",name:"ネイチャーフォース",sub:"①「強靭」番の時に風パイが\n初手で入りやすい。\n②風パイを切る度に\nNFバフを得る（最大3重複）。\n-ネイチャーフォース：\n・和了時、符数増加"},
+    {height:80,fig:"[パッシブ]",name:"ナソードコア",sub:"太陽パイを切る度に、\nナソードコアを生成する。\n-ナソードコア：\n・致死ダメージを受けた時、\n点数1で持ちこたえる\n・和了時戦闘力増加"},
+    {height:96,fig:"[パッシブ]MP消費：1ゲージ",name:"チートコード",sub:"リーチが発生した時、MPを\n消費して自動発動する。\n手の危険パイを察知する。\n引いたばかりのパイは\n察知できず、\n最初に発生したリーチに\n対してのみ発動する。"},
+    {height:64,fig:"[パッシブ]MP消費：3ゲージ",name:"変身",sub:"MPが3ゲージある時に\nリーチすると、MPを全消費\nしてバーサクモードになる！\n-バーサクモード：\n・予告一発ツモ"},
+    {height:48,fig:"[パッシブ]",name:"連技-龍牙爆砕",sub:"1局に1度だけ、\n1,2,3,4ラインの順に\nパイを切ると、\nドラが1つ増える。"},
+    {height:32,fig:"[パッシブ]",name:"ウォープレリュード",sub:"連続で和了し続けるほど、\n初手で同じラインの\nパイが入りやすくなる。"},
+    {height:16,fig:"[パッシブ]",name:"量子化",sub:"ポンをした際の食い下がりが\n2翻から1翻に減る。"},
   ];
     var skilldetail_active=[
-    {fig:"",name:"スキル②",sub:"スキルなし"},
-    {fig:"[アクティブ]",name:"フレイムガイザー",sub:"MP消費：2ゲージ\nプレイヤー1人を選択して\n3巡の間「火傷」状態にする。\n-火傷：ポン・カン不可"},
-    {fig:"[アクティブ]",name:"メモライズ",sub:"MP消費：1ゲージ\n手札のパイをメモライズ\nしてから切る。メモしたパイは\nいつでも思い出せる。"},
-    {fig:"[アクティブ]",name:"フリージングアロー",sub:"MP消費：2ゲージ\nプレイヤー1人を選択して\n3巡の間「凍結」状態にする。\n-凍結：行動不可"},
-    {fig:"[アクティブ]",name:"グラウンドクラッシュ",sub:"MP消費：3ゲージ\n台パンによりこの局を流局にする。"},
-    {fig:"",name:"スキル②",sub:"スキルなし"},
-    {fig:"",name:"スキル②",sub:"スキルなし"},
-    {fig:"[パッシブ]",name:"花蓮",sub:"カンをした時、MPを1ゲージ\n消費して自動発動する。\nリーチ時は当たりパイを、\n非リーチ時はドラを必ず引く。"},
-    {fig:"[パッシブ]",name:"克己-強",sub:"リーチ時にMPが2ゲージ\n消費して自動発動する。\nその局の勝敗にかかわらず\n「ウォープレリュード」の効果を\n1局延長する。"},
-    {fig:"[アクティブ]",name:"リバースサークル",sub:"MP消費：1ゲージ\n逆転の空間を作り出し、\nその局の間、パイを切る順が\n逆回りになる。"},
+    {fig:"スキルなし",name:"スキル②",sub:""},
+    {fig:"[アクティブ]MP消費：2ゲージ",name:"フレイムガイザー",sub:"プレイヤー1人を選択して\n3巡の間「火傷」状態にする。\n-火傷：ポン・カン不可"},
+    {fig:"[アクティブ]MP消費：1ゲージ",name:"メモライズ",sub:"手札のパイをメモライズ\nしてから切る。\nメモしたパイは\nいつでも思い出せる。"},
+    {fig:"[アクティブ]MP消費：2ゲージ",name:"フリージングアロー",sub:"プレイヤー1人を選択して\n3巡の間「凍結」状態にする。\n-凍結：行動不可"},
+    {fig:"[アクティブ]MP消費：3ゲージ",name:"グラウンドクラッシュ",sub:"台パンにより\nこの局を流局にする。"},
+    {fig:"スキルなし",name:"スキル②",sub:""},
+    {fig:"スキルなし",name:"スキル②",sub:""},
+    {fig:"[パッシブ]MP消費：1ゲージ",name:"花蓮",sub:"カンをした時にMPを\n消費して自動発動する。\nドラか当たりパイを引く。"},
+    {fig:"[パッシブ]MP消費：2ゲージ",name:"克己-強",sub:"リーチ時にMPを消費して\n自動発動する。\nウォープレリュードの\n効果を1局延長する。"},
+    {fig:"[アクティブ]MP消費：1ゲージ",name:"リバースサークル",sub:"逆転の空間を作り出し、\nその局の間、パイを切る順が\n逆回りになる。"},
   ];
   //name->キャラsub->職、役判定で使用　line->ライン役判定に使用 0->all　color->1234567陽水風月土火E 0->all
   var donpai=[
@@ -647,36 +646,36 @@ function ResizeGame(){
     {name:"2ライン通貫",sub:"アガリ形"},
     {name:"3ライン通貫",sub:"アガリ形"},
     {name:"4ライン通貫",sub:"アガリ形"},
-    {name:"国士無双",sub:"アガリ形"},
-    {name:"クレストオブガイア",sub:"アガリ形"},
-    {name:"クレストオブソーレス",sub:"アガリ形"},
-    {name:"クレストオブベントス",sub:"アガリ形"},
-    {name:"クレストオブロッソ",sub:"アガリ形"},
-    {name:"クレストオブデニフ",sub:"アガリ形"},
-    {name:"クレストオブハルニエ",sub:"アガリ形"},
-    {name:"クレストオブアドリアン",sub:"アガリ形"},
-    {name:"鋭さ",sub:"シナジー役",max:7},
+    {name:"国士無双",sub:"役満"},
+    {name:"クレストオブガイア",sub:"役満"},
+    {name:"クレストオブソーレス",sub:"役満"},
+    {name:"クレストオブベントス",sub:"役満"},
+    {name:"クレストオブロッソ",sub:"役満"},
+    {name:"クレストオブデニフ",sub:"役満"},
+    {name:"クレストオブハルニエ",sub:"役満"},
+    {name:"クレストオブアドリアン",sub:"役満"},
+    {name:"鋭さ",sub:"シナジー役",max:5},
     {name:"ナソード研究",sub:"シナジー役",max:5},
-    {name:"精霊の加護",sub:"シナジー役",max:3},
-    {name:"物理特化",sub:"シナジー役",max:6},
-    {name:"魔法特化",sub:"シナジー役",max:5},
+    {name:"精霊の加護",sub:"シナジー役",max:5},
+    {name:"物理特化",sub:"シナジー役",max:3},
+    {name:"魔法特化",sub:"シナジー役",max:4},
     {name:"貫徹する足取り",sub:"シナジー役",max:1},
     {name:"豊かな足取り",sub:"シナジー役",max:1},
     {name:"上手な足取り",sub:"シナジー役",max:1},
     {name:"交感の足取り",sub:"シナジー役",max:1},
-    {name:"敏捷さ",sub:"シナジー役",max:6},
-    {name:"正義を貫徹する者",sub:"シナジー役",max:5},
+    {name:"敏捷さ",sub:"シナジー役",max:3},
+    {name:"正義を貫徹する者",sub:"シナジー役",max:6},
     {name:"殴り合い",sub:"シナジー役",max:3},
     {name:"時空間",sub:"シナジー役",max:3},
-    {name:"魔族",sub:"シナジー役",max:3},
-    {name:"巨人審判者",sub:"シナジー役",max:6},
+    {name:"魔族",sub:"シナジー役",max:5},
+    {name:"巨人審判者",sub:"シナジー役",max:4},
     {name:"マナ守護",sub:"シナジー役",max:3},
-    {name:"探求する者",sub:"シナジー役",max:6},
+    {name:"探求する者",sub:"シナジー役",max:5},
     {name:"原初的な動き",sub:"シナジー役",max:3},
-    {name:"渇望",sub:"シナジー役",max:7},
-    {name:"属性鍛錬者",sub:"シナジー役",max:4},
-    {name:"歪曲された視線",sub:"シナジー役",max:3},
-    {name:"痛いから問題ない",sub:"シナジー役",max:5},
+    {name:"渇望",sub:"シナジー役",max:5},
+    {name:"属性鍛錬者",sub:"シナジー役",max:3},
+    {name:"歪曲された視線",sub:"シナジー役",max:5},
+    {name:"痛いから問題ない",sub:"シナジー役",max:3},
     {name:"機械工学",sub:"シナジー役",max:1},
     {name:"ラビィの友達",sub:"シナジー役",max:1},
     {name:"悪戯の王",sub:"シナジー役",max:1},
@@ -693,6 +692,8 @@ function ResizeGame(){
     {name:"一発",sub:"アガリ形"},
     {name:"天和",sub:"アガリ形"},
     {name:"海底",sub:"アガリ形"},
+    {name:"嶺上開花",sub:"アガリ形"},
+    {name:"槍槓",sub:"アガリ形"},
     {name:"ツモ",sub:"その他"},
     {name:"ロン",sub:"その他"},
     {name:"放銃",sub:"その他"},
@@ -1194,7 +1195,7 @@ function MouseCircle(event){
   //クリックした場所を教える
   //プレイ中はマナブレも
   if(mpmoving){
-  mpC+=0.4;
+  mpC+=0.2;
   if(mpC>DP[1]){mpC=DP[1]};
     if(mpC>0){
     DPlist[0].scaleX=mpC/30;
@@ -2544,11 +2545,12 @@ function menuMap(p=0){
           t.rotation=5;
           var t = createText(menu_main,chrlist[chara[1]],205,470,40);
           t.rotation=5;
-          Panel(menu_main,500,80,180,30,2,3,"#005acf","#74c7ff")
-          createText(menu_main,"スキル",510,85,20,{color:"#fff"});
-          var t = skilldetail_passive[chara[1]].fig+skilldetail_passive[chara[1]].name+"\n"+skilldetail_passive[chara[1]].sub;
-          t += "\n\n"+skilldetail_active[chara[1]].fig+skilldetail_active[chara[1]].name+"\n"+skilldetail_active[chara[1]].sub;
-          createText(menu_main,t,500,115,16);
+          Panel(menu_main,530,80,150,30,2,3,"#005acf","#74c7ff")
+          createText(menu_main,"スキル",540,85,20,{color:"#fff"});
+          createText(menu_main,skilldetail_passive[chara[1]].name,530,115,18,{bold:true});
+          createText(menu_main,skilldetail_passive[chara[1]].fig+"\n"+skilldetail_passive[chara[1]].sub,530,135,16);
+          createText(menu_main,skilldetail_active[chara[1]].name,530,180+skilldetail_passive[chara[1]].height,18,{bold:true});
+          createText(menu_main,skilldetail_active[chara[1]].fig+"\n"+skilldetail_active[chara[1]].sub,530,200+skilldetail_passive[chara[1]].height,16);
           break;
         case 1:
           //実績リスト
@@ -2661,25 +2663,37 @@ function menuMap(p=0){
           btn1.y = 230;
           menu_main.addChild(btn1);
           Textlist[0].text="達成役一覧です。";
-          Textlist[1].text="かっこ内は達成した回数です。"
+          Textlist[1].text="一般のアガリ役と役満の和了回数です。"
             var achieveC=achieveB.filter(value=>value.sub=="アガリ形");
             var A=achieveC.filter(value=>value.cleared>0);
             createText(menu_main,"一般 "+A.length+"/"+achieveC.length,200,85,20,{bold:true});
             var X=200;
-            var Y=110
+            var Y=110;
             for(var i=0;i<achieveC.length; i++){
               if(achieveC[i].cleared==0){
                 createText(menu_main,achieveC[i].name,200,Y,18,{color:"#8c8c8c"});
-                createText(menu_main," ("+achieveC[i].cleared+")",400,Y,18,{color:"#8c8c8c"});
+                createText(menu_main,achieveC[i].cleared+"回",400,Y,18,{color:"#8c8c8c"});
               }else{
                 createText(menu_main,achieveC[i].name,200,Y,18,{bold:true});
-                createText(menu_main," ("+achieveC[i].cleared+")",400,Y,18,);
+                createText(menu_main,achieveC[i].cleared+"回",400,Y,18,{bold:true});
               }
               Y+=20;
-              if(Y>=500){
-                break;
+            };
+            var achieveD=achieveB.filter(value=>value.sub=="役満");
+            var B=achieveD.filter(value=>value.cleared>0);
+            createText(menu_main,"役満 "+B.length+"/"+achieveD.length,480,85,20,{bold:true});
+              X=480;
+              Y=110;
+            for(var i=0;i<achieveD.length; i++){
+                if(achieveD[i].cleared==0){
+                  createText(menu_main,achieveD[i].name,X,Y,18,{color:"#8c8c8c"});
+                  createText(menu_main,achieveD[i].cleared+"回",X+200,Y,18,{color:"#8c8c8c"});
+                }else{
+                  createText(menu_main,achieveD[i].name,X,Y,18,{bold:true});
+                  createText(menu_main,achieveD[i].cleared+"回",X+200,Y,18,{bold:true});
+                }
+                Y+=20;
               }
-            }
           break;
           case 4:
             //達成役一覧2
@@ -2687,8 +2701,8 @@ function menuMap(p=0){
           btn1.x = 60;
           btn1.y = 280;
           menu_main.addChild(btn1);
-            Textlist[0].text="達成役一覧です。";
-            Textlist[1].text="かっこ内は達成した回数です。"
+            Textlist[0].text="シナジーと属性ペアの達成一覧です。";
+            Textlist[1].text="かっこ内は達成シナジー数と理論的な最大枚数（目安）。"
               var achieveC=achieveB.filter(value=>value.sub=="シナジー役");
               var A=achieveC.filter(value=>value.cleared>0);
               createText(menu_main,"シナジー "+A.length+"/"+achieveC.length,200,85,20,{bold:true});
@@ -2699,7 +2713,7 @@ function menuMap(p=0){
                 createText(menu_main,achieveC[i].name,X,Y,18,{color:"#8c8c8c"});
                 }else{
                 createText(menu_main,achieveC[i].name,X,Y,18,{bold:true});
-                createText(" ("+achieveC[i].cleared+")",X+150,Y,18,{bold:true});
+                createText(menu_main," ("+achieveC[i].count+"/"+achieveC[i].max+") "+achieveC[i].cleared+"回",X+150,Y,18,{bold:true});
                 }
                 Y+=20;
                 if(Y>=500){
@@ -2714,10 +2728,10 @@ function menuMap(p=0){
               for(var i=0;i<achieveD.length; i++){
                 if(achieveD[i].cleared==0){
                   createText(menu_main,achieveD[i].name,X,Y,18,{color:"#8c8c8c"});
-                  createText(menu_main," ("+achieveD[i].cleared+")",X+200,Y,18,{color:"#8c8c8c"});
+                  createText(menu_main,achieveD[i].cleared+"回",X+200,Y,18,{color:"#8c8c8c"});
                 }else{
                   createText(menu_main,achieveD[i].name,X,Y,18,{bold:true});
-                  createText(menu_main," ("+achieveD[i].cleared+")",X+200,Y,18,{bold:true});
+                  createText(menu_main,achieveD[i].cleared+"回",X+200,Y,18,{bold:true});
                 }
                 Y+=20;
                 if(Y>=500){
@@ -6466,11 +6480,18 @@ function NameChange(){
           }};
           }
         //イヴ様
+        var EVE=0;
         for(var i=1;i<5;i++){
+          if(chara[i]==5 && DP[i]>=10){
           if(skillswitch[0] !==-2 && i!==player && chara[i]==5 && skillusage[i]==0){
+            DP[i]-=10;
             skillusage[i]=player;
+            if(EVE==0){EVE=i};
+            }
           }
         }
+        //代表者の演出
+        if(EVE>0){SkillAnimation(EVE,0,1,1);};
         //姉
         if(skillswitch[0] !==-2 && skillusage[player]==0 && chara[player]==8){
           if(DP[player]>=20){
@@ -8314,6 +8335,7 @@ function NameChange(){
           PB("嶺上開花");
       }else{
           Resultary.push('槍槓 1翻');
+          PB("槍槓");
       }
       }
       if(num==0 && ponsw[player]==0){
@@ -11889,21 +11911,22 @@ function alertButton(parent,text){
     }
     function createCircleButton(text, width, keyColorA="rgb(255,155,135)", keyColorB="rgb(221,84,72)", keyColorC="rgb(255,255,150)", keyColorD="rgb(223,163,0)"){
       // ツモ・ロンのぼたん width=>径
-      var button = new createjs.Container();
-      button.name = text; // ボタンに参考までに名称を入れておく(必須ではない)
+      let button = new createjs.Container();
+      button.mouseChildren=false;
+      button.corsor="pointer";
       // 通常時の座布団を作成
       var bgUp = new createjs.Shape();
       bgUp.graphics
       .beginRadialGradientFill([keyColorB, keyColorA, "rgba(255, 255, 255, 0)"], [0, 0.8, 1], width/2, width/2, 0, width/2, width/2, width)
       .drawCircle(width/2, width/2, width)
       button.addChild(bgUp);
-      bgUp.visible = true; // 表示する
+      bgUp.alpha = 1; // 表示する
       // ロールオーバー時の座布団を作成
       var bgOver = new createjs.Shape();
       bgOver.graphics
       .beginRadialGradientFill([keyColorD, keyColorC, "rgba(255, 255, 255, 0)"], [0, 0.8, 1], width/2, width/2, 0, width/2, width/2, width)
       .drawCircle(width/2, width/2, width)
-      bgOver.visible = false; // 非表示にする
+      bgOver.alpha = 0; // 非表示にする
       button.addChild(bgOver);
       //くるくる
       var s = new createjs.Bitmap(queue.getResult("don/circle88.png"));
@@ -11925,24 +11948,15 @@ function alertButton(parent,text){
       label.textBaseline = "middle";
       button.addChild(label);
       // ロールオーバーイベントを登録
-      if(typeof window.ontouchstart === "undefined"){
-        button.addEventListener("mouseover", handleMouseOver);
-        button.addEventListener("mouseout", handleMouseOut);
-      }else{
-        button.addEventListener("mousedown", handleMouseOver);
-        button.addEventListener("pressup", handleMouseOut);
+      button._isHover = false;
+      button.updateHover = function(){
+          const pt = this.globalToLocal(stage.mouseX, stage.mouseY);
+          const hit = this.hitTest(pt.x, pt.y);
+           if (hit === this._isHover) return;
+          this._isHover = hit;
+          bgUp.alpha   = hit ? 0 : 1;
+          bgOver.alpha = hit ? 1 : 0;
       }
-      function handleMouseOver(event) {
-        bgUp.visible = false;
-        bgOver.visible = true;
-        label.color = "white";
-      }
-      function handleMouseOut(event) {
-        bgUp.visible = true;
-        bgOver.visible = false;
-        label.color = "white";
-      }
-
       return button;      
     }
       function drawbuttom(x,y,word,type=0,w=80,z=40,R=0,context=cx){
@@ -13176,205 +13190,97 @@ function alertButton(parent,text){
         
   function Skillname(player,num=0){
     //num 0->キャラ情報　1->バフ情報
-  cx2.font = "bold 18px Arial";
-  if(LP[player]>=0){
-  cx2.fillStyle = "white";
-  }else{
-  cx2.fillStyle = "#ff4c38";
-  }
-  cx2.clearRect(630,10,160,350)
+  guidemap.removeAllChildren();
   var p=chara[player]
   if(pvpmode==1){
         if(IsHost(IAM.room)){
-        cx2.fillText("★"+MEMBER[player-1].name, 635, 66);
+          if(LP[player]>=0){
+          createText(guidemap,"★"+MEMBER[player-1].name,635,63,20,{bold:true,color:"#fff"})
+                }else{
+          createText(guidemap,"★"+MEMBER[player-1].name,635,63,20,{bold:true,color:"#ff4c38"})
+                }
         }else{
-        cx2.fillText(MEMBER[player-1].name, 635, 66);
+          if(LP[player]>=0){
+          createText(guidemap,"　"+MEMBER[player-1].name,635,63,20,{bold:true,color:"#fff"})
+                }else{
+          createText(guidemap,"　"+MEMBER[player-1].name,635,63,20,{bold:true,color:"#ff4c38"})
+                }
         }
   }else{
-  switch(player){
-    case 1:
-      cx2.fillText(Username, 635, 66);
-      break;
-      case 2:
-        cx2.fillText("CPU1", 635, 66);
-        break;
-        case 3:
-          cx2.fillText("CPU2", 635, 66);
-          break;
-          case 4:
-            cx2.fillText("CPU3", 635, 66);
-            break;            
-  }}
-  cx2.font = "bold 16px Arial";
-  cx2.fillText(chrlist[p], 640, 80);
-  cx2.fillStyle = "white";
+    var Ary=[0,Username,"CPU1","CPU2","CPU3"]
+        if(LP[player]>=0){
+          createText(guidemap,Ary[player],635,63,20,{bold:true,color:"#fff"})
+          }else{
+          createText(guidemap,Ary[player],635,63,20,{bold:true,color:"#ff4c38"})
+        }
+  }
+  createText(guidemap,chrlist[p],640,80,16,{bold:true,color:"#fff"})
   if(LP[0]==2){
-    cx2.font = "bold 14px Arial";
-    cx2.fillText("キル"+death[player-1].kill+"/アシ"+death[player-1].assist+"/デス"+death[player-1].death, 645, 96);
+    createText(guidemap,"キル"+death[player-1].kill+"/アシ"+death[player-1].assist+"/デス"+death[player-1].death,645,96,14,{bold:true,color:"#fff"})
   }
   switch(num){
     case 0:
-    drawbuttom(635,10,"スキル",1,70,40)
-    if(p==1){
-      cx2.font = "bold 16px Arial";
-      cx2.fillText("ストーンスキン", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("・リーチしている間,", 635, 150);
-      cx2.fillText("他のスキルの効果を", 635, 170);
-      cx2.fillText("受けない。", 635, 190);
-      cx2.font = "bold 16px Arial";
-      cx2.fillText("フレイムガイザー", 635, 210);
-      cx2.font = "13px Arial";
-      cx2.fillText("MP消費:1ゲージ", 635, 230);
-      cx2.fillText("対象:プレイヤー1人", 635, 250);
-      cx2.fillText("効果:対象を5巡の間", 635, 270);
-      cx2.fillText("「火傷」状態にする.", 635, 290);
-      cx2.fillText("(火傷状態の間は", 635, 310);
-      cx2.fillText(" ポン・カンできない)", 635, 330);
-      }else if(p==2){
-        var MS=Buff[player].filter(value=>value==2)
+    var btn=createButton("スキル",70,40);
+    btn.x=635;
+    btn.y=10;
+    guidemap.addChild(btn);
+      var skilldetail_passiveS=[
+    {height:0,fig:"スキルなし",name:"スキル①",sub:""},
+    {height:16,fig:"[パッシブ]",name:"ストーンスキン",sub:"リーチしている間、他の\nスキルの効果を受けない."},
+    {height:48,fig:"[パッシブ]",name:"マナシールド",sub:"水パイを切る度に\nマナシールド（最大3重複）.\n-マナシールド：\n・受けるダメージ減少"},
+    {height:80,fig:"[パッシブ]",name:"ネイチャーフォース",sub:"①「強靭」番の時に風パイが\n初手で入りやすい.\n②風パイを切る度に\nNFバフを得る（最大3重複）.\n-ネイチャーフォース：\n・和了時、符数増加"},
+    {height:80,fig:"[パッシブ]",name:"ナソードコア",sub:"太陽パイを切る度に\nナソードコア生成.\n-ナソードコア：\n・和了時戦闘力増加\n・致死ダメージ時、\n点数1で食いしばる"},
+    {height:96,fig:"",name:"チートコード",sub:"MP消費：1ゲージ\nリーチが発生した時、\nMPを消費して\n危険パイ察知."},
+    {height:64,fig:"",name:"変身",sub:"MP消費：3ゲージ\nリーチ時にMPを3ゲージ\n全て消費して変身."},
+    {height:48,fig:"[パッシブ]",name:"連技-龍牙爆砕",sub:"1局に1度だけ、\n1,2,3,4ラインの順に\nパイを切ると、\nドラが1つ増える."},
+    {height:32,fig:"[パッシブ]",name:"ウォープレリュード",sub:"連続で和了し続けるほど、\n初手で同じラインの\nパイが入りやすくなる."},
+    {height:16,fig:"[パッシブ]",name:"量子化",sub:"ポンの食い下がりが\n2翻から1翻に減る."},
+  ];
+    var skilldetail_activeS=[
+    {name:"スキル②",sub:"スキルなし"},
+    {name:"フレイムガイザー",sub:"MP消費：2ゲージ\n対象：プレイヤー1人\n対象に3T火傷付与."},
+    {name:"メモライズ",sub:"MP消費：1ゲージ\n対象：手札のパイ\n（オールマイティを除く）\n対象をメモしてから切る."},
+    {name:"フリージングアロー",sub:"MP消費：2ゲージ\n対象：プレイヤー1人\n対象に3T凍結付与."},
+    {name:"グラウンドクラッシュ",sub:"MP消費：3ゲージ\n対象：雀卓\nこの局を流局にする."},
+    {name:"スキル②",sub:"スキルなし"},
+    {name:"スキル②",sub:"スキルなし"},
+    {name:"花蓮",sub:"MP消費：1ゲージ\nカン時にMPを消費して\n自動発動.\n非リーチ時はドラを、\nリーチ時は当たりパイを引く."},
+    {name:"克己-強",sub:"MP消費：2ゲージ\nリーチ時にMPを消費して\n自動発動.\nウォープレリュードの\n効果を1局延長."},
+    {name:"リバースサークル",sub:"MP消費：1ゲージ\n対象：雀卓\n逆転の空間を作り出し、\nその局の間、\nパイを切る順が\n逆回りになる。"},
+  ];
+  switch(p){
+    case 2:
+    var MS=Buff[player].filter(value=>value==2)
         if(!MS.length){MS=[]};
-      cx2.font = "bold 16px Arial";
-      cx2.fillText("マナシールド", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("・水パイを捨てる度に", 635, 150);
-      cx2.fillText("マナシールドを張る." ,635, 170);
-      cx2.font = "bold 16px Arial";
-      cx2.fillText("メモライズ", 635, 190);
-      cx2.font = "14px Arial";
-      cx2.fillText("対象:手札のパイ1つ", 635, 210);
-      cx2.fillText("(オールマイティ以外)", 635, 230);
+    createText(guidemap,skilldetail_passiveS[p].name,635,115,16,{bold:true,color:"#fff"});
+    createText(guidemap,skilldetail_passiveS[p].sub,635,135,14,{color:"#fff"});
+    createText(guidemap,skilldetail_activeS[p].name,635,180+skilldetail_passiveS[p].height*7/8,16,{bold:true,color:"#fff"});
       if(skillusage2[player]==-1){
-        cx2.fillText("効果:①MPを1ゲージ", 635, 250);
-        cx2.fillText("消費し,対象のパイを", 635, 270);
-        cx2.fillText("メモしてから切る.", 635, 290);
-        cx2.fillText("メモしたパイは,", 635, 310);
-        cx2.fillText("いつでも思い出せる.", 635, 330);
+    createText(guidemap,skilldetail_activeS[p].sub,635,200+skilldetail_passiveS[p].height*7/8,14,{color:"#fff"});
       }else{
-      cx2.fillText("効果：②対象のパイを", 635, 250);
-      cx2.fillStyle="orange"
-      cx2.fillText(donpai[skillusage2[player]].name, 635, 270);
-      cx2.fillText("("+donpai[skillusage2[player]].sub+")", 635, 290);
-      cx2.fillStyle="white";
-      cx2.fillText("に変える.", 640, 310);
+    createText(guidemap,"対象のパイを\nメモしたパイに変える.",635,200+skilldetail_passiveS[p].height*7/8,14,{color:"#fff"});
+    createText(guidemap,"メモライズ：",635,235+skilldetail_passiveS[p].height*7/8,14,{color:"#fff"});
+    createText(guidemap,donpai[skillusage2[player]].name+"\n("+donpai[skillusage2[player]].sub+")",635,260+skilldetail_passiveS[p].height*7/8,14,{bold:true,color:"orange"});
       }
-      }else if(p==3){
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("ネイチャーフォース", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("・風パイを切る度に", 635, 150);
-      cx2.fillText("NFバフを得る.", 635, 170);
-      cx2.fillText("・強靭番の時,風パイ", 635, 190);
-      cx2.fillText("が初手で入りやすい.", 635, 210);
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("フリージングアロー", 635, 230);
-      cx2.font = "14px Arial";
-      cx2.fillText("MP消費:2ゲージ", 635, 250);
-      cx2.fillText("対象:他のプレイヤー1人", 635, 270);
-      cx2.fillText("効果:対象を3巡の間", 635, 290);
-      cx2.fillText("「凍結」状態にする.", 635, 310);
-      }else if(p==4){
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("ナソードコア", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("・太陽パイを切る度に", 635, 150);
-      cx2.fillText("ナソードコアを生成する", 635, 170);
-      cx2.fillText("・ナソードコアがある時", 635, 190);
-      cx2.fillText("致死ダメージを受けても", 635, 210);
-      cx2.fillText("1度だけ食いしばる.", 635, 230);
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("グラウンドクラッシュ", 635, 250);
-      cx2.font = "14px Arial";
-      cx2.fillText("MP消費:3ゲージ", 635, 270);
-      cx2.fillText("対象:全体", 635, 290);
-      cx2.fillText("効果:台パンにより", 635, 310);
-      cx2.fillText("この局を流局にする.", 635, 330);
-    }else if(p==5){
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("チートコード", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("・リーチが発生した時", 635, 150);
-      cx2.fillText("危険パイを察知する.", 635, 170);
-      cx2.fillText("・引いたばかりのパイは", 635, 190);
-      cx2.fillText("察知できず, その局の", 635, 210);
-      cx2.fillText("最初のリーチに対して", 635, 230);
-      cx2.fillText("のみ発動する.", 635, 250);
-      if(skillusage[player]>0){
-      switch(skillusage[player]){
-        case 1:
-          cx2.fillText("対象："+Username, 635, 270);
-          break;
-          case 2:
-            cx2.fillText("対象：CPU1", 635, 270);
-            break;
-            case 3:
-              cx2.fillText("対象：CPU2", 635, 270);
-              break;
-              case 4:
-                cx2.fillText("対象：CPU3", 635, 270);
-                break;
-                default:
-                  cx2.fillText("対象：--", 635, 270);
-      }}
-      }else if(p==6){
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("変身", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("・MPが3ゲージ溜まった", 635, 150);
-      cx2.fillText("状態で立直する時,", 635, 170);
-      cx2.fillText("ゲージを全消費して", 635, 190);
-      cx2.fillText("バーサクモードになる!", 635, 210);
-      cx2.fillText("・変身すると,高確率で", 635, 230);
-      cx2.fillText("一発ツモが発生する.", 635, 250);
-    }else if(p==7){
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("連技-龍牙爆砕", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("・1局に1度だけ,", 635, 150);
-      cx2.fillText("1,2,3,4ラインの順に", 635, 170);
-      cx2.fillText("パイを切ると発動する.", 635, 190);
-      cx2.fillText("ドラを1つ追加する.", 635, 210);
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("花蓮", 635, 230);
-      cx2.font = "14px Arial";
-      cx2.fillText("・カンをした時,", 635, 250);
-      cx2.fillText("MPを1ゲージ消費して,", 635, 270);
-      cx2.fillText("リーチ時は当たりパイを,", 635, 290);
-      cx2.fillText("非リーチ時はドラを,", 635, 310);
-      cx2.fillText("ランダムにドローする.", 635, 330);
-    }else if(p==8){
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("ウォープレリュード", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("連続で和了するほど,", 635, 150);
-      cx2.fillText("初手で同じラインの", 635, 170);
-      cx2.fillText("パイが入りやすくなる.", 635, 190);
-      cx2.fillText("(他の人が和了すると,", 635, 210);
-      cx2.fillText("効果はリセットされる)", 635, 230);
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("克己-強", 635, 250);
-      cx2.font = "14px Arial";
-      cx2.fillText("MP消費:2ゲージ", 635, 270);
-      cx2.fillText("リーチ時にMPを消費し", 635, 290);
-      cx2.fillText("自動的に発動する.", 635, 310);
-      cx2.fillText("ウォープレリュードの", 635, 330);
-      cx2.fillText("効果を延長する.", 635, 350);
-      }else if(p==9){
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("量子化", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("常時, ポンをした際の", 635, 150);
-      cx2.fillText("食い下がりが", 635, 170);
-      cx2.fillText("2翻から1翻に減る.", 635, 190);
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("リバースサークル", 635, 210);
-      cx2.font = "14px Arial";
-      cx2.fillText("MP消費:1ゲージ", 635, 230);
-      cx2.fillText("逆転の空間を作り出し", 635, 250);
-      cx2.fillText("その局の間,", 635, 270);
-      cx2.fillText("パイを切る順序が", 635, 290);
-      cx2.fillText("逆向きになる.", 635, 310);
-    }else if(p==10){
+      break;
+    case 5:
+    createText(guidemap,skilldetail_passiveS[p].name,635,115,16,{bold:true,color:"#fff"});
+    createText(guidemap,skilldetail_passiveS[p].sub,635,135,14,{color:"#fff"});
+    createText(guidemap,skilldetail_activeS[p].name,635,195+skilldetail_passiveS[p].height*7/8,16,{bold:true,color:"#fff"});
+    createText(guidemap,skilldetail_activeS[p].sub,635,215+skilldetail_passiveS[p].height*7/8,14,{color:"#fff"});
+    var Ary=[0,Username, "CPU1", "CPU2", "CPU3"]
+    if(skillusage[player]>0){
+    createText(guidemap,"対象："+Ary[skillusage[player]],635,155+skilldetail_passiveS[p].height*7/8,14,{bold:true,color:"orange"});
+    }
+    break;
+    default:
+    createText(guidemap,skilldetail_passiveS[p].name,635,115,16,{bold:true,color:"#fff"});
+    createText(guidemap,skilldetail_passiveS[p].sub,635,135,14,{color:"#fff"});
+    createText(guidemap,skilldetail_activeS[p].name,635,180+skilldetail_passiveS[p].height*7/8,16,{bold:true,color:"#fff"});
+    createText(guidemap,skilldetail_activeS[p].sub,635,200+skilldetail_passiveS[p].height*7/8,14,{color:"#fff"});
+    break;
+  }
+    if(p==10){
       cx2.font = "bold 15px Arial";
       cx2.fillText("万能ニーシャ", 635, 130);
       cx2.font = "14px Arial";
@@ -13387,125 +13293,58 @@ function alertButton(parent,text){
       cx2.fillText("②手札の「ニーシャ」を", 635, 270);
       cx2.fillText("好きなパイに変える.", 635, 290);
       cx2.fillText("(オールマイティを除く)", 635, 310);
-      }else{
-      cx2.font = "bold 16px Arial";
-      cx2.fillText("パッシブスキル", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("　なし", 635, 150);
-      cx2.font = "bold 16px Arial";
-      cx2.fillText("アクティブスキル", 635, 210);
-      cx2.font = "14px Arial";
-      cx2.fillText("　なし", 635, 230);
       }
     break;
    default:
     //Buff
-    drawbuttom2(635,10,"バフ",1,70,40,1)
+    var btn=createButton("バフ",70,40,"#ffbb4d","#ff7b00","#ff7f4d","#3f281e");
+    btn.x=635;
+    btn.y=10;
+    guidemap.addChild(btn);
     var y=130;
     if(LP[player]<0){
-      cx2.font = "bold 20px Arial";
-      cx2.fillText("戦闘不可", 635, y);
-      cx2.font = "14px Arial";
-      y+=20;
       var T=1+skillusage2[player]
-      cx2.fillText(" "+T+"局後に復活", 635, y);
-      y+=22
+      createText(guidemap,"戦闘不可\n "+T+"局後に復活",635,y,14,{bold:true})
+      y+=42;
     }
+    var BufflistS=[
+      {height:0,fig:"ストーンスキン",name:" -自分へのスキル無効"},
+      {id:1,height:0,fig:"ストーンスキン",name:" -自分へのスキル無効"},
+      {id:2,height:0,fig:"マナシールド",name:" -受けるダメージ減少"},
+      {id:3,height:0,fig:"ネイチャーフォース",name:" -和了時戦闘力増加"},
+      {id:4,height:28,fig:"ナソードコア",name:" -和了時戦闘力増加\n -1度だけ致死ダメージ\n を受けた時食いしばり"},
+      {id:5,height:0,fig:"火傷",name:" -ポン・カン不可"},
+      {id:6,height:0,fig:"凍結",name:" -行動不可"},
+      {id:7,height:28,fig:"環境　魔界",name:" -和了時の戦闘力低下.\n だんだん適応していく.\n (1局ごとに重複数減少)"},
+      {id:11,height:0,fig:"再結集のための休息",name:" -次の局まで待機."},
+    ]
     for(var i=1;i<12;i++){
       var A=Buff[player].filter(value=>value==i)
       if(A.length>0){
         switch(i){
-          case 1:
-            cx2.font = "bold 16px Arial";
-            cx2.fillText("ストーンスキン", 635, y);
-            cx2.font = "14px Arial";
-            y+=20;
-            cx2.fillText(" 自分へのスキル無効", 635, y);
-            y+=22
-            break;
           case 2:
-            cx2.font = "bold 16px Arial";
-            cx2.fillText("マナシールド"+A.length, 635, y);
-            cx2.font = "14px Arial";
-            y+=20;
-            cx2.fillText(" 受けるダメージ減少", 635, y);
-            y+=22
-            break;
           case 3:
-            cx2.font = "bold 16px Arial";
-            cx2.fillText("ネイチャーフォース"+A.length, 635, y);
-            cx2.font = "14px Arial";
-            y+=20;
-            cx2.fillText(" 和了時戦闘力増加", 635, y);
-            y+=22
-            break;
-          case 4:
-            cx2.font = "bold 16px Arial";
-            cx2.fillText("ナソードコア"+A.length, 635, y);
-            cx2.font = "14px Arial";
-            y+=20;
-            cx2.fillText(" 和了時追加ダメージ", 635, y);
-            y+=20
-            cx2.fillText(" 1度だけ,致死ダメージ", 635, y);
-            y+=20
-            cx2.fillText(" を受けた時食いしばり", 635, y);
-            y+=22
-            break;
           case 5:
-            cx2.font = "bold 16px Arial";
-            cx2.fillText("火傷", 635, y);
-            cx2.font = "14px Arial";
-            y+=20;
-            cx2.fillText(" ポン不可", 635, y);
-            y+=22
-            break;
           case 6:
-            cx2.font = "bold 16px Arial";
-            cx2.fillText("凍結"+A.length, 635, y);
-            cx2.font = "14px Arial";
-            y+=20;
-            cx2.fillText(" 行動不可.", 635, y);
-            y+=22
-            break;
           case 7:
-            cx2.font = "bold 16px Arial";
-            cx2.fillText("環境　魔界"+A.length, 635, y);
-            cx2.font = "14px Arial";
+            var I=BufflistS.findIndex(value=>value.id==i);
+            createText(guidemap,BufflistS[I].fig+" "+A.length+"T",635,y,18,{bold:true,color:"#fff"});
             y+=20;
-            cx2.fillText(" 和了時の戦闘力低下.", 635, y);
-            y+=20;
-            cx2.fillText(" だんだん適応していく.", 635, y);
-            y+=20;
-            cx2.fillText(" (1局ごとに重複数減少)", 635, y);
-            y+=22
-            break;
-          case 8:
-            cx2.font = "bold 16px Arial";
-            cx2.fillText("ウォープレリュード"+A.length, 635, y);
-            cx2.font = "14px Arial";
-            y+=20;
-            cx2.fillText(" 同ライン初手率↑.", 635, y);
-            y+=20;
-            break;
-          case 11:
-            cx2.font = "bold 16px Arial";
-            cx2.fillText("再結集のための休息", 635, y);
-            cx2.font = "14px Arial";
-            y+=20;
-            cx2.fillText(" 次の局まで待機.", 635, y);
-            y+=22
-            break;
+            createText(guidemap,BufflistS[I].name,635,y,14,{color:"#fff"});
+            y+=22+BufflistS[I].height;
+          break;
           default:
-            break;
+            var I=BufflistS.findIndex(value=>value.id==i);
+            createText(guidemap,BufflistS[I].fig,635,y,18,{bold:true,color:"#fff"});
+            y+=20;
+            createText(guidemap,BufflistS[I].name,635,y,14,{color:"#fff"});
+            y+=22+BufflistS[I].height;
+          break;
         }
       }
     }
     break;
   }
-  guidemap.removeAllChildren();
-  var C=canvas.toDataURL();
-  var Cb = new createjs.Bitmap(C);
-  guidemap.addChild(Cb);
   };
   function PopAnm(word=0,delay=800,width=135,height=35,x=30,y=20){
     //少しの時間だけ情報を表示する
