@@ -599,14 +599,14 @@ function ResizeGame(){
   {name:"エルドンの妖精",sub:"エルドンを通算100回プレイする"},
   {name:"ロナン・エルドン",sub:"エルドンを通算179回プレイする"},
   {name:"エルドンの覇者",sub:"エルドンを通算300回プレイする"},
-  {name:"地獄の生還者",sub:"半荘戦で1度もツモ・ロンせずに最後まで生存する"},
-  {name:"もしかして空気？",sub:"半荘戦で1度もツモ・ロン・ポン・放銃せずに終了する"},
-  {name:"スーパーソニック",sub:"半荘戦を4局以内に終了する"},
+  {name:"地獄の生還者",sub:"1プレイで1度もツモ・ロンせずに最後まで生存する"},
+  {name:"もしかして空気？",sub:"1プレイで1度もツモ・ロン・ポン・放銃せずに終了する"},
+  {name:"スーパーソニック",sub:"1プレイを4局以内に終了する"},
   {name:"甘美な勝利",sub:"3回以上1位になる"},
   {name:"ドカーン！",sub:"5回以上4位になる"},
-  {name:"見える、見えるぞ！",sub:"半荘戦で一度も放銃せずに勝利する"},
-  {name:"スケアチェイス",sub:"半荘戦で3回以上放銃する"},
-  {name:"デュアルバスター",sub:"2回以上ダブル放銃する"},
+  {name:"見える、見えるぞ！",sub:"1プレイで一度も放銃せずに勝利する"},
+  {name:"スケアチェイス",sub:"1プレイで3回以上放銃する"},
+  {name:"デュアルバスター",sub:"1プレイで2回以上ダブル放銃する"},
   {name:"私ぶっ飛んでるの！",sub:"7回以上飛ぶ"},
   {name:"まだだ",sub:"2連荘する"},
   {name:"もう一度かかってこい",sub:"3連荘する"},
@@ -1550,7 +1550,6 @@ function Soundcircle(){
     switch(LP[0]){
       case 0:
         //一般ルール
-        if(pvpmode==1){
           if(LP_PVP.Length[0]==1){
               if(skillusage2[0]>=4){
                 gameover();
@@ -1561,13 +1560,7 @@ function Soundcircle(){
                 gameover();
                 return false;
               }
-            } 
-        }else{
-          if(skillusage2[0]>=8){
-          gameover();
-          return false;
-          }
-        }
+          }; 
         if(LP[1] >=0 && LP[2]>=0 && LP[3] >=0 && LP[4]>=0){
           gamestate =1
           deckHandler();
@@ -1579,10 +1572,17 @@ function Soundcircle(){
         break;
         case 1:
         //ヘル
-            if(skillusage2[0]>=8){
-            gameover();
-            return false;
-            }
+          if(LP_PVP.Length[0]==1){
+              if(skillusage2[0]>=4){
+                gameover();
+                return false;
+              }
+          }else if(LP_PVP.Length[0]==2){
+              if(skillusage2[0]>=8){
+                gameover();
+                return false;
+              }
+          }; 
             if(LP[1] >0){
               gamestate =1
               deckHandler();
@@ -1594,24 +1594,17 @@ function Soundcircle(){
           break;
           case 2:
       //デスマッチ
-      if(pvpmode==1){
-        if(LP_PVP.Length[0]==1){
-            if(skillusage2[0]>=4){
-              gameover();
-              return false;
-            }
-        }else if(LP_PVP.Length[0]==2){
-            if(skillusage2[0]>=8){
-              gameover();
-              return false;
-            }
-          } 
-      }else{
-        if(skillusage2[0]>=8){
-        gameover();
-        return false;
-        }
-      }
+          if(LP_PVP.Length[0]==1){
+              if(skillusage2[0]>=4){
+                gameover();
+                return false;
+              }
+          }else if(LP_PVP.Length[0]==2){
+              if(skillusage2[0]>=8){
+                gameover();
+                return false;
+              }
+          }; 
       gamestate =1
       deckHandler();
       return false;
@@ -1619,24 +1612,17 @@ function Soundcircle(){
             case 4:
     //魔界ルール
     if(raidscore[0]==1){
-      if(pvpmode==1){
-        if(LP_PVP.Length[0]==1){
-            if(skillusage2[0]>=4){
-              gameover();
-              return false;
-            }
-        }else if(LP_PVP.Length[0]==2){
-            if(skillusage2[0]>=8){
-              gameover();
-              return false;
-            }
-          } 
-      }else{
-        if(skillusage2[0]>=8){
-        gameover();
-        return false;
-        }
-      }
+      if(LP_PVP.Length[0]==1){
+          if(skillusage2[0]>=4){
+            gameover();
+            return false;
+          }
+      }else if(LP_PVP.Length[0]==2){
+          if(skillusage2[0]>=8){
+            gameover();
+            return false;
+          }
+      }; 
     if(LP[1] >=0 && LP[2]>=0 && LP[3] >=0 && LP[4]>=0){
       gamestate =1;
       raidscore[0]=0;
@@ -1832,11 +1818,9 @@ function menuMap(p=0){
   //各画面の描画
   if(debugmode){console.log('menuMap',p,pagestate)}
   switch(p){
-    case 0:
-      //solo
-      //3970
+    case 0://solo case closed
       menu_solo.removeAllChildren();
-      menu_solo_list=[]
+      menu_solo_list=[];
       var rect = new createjs.Shape();
       rect.graphics
         .beginFill("#001c0d")
@@ -1857,112 +1841,180 @@ function menuMap(p=0){
         .drawRect(452, 125, 148, 300);
         menu_solo.addChild(rect);
       var solo = new createjs.Bitmap(queue.getResult(win_src[0]));
-      solo.sourceRect={x:0,y:0,width:300,height:150};
-      solo.x=1;
-      solo.y=4;
-      solo.scale=0.5;
-      menu_solo.addChild(solo);
+        solo.sourceRect={x:0,y:0,width:300,height:150};
+        solo.x=1;
+        solo.y=4;
+        solo.scale=0.5;
+        menu_solo.addChild(solo);
       var bt=createButton("対局開始",170,60,"#ffbb4d","#ff7b00","#ff7f4d","#3f281e")
-      bt.x=620;
-      bt.y=430;
-      menu_solo.addChild(bt);
-      bt.addEventListener("click",  ()=>{
-        if(gamestate!==1){
-          gamestate=1;
-          field.removeAllChildren();
-          textmap.visible=false;
-          musicnum=-1;
-          Setup();
-        }
-      });
-      createText(menu_solo,"対局ルール",155,20,30,{bold:true,color:"#fff"});
-      createText(menu_solo,"ＣＰＵおまかせ",620,150,26);
+        bt.x=620;
+        bt.y=430;
+        menu_solo.addChild(bt);
+        bt.addEventListener("click",  ()=>{
+          if(gamestate!==1){
+            gamestate=1;
+            field.removeAllChildren();
+            textmap.visible=false;
+            musicnum=-1;
+            Setup();
+          }
+        });
+      createText(menu_solo,"対局ルール",155,21,28,{bold:true,color:"#fff"});
+      createText(menu_solo,"ＣＰＵキャラ",620,150,26,{bold:true,color:"#fff"});
+      createText(menu_solo,"スキル",620,240,26,{bold:true,color:"#fff"});
+      var bt=createButton(" ",35,35);
+        bt.x=640;
+        bt.y=180;
+        menu_solo.addChild(bt);
+        bt.addEventListener("click",  ()=>{
+          se3.play();
+          if(chara[0]==0){chara[0]=1}else{chara[0]=0};
+          if(chara[0]==0){
+            menu_solo_list[0].text="✓ おまかせ"
+            for(var i=0;i<3;i++){
+              menu_solo_list[i+5].text="ランダム";
+              menu_solo_list[i+9].alpha=0;
+            };
+            }else{
+            menu_solo_list[0].text="　おまかせ"
+            for(var i=0;i<3;i++){
+              menu_solo_list[i+5].text=chrlist[chara[i+2]];
+              menu_solo_list[i+9].alpha=1;
+              }
+            }
+          })
       if(chara[0]==0){
-        var t = new createjs.Text("✓おまかせ", "26px 'Century Gothic'", "white");
+        var t=createText(menu_solo,"✓ おまかせ",780,185,26,{color:"#fff",align:"right"});
         }else{
-        var t = new createjs.Text("　おまかせ", "26px 'Century Gothic'", "white");
+        var t=createText(menu_solo,"　おまかせ",780,185,26,{color:"#fff",align:"right"});
       }
-      t.x=630;
-      t.y=180;
-      menu_solo.addChild(t);
       menu_solo_list.push(t);
-      var t= createText(menu_solo,LPlist[LP[0]],440,20,32,{bold:true,align:"center",color:"#fff"});
+      var t= createText(menu_solo,LPlist[LP[0]],500,20,32,{bold:true,align:"center",color:"#fff"});
       menu_solo_list.push(t);
-      var Ary=[[Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"],[chrlist[chara[1]],chrlist[chara[2]],chrlist[chara[3]],chrlist[chara[4]]]]
-     for(var i=0;i<4;i++){
-      var t = new createjs.Text(Ary[0][i], "24px 'Century Gothic'", "white");
-      t.x=2+150*i;
-      t.y=425;
-      menu_solo.addChild(t);
-      var t = new createjs.Text(Ary[1][i], "24px 'Century Gothic'", "white");
-      t.x=2+150*i;
-      t.y=455;
-      menu_solo.addChild(t);
-     }
-      var t = new createjs.Text("スキル", "24px 'Century Gothic'", "white");
-      t.x=390;
-      t.y=350;
-      menu_solo.addChild(t);
-      var Ary=["　禁止しない","　プレイヤーのみ","　全て禁止"]
-      //-1のときは禁止
-      var t = new createjs.Text(Ary[-skillswitch[0]], "24px 'Century Gothic'", "black");
-      t.x=460;
-      t.y=350;
-      menu_solo.addChild(t);
+      var t= createText(menu_solo,LP_PVP.Length[LP_PVP.Length[0]]+"戦",500,58,32,{bold:true,align:"center",color:"#fff"});
       menu_solo_list.push(t);
-      for(var i=1;i<5;i++){
-      createText(menu_solo,"？",30+150*(i-1),250,84,{bold:true,color:"#fff"})
-      if(fool){
-        e10 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[i]]));          
-      }else{
-        e10 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[i]]));
-      }
-      e10.sourceRect={x:400,y:0,width:300,height:600}
-      e10.x=2+150*(i-1);
-      e10.y=125;
-      e10.scale=148/300;
-      menu_solo.addChild(e10);
-      menu_solo_list.push(e10);
-      if(i>=2){
-        if(chara[0]==0){e10.alpha=0};
-      var shape = Panel(menu_solo,2+150*(i-1),485,75,25,3,2,"#092038be","#68ceed");
-      var option_arrow =createArrow(menu_solo,18,-10,18,10);
-      option_arrow.x=20+150*(i-1);
-      option_arrow.y=498;
-      menu_solo.addChild(option_arrow);
-      shape.addEventListener("click",{card:i,handleEvent:charaSelA});
-      var shape = Panel(menu_solo,77+150*(i-1),485,75,25,3,2,"#092038be","#68ceed");
-      var option_arrow =createArrow(menu_solo,-18,-10,-18,10);
-      option_arrow.x=130+150*(i-1);
-      option_arrow.y=498;
-      menu_solo.addChild(option_arrow);
-      shape.addEventListener("click",{card:i,handleEvent:charaSelB});
-        };
-      };
-      function charaSelA(){
-        if(chara[0]==1){
+      var shape = Panel(menu_solo,310,15,75,40,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_solo,27,-15,27,15);
+        option_arrow.x=330;
+        option_arrow.y=35;
+        menu_solo.addChild(option_arrow);
+        shape.addEventListener("click",()=>{
+          se3.play();
+          if(LP[0]==0){LP[0]=LPlist.length-1}else{LP[0]-=1}
+          menu_solo_list[1].text=LPlist[LP[0]];
+          corsor();
+        });
+      var shape = Panel(menu_solo,610,15,75,40,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_solo,-27,-15,-27,15);
+        option_arrow.x=660;
+        option_arrow.y=35;
+        menu_solo.addChild(option_arrow);
+        shape.addEventListener("click",()=>{
         se3.play();
-        if(chara[this.card]==0){chara[this.card]=HiddenChara}else{chara[this.card]-=1}
-        menuMap(0)
+        if(LP[0]==LPlist.length-1){LP[0]=0}else{LP[0]+=1}
+        menu_solo_list[1].text=LPlist[LP[0]];
+        corsor();
+        });
+      var shape = Panel(menu_solo,310,53,75,40,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_solo,27,-15,27,15);
+        option_arrow.x=330;
+        option_arrow.y=73;
+        menu_solo.addChild(option_arrow);
+        shape.addEventListener("click",()=>{
+          se3.play();
+          if(LP_PVP.Length[0]==1){LP_PVP.Length[0]=2}else{LP_PVP.Length[0]=1}
+          menu_solo_list[2].text=LP_PVP.Length[LP_PVP.Length[0]]+"戦"
+          corsor();
+        });
+      var shape = Panel(menu_solo,610,53,75,40,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_solo,-27,-15,-27,15);
+        option_arrow.x=660;
+        option_arrow.y=73;
+        menu_solo.addChild(option_arrow);
+        shape.addEventListener("click",()=>{
+        se3.play();
+          if(LP_PVP.Length[0]==1){LP_PVP.Length[0]=2}else{LP_PVP.Length[0]=1}
+          menu_solo_list[2].text=LP_PVP.Length[LP_PVP.Length[0]]+"戦"
+          corsor();
+        });
+      var AryS=["　禁止しない","　プレイヤーのみ","　全て禁止"]
+        var bt=createButton(" ",150,30);
+          bt.x=635;
+          bt.y=265;
+          menu_solo.addChild(bt);
+          bt.addEventListener("click",  ()=>{
+          se3.play();
+          if(skillswitch[0]==0){skillswitch[0]=-2}else{skillswitch[0]+=1};
+          menu_solo_list[3].text=AryS[-skillswitch[0]]
+          })
+        var t = createText(menu_solo,AryS[-skillswitch[0]],700,270,20,{color:"#fff",align:"center"})
+        menu_solo_list.push(t);
+        var Ary=[[Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"],[chrlist[chara[1]],chrlist[chara[2]],chrlist[chara[3]],chrlist[chara[4]]]];
+      for(var i=0;i<4;i++){
+        var t = new createjs.Text(Ary[0][i], "24px 'Century Gothic'", "white");
+        t.x=2+150*i;
+        t.y=425;
+        menu_solo.addChild(t);
+        var t = new createjs.Text(Ary[1][i], "24px 'Century Gothic'", "white");
+        t.x=2+150*i;
+        t.y=455;
+        if(chara[0]==0 && i>0){t.text="ランダム"};
+        menu_solo.addChild(t);
+        menu_solo_list.push(t);
+      }
+        for(var i=1;i<5;i++){
+        createText(menu_solo,"？",30+150*(i-1),250,84,{bold:true,color:"#fff"})
+        if(fool){
+          e10 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[i]]));          
+        }else{
+          e10 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[i]]));
         }
-      };
-      function charaSelB(){
-        if(chara[0]==1){
-        se3.play();
-        if(chara[this.card]==HiddenChara){chara[this.card]=0}else{chara[this.card]+=1}
-        menuMap(0)
+        e10.sourceRect={x:400,y:0,width:300,height:600}
+        e10.x=2+150*(i-1);
+        e10.y=125;
+        e10.scale=148/300;
+        menu_solo.addChild(e10);
+        menu_solo_list.push(e10);
+        if(i>=2){
+          if(chara[0]==0){e10.alpha=0};
+        var shape = Panel(menu_solo,2+150*(i-1),485,75,25,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_solo,18,-10,18,10);
+        option_arrow.x=20+150*(i-1);
+        option_arrow.y=498;
+        menu_solo.addChild(option_arrow);
+        shape.addEventListener("click",{card:i,handleEvent:charaSelA});
+        var shape = Panel(menu_solo,77+150*(i-1),485,75,25,3,2,"#092038be","#68ceed");
+        var option_arrow =createArrow(menu_solo,-18,-10,-18,10);
+        option_arrow.x=130+150*(i-1);
+        option_arrow.y=498;
+        menu_solo.addChild(option_arrow);
+        shape.addEventListener("click",{card:i,handleEvent:charaSelB});
+          };
         };
-      };
+        function charaSelA(){
+          if(chara[0]==1){
+          se3.play();
+          if(chara[this.card]==0){chara[this.card]=HiddenChara}else{chara[this.card]-=1}
+          menuMap(0)
+          }
+        };
+        function charaSelB(){
+          if(chara[0]==1){
+          se3.play();
+          if(chara[this.card]==HiddenChara){chara[this.card]=0}else{chara[this.card]+=1}
+          menuMap(0)
+          };
+        };
       var btn1 = createButton("もどる", 148, 40);
-      btn1.x = 2;
-      btn1.y = 80;
-      menu_solo.addChild(btn1);
-      btn1.addEventListener("click", {handleEvent:Totop}); 
-      function Totop(){
-        se2.play();
-        pagestate=0;
-        Menu();
-      };
+        btn1.x = 2;
+        btn1.y = 80;
+        menu_solo.addChild(btn1);
+        btn1.addEventListener("click", {handleEvent:Totop}); 
+        function Totop(){
+          se2.play();
+          pagestate=0;
+          Menu();
+        };
       break;
     case 1://設定画面 case closed
       menu_setting.removeAllChildren();
@@ -2711,9 +2763,10 @@ function menuMap(p=0){
               for(var i=0;i<achieveC.length; i++){
                 if(achieveC[i].cleared==0){
                 createText(menu_main,achieveC[i].name,X,Y,18,{color:"#8c8c8c"});
+                  createText(menu_main,achieveC[i].cleared+"回",X+200,Y,18,{color:"#8c8c8c"});
                 }else{
                 createText(menu_main,achieveC[i].name,X,Y,18,{bold:true});
-                createText(menu_main," ("+achieveC[i].count+"/"+achieveC[i].max+") "+achieveC[i].cleared+"回",X+150,Y,18,{bold:true});
+                createText(menu_main,achieveC[i].cleared+"回",X+200,Y,18,{bold:true});
                 }
                 Y+=20;
                 if(Y>=500){
@@ -3937,71 +3990,7 @@ function NameChange(){
     menuMap();
     break;
         case 3:
-          //フリバ
-          if(mouseX >510 && mouseX <560 && mouseY >80 && mouseY <110){
-          se3.play();
-          if(LP[0]==0){LP[0]=LPlist.length-1}else{LP[0]-=1}
-          menu_solo_list[1].text="◀ "+LPlist[LP[0]]
-          }
-          if(mouseX >670 && mouseX <705 && mouseY >80 && mouseY <110){
-            se3.play();
-            if(LP[0]==LPlist.length-1){LP[0]=0}else{LP[0]+=1}
-            menu_solo_list[1].text="◀ "+LPlist[LP[0]]
-            }
-          if(mouseX >510 && mouseX <560 && mouseY >130 && mouseY <160){
-            se3.play();
-            if(chara[1]==0){chara[1]=HiddenChara}else{chara[1]-=1}
-            menu_solo_list[2].text="◀ "+chrlist[chara[1]]
-            menu_solo.removeChild(menu_solo_list[menu_solo_list.length-1]);
-            menu_solo_list.pop();
-            if(fool){
-              e10 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[1]]));          
-            }else{
-              e10 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[1]]));
-            }
-            e10.sourceRect={x:400,y:0,width:350,height:510}
-            e10.x=10;
-            e10.y=0;
-            e10.scale=1;
-            menu_solo.addChild(e10);
-            menu_solo_list.push(e10);
-            }
-          if(mouseX >670 && mouseX <705 && mouseY >130 && mouseY <160){
-            se3.play();
-            if(chara[1]==HiddenChara){chara[1]=0}else{chara[1]+=1}
-            menu_solo_list[2].text="◀ "+chrlist[chara[1]]
-            menu_solo.removeChild(menu_solo_list[menu_solo_list.length-1]);
-            menu_solo_list.pop();
-            if(fool){
-              e10 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[1]]));          
-            }else{
-              e10 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[1]]));
-            }
-            e10.sourceRect={x:400,y:0,width:350,height:510}
-            e10.x=10;
-            e10.y=0;
-            e10.scale=1;
-            menu_solo.addChild(e10);
-            menu_solo_list.push(e10);
-            } 
-          if(mouseX >520 && mouseX <650 && mouseY >175 && mouseY <205){
-            se3.play();
-            if(chara[0]==0){chara[0]=1}else{chara[0]=0};
-            if(chara[0]==0){
-              menu_solo_list[0].text="✓おまかせ"
-              for(var i=0;i<6;i++){menu_solo_list[i+3].alpha=0.4};
-              }else{
-              menu_solo_list[0].text="　おまかせ"
-              for(var i=0;i<6;i++){menu_solo_list[i+3].alpha=1};
-              }
-          }
-          if(mouseX >400 && mouseX <705 && mouseY >345 && mouseY <375){
-            se3.play();
-            if(skillswitch[0]==0){skillswitch[0]=-2}else{skillswitch[0]+=1};
-            var Ary=["　◀禁止しない","　◀プレイヤーのみ","　◀全て禁止"]
-            menu_solo_list[9].text=Ary[-skillswitch[0]]
-            }
-        corsor();
+          //フリーバトル
         break;
         case 2:
           //オプション画面
@@ -4909,19 +4898,7 @@ function NameChange(){
           for(var i=0;i<MEMBER.length;i++){
             console.log(MEMBER[i].turnflag)
           };
-          if(LP_PVP.Length[0]==1 && skillusage2[0]==4){
-            cx.fillText("オーラス"+(skillusage2[5]),10,88);
-            auras=1;
-            Dlvup.alpha=0;
-            Dlvup.x=-60;
-            Dlvup.y=-40;
-            Dlvup.scale=1.2;
-            se12.play();
-            createjs.Tween.get(Dlvup)
-            .to({scale:1,x:0,y:0,alpha:1},150,createjs.Ease.backOut)
-            .wait(1000)
-            .to({scale:1.5,x:-200,y:-150,alpha:0},250,createjs.Ease.backOut);
-          }else if(LP_PVP.Length[0]==2 && skillusage2[0]==8){
+          if((LP_PVP.Length[0]==1 && skillusage2[0]==4)||(LP_PVP.Length[0]==2 && skillusage2[0]==8)){
             cx.fillText("オーラス"+(skillusage2[5]),10,88);
             auras=1;
             Dlvup.alpha=0;
@@ -4939,7 +4916,7 @@ function NameChange(){
         var t = new createjs.Text("第"+(skillusage2[0])+"局 "+(skillusage2[5])+"本場", "24px 'Century Gothic'", "white");
         t.x=10;
         t.y=68;
-        if(LP[0]>=0 && LP[0]!==3 && skillusage2[0]==8){
+          if(LP[0]!==3 && (LP_PVP.Length[0]==1 && skillusage2[0]==4)||(LP_PVP.Length[0]==2 && skillusage2[0]==8)){
           t.text="オーラス"+(skillusage2[5]);
           auras=1;
           Dlvup.alpha=0;
@@ -11329,41 +11306,40 @@ function NameChange(){
         switch(pagestate){
           case 3:
             //フリーバトル
-          if(mouseX >470 && mouseX <640 && mouseY >410 && mouseY <470){
+          if(mouseX >620 && mouseX <790 && mouseY >430 && mouseY <490){
             Textlist[0].text="現在の設定で対局を開始します！";
             Textlist[1].text="　";  
           }
-        if(mouseX >510 && mouseX <705 && mouseY >80 && mouseY <110){
+        if(mouseX >300 && mouseX <700 && mouseY >10 && mouseY <110){
           //通常テキスト
-          cx2.clearRect(80,530,670,70)
           switch(LP[0]){
             case 0:
-              Textlist[0].text=LPlist[LP[0]]+"：持ち点150,000の半荘戦で満貫ブロックが適応されます。";
+              Textlist[0].text=LPlist[LP[0]]+"：持ち点150,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦で満貫ブロックが適応されます。";
               Textlist[1].text="誰かの戦闘力がなくなった時点で試合終了となります。";  
             break;
             case 1:
-              Textlist[0].text=LPlist[LP[0]]+"：持ち点300,000の半荘戦で満貫ブロックが適応されません。";
+              Textlist[0].text=LPlist[LP[0]]+"：持ち点300,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦で満貫ブロックがない青天井ルールです。";
               Textlist[1].text="誰か一人が生き残るか半荘経過まで戦いが続きます。";  
             break;
             case 2:
               Textlist[0].text=LPlist[LP[0]]+"：和了しても得点は増えず、飛んでも復活します。";
-              Textlist[1].text="半荘経過までにより多くの人を飛ばした人が勝者となります。";  
+              Textlist[1].text=LP_PVP.Length[LP_PVP.Length[0]]+"戦終了までにより多くの人を飛ばした人が勝者となります。";  
             break;
             case 3:
               Textlist[0].text=LPlist[LP[0]]+"：際限なく自由に打ち続けるモードです。";
               Textlist[1].text="Escキーでタイトル画面に戻ることで抜けられます。";  
             break;
             case 4:
-              Textlist[0].text=LPlist[LP[0]]+"：持ち点150,000の半荘戦です。";
-              Textlist[1].text="このモードでは一局に最大3人まで和了することができます。";  
+              Textlist[0].text=LPlist[LP[0]]+"：一局に最大3人和了できる持ち点150,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦です。";
+              Textlist[1].text="後半になるほど高得点が出やすくなります。";  
               break;
           }
         }
-        if(mouseX >520 && mouseX <650 && mouseY >175 && mouseY <205){
+        if(mouseX >610 && mouseX <790 && mouseY >120 && mouseY <220){
           Textlist[0].text="CPUのキャラクターを設定します。";
           Textlist[1].text="おまかせにするとランダムに決定されます。";  
         }
-        if(mouseX >520 && mouseX <650 && mouseY >345 && mouseY <375){
+        if(mouseX >610 && mouseX <790 && mouseY >230 && mouseY <300){
           Textlist[0].text="キャラごとのパッシブ・アクティブスキルの設定です。";
           Textlist[1].text="「プレイヤーのみ」では、CPUのパッシブスキルは適用されます。";  
         }
