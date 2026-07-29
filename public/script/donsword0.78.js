@@ -3,7 +3,7 @@
 // 国士無双で進行不能になる？
 // 魔界血戦後に操作不能になる
 // スマホ対応に向けて
-// 描画修正中...
+// canvas to DataURLの拡大率問題がわからん
 window.onload = function(){
   draw();
   };
@@ -322,7 +322,9 @@ function ResizeGame(){
   Csquare.visible=false;
   var CorsorKey;//カーソル1
   CorsorKey = new createjs.Shape();
+  CorsorKey.compositeOperation = "lighter";
   CorsorKey.graphics.beginStroke("#0088f0");
+  CorsorKey.graphics.beginFill("rgba(0, 136, 240, 0.4)");
   CorsorKey.graphics.setStrokeStyle(5);
   CorsorKey.graphics.drawRoundRect(0,0,100,100,10,10)
   corsormap.addChild(CorsorKey);
@@ -331,14 +333,14 @@ function ResizeGame(){
   .to({alpha:1},200)
   .to({alpha:0.2},400)
   .to({alpha:1},200);
-  tweeNcor.paused=true;
+  //tweeNcor.paused=true;
   CorsorKey.visible=false;
   var Clvup = new createjs.Bitmap("don/Don_Fight.png");
-  Clvup.visible=false;
+  Clvup.alpha=0;
   Clvup.scale=3;
   stage.addChild(Clvup);
   var Dlvup = new createjs.Bitmap("don/Don_aurus.png");
-  Dlvup.visible=false;
+  Dlvup.alpha=0;
   stage.addChild(Dlvup);
     //アップデートする
     createjs.Ticker.timingMode = createjs.Ticker.RAF;
@@ -916,8 +918,8 @@ function ResizeGame(){
   var r4=0
   
   var se1 = new Howl({
-  src:"don/decision9.mp3",
-  volume: 0.25,
+  src:"don/Tambourine04-02.mp3",
+  volume: 0.6,
   });
   var se2 = new Howl({
     src:"don/Liquid_Suction.wav",
@@ -984,16 +986,20 @@ function ResizeGame(){
     volume: 0.3,
     });
   var se18 = new Howl({
-    src:"don/WoodBlock.wav",
-    volume: 0.18,
+    src:"don/Business05-3.mp3",
+    volume: 0.3,
     });
   var se19 = new Howl({
     src:"don/Single_Accent04-3.mp3",
     volume: 0.6,
     });
   var se20 = new Howl({
-    src:"don/slash1.mp3",
-    volume: 0.15,
+    src:"don/donSE1.m4a",
+    volume: 0.6,
+    });
+  var se21 = new Howl({
+    src:"don/Explosion Large Bright 01.wav",
+    volume: 0.12,
     });
   const jingle =new Howl({
       src: "don/Don_jingle.mp3",
@@ -1128,6 +1134,9 @@ var queue = new createjs.LoadQueue(),
     };
     for(var i=0;i<epic_src.length;i++){
       manifest.push(epic_src[i])
+    };
+    for(var i=0;i<yakuicon_src.length;i++){
+      manifest.push(yakuicon_src[i])
     };
     manifest.push('don/circle88.png')
     manifest.push('don/Don_aurus.png')
@@ -1461,7 +1470,8 @@ function Soundcircle(){
       tweeNstar.paused=true;
       stage.removeChild(Cstar);
       pagestate=0;
-      se6.play();
+      se1.play();
+      se14.play();
       //saveUP();
       saveUP_Local();
       Menu();
@@ -2657,6 +2667,7 @@ function menuMap(p=0){
           for (var i=1;i<highrate.length;i++){
           var drawcard=new createjs.Bitmap(queue.getResult(eltear_src[highrate[i]]));
           drawcard.x=200+50*(i-1);
+          if(i==highrate.length-1){drawcard.x+=15};
           drawcard.y=110;
           drawcard.scaleX=5/12;
           drawcard.scaleY=5/12;
@@ -4836,9 +4847,7 @@ function NameChange(){
         .call(TodeckHandler);
     se20.play();
     createjs.Tween.get(rect)
-    .wait(300)
-    .call(SE);
-    function SE(){se17.play();}
+    .wait(300);
     function TodeckHandler(){
       if(pvpmode==0){
         deckHandler();
@@ -6625,14 +6634,14 @@ function NameChange(){
     //デュエル開始の宣言をする pvp時1に
     if(pvp==0){
       pvpmode=0;
-      se1.play();
+      se5.play();
     }else{
       field.removeAllChildren();
       textmap.visible=false;
       musicnum=-1;
       if(pvpmode!==1){
         pvpmode=1;
-        se1.play();
+        se5.play();
       }};
     console.log('Setup',pvp);//socketで飛ばすとなんか3回くらい呼び出される
     navisw=0;
@@ -6915,6 +6924,7 @@ function NameChange(){
         console.log(P,IAM.mwah,turn);
         ponsw[0]=0;
         tweeNsquare.paused=false;
+        Csquare.visible=true;
       switch(turn){ 
         case 0:
           player1();
@@ -6940,6 +6950,7 @@ function NameChange(){
       }
       ponsw[0]=0;
       tweeNsquare.paused=false;
+      Csquare.visible=true;
       Csquare.y=100*turn;
       switch(turn){
         case 0:
@@ -8373,7 +8384,7 @@ function NameChange(){
       opLock=-1;
       //gamestate =2;
       tweeNsquare.paused=true;
-      Csquare.alpha=0;
+      Csquare.visible=false;
       //描画 魔界モード以外の時はResultmapで描画
       if(LP[0]==4){
         //従来通りツモ画面の描画のみ
@@ -8597,6 +8608,29 @@ function NameChange(){
      field.addChild(s);
       s.addEventListener("click", {handleEvent:Menu}); 
       //handmap.alpha=1; 
+      switch(Nodyaku(player)){
+        case "クレストオブガイア":
+          flashYaku(0);
+        break;
+        case "クレストオブロッソ":
+          flashYaku(1);
+        break;
+        case "クレストオブデニフ":
+          flashYaku(2);
+        break;
+        case "クレストオブアドリアン":
+          flashYaku(3);
+        break;
+        case "クレストオブソーレス":
+          flashYaku(4);
+        break;
+        case "クレストオブハルニエ":
+          flashYaku(5);
+        break;
+        case "国士無双":
+          flashYaku(6);
+        break;             
+      }
       var drawcard;
       var drawcardlist=[];
       for (var i=1;i<vichand.length;i++){
@@ -8650,11 +8684,28 @@ function NameChange(){
         slist[i-1]=s;
         handmap.addChild(s);
         }
-        //描画
+      //描画
       var I=0;
       var nIntervId=setInterval(flashText, 130);
       var nIntervId2;
       var nIntervId3;
+      //役満演出
+      function flashYaku(i){
+      var bmp = new createjs.Bitmap(queue.getResult(yakuicon_src[i]));
+        se21.play();
+        bmp.regX = bmp.image.width / 2;
+        bmp.regY = bmp.image.height / 2;
+        bmp.x = 400;
+        bmp.y = 80;
+        bmp.alpha = 0;
+        bmp.scaleX = bmp.scaleY = 3;
+        bmp.rotation = -8;
+        handmap.addChild(bmp);
+        createjs.Tween.get(bmp)
+        .to({alpha:1,scaleX:0.7,scaleY:0.7,rotation:2},120,createjs.Ease.quadOut)
+        .to({scaleX:0.85,scaleY:0.85,rotation:-1},80)
+        .to({scaleX:0.8,scaleY:0.8,rotation:0},60);
+      }
       function flashText(){
         //console.log(I,drawcardlist[I])
         drawcard=drawcardlist[I]
@@ -8765,6 +8816,8 @@ function NameChange(){
         cx2.fillText(LPtemp[4],630,490)
         var C=canvas.toDataURL();
         var Cb = new createjs.Bitmap(C);
+        Cb.scale=1/stage.scale;
+        console.log(Cb.image.width,Cb.image.height)
         handmap.addChild(Cb);
       }
     }; 
@@ -10796,8 +10849,8 @@ function NameChange(){
     });
     function ryukyoku(){
       //emit
-      tweeNsquare.paused=true;
-      Csquare.alpha=0;
+      //tweeNsquare.paused=true;
+      Csquare.visible=false;
       field.addChild(OKtext1);
       field.addChild(OKtext2);
       if(pvpmode==1){
@@ -10966,8 +11019,8 @@ function NameChange(){
       if(cLock==2 || cLock==4){return false};
       switch(this.card){
         case -1:
-          tweeNcor.paused=true;
-          CorsorKey.alpha=0;
+          //tweeNcor.paused=true;
+          CorsorKey.visible=false;
           fieldHint(-1);
           if(skillusage[1]>0 && chara[1]==5){
             yoti(skillusage[1]);
@@ -10979,8 +11032,8 @@ function NameChange(){
           CorsorKey.scaleY=0.4;
           CorsorKey.x=10
           CorsorKey.y=550;
-          CorsorKey.alpha=1;
-          tweeNcor.paused=false;
+          CorsorKey.visible=true;
+          //tweeNcor.paused=false;
           break;
         case 100:
           //ツモパイ
@@ -10988,8 +11041,8 @@ function NameChange(){
           CorsorKey.scaleY=0.91;
           CorsorKey.x=690
           CorsorKey.y=500;
-          CorsorKey.alpha=1;
-          tweeNcor.paused=false;
+          CorsorKey.visible=true;
+          //tweeNcor.paused=false;
           Elname(hand1[hand1.length-1],hand1.length-1)
           fieldHint(0,hand1[hand1.length-1])
           if(skillusage[1]>0 && chara[1]==5){
@@ -11001,8 +11054,8 @@ function NameChange(){
           CorsorKey.scaleY=0.91;
           CorsorKey.x=100+size*(this.card-1)
           CorsorKey.y=500;
-          CorsorKey.alpha=1;
-          tweeNcor.paused=false;    
+          CorsorKey.visible=true;
+          //tweeNcor.paused=false;    
           Elname(hand1[this.card],this.card)  
           fieldHint(0,hand1[this.card])
           if(skillusage[1]>0 && chara[1]==5){
@@ -11534,40 +11587,8 @@ function NameChange(){
           break;
         }
       };
-      if(cLock >0 && gamestate !==10){//カーソル
-        if(cLock==2){
-          //スキル対象選択プレイヤー編
-          if(mouseX>10 && mouseX<140){
-            if(mouseY>100 && mouseY<200){
-              cx3.clearRect(10,100,130,400);
-              cx3.strokeStyle ='yellow'
-              cx3.lineWidth = 2;
-              cx3.strokeRect(12,102,126,96);
-            }
-            if(mouseY>200 && mouseY<300){
-              cx3.clearRect(10,100,130,400);
-              cx3.strokeStyle ='yellow'
-              cx3.lineWidth = 2;
-              cx3.strokeRect(12,202,126,96);
-            }
-            if(mouseY>300 && mouseY<400){
-              cx3.clearRect(10,100,130,400);
-              cx3.strokeStyle ='yellow'
-              cx3.lineWidth = 2;
-              cx3.strokeRect(12,302,126,96);
-            }
-            if(mouseY>400 && mouseY<500){
-              cx3.clearRect(10,100,130,400);
-              cx3.strokeStyle ='yellow'
-              cx3.lineWidth = 2;
-              cx3.strokeRect(12,402,126,96);
-            }
-          }
-          return false;
-        }
-      }
       if(gamestate ==1){
-      //スキルは右下に移動
+      //カーソル
         if(mouseX >0 && mouseX< 100){
           if(skillswitch[0]==-2){
             if(mouseY >100 && mouseY<200){Skillname(2,1);}
@@ -12855,9 +12876,9 @@ function alertButton(parent,text){
   function gameover(word="クリックで進む"){//けっかはっぴょぉうする
     gamestate =-2;//終了時3に
     tweeNsquare.paused=true;
-    Csquare.alpha=0;
-    tweeNcor.paused=true;
-    CorsorKey.alpha=0;
+    Csquare.visible=false;
+    //tweeNcor.paused=true;
+    CorsorKey.visible=false;
     guidemap.removeAllChildren();
     handmap.removeAllChildren();
     ponkanmap.removeAllChildren();
@@ -13508,11 +13529,12 @@ function alertButton(parent,text){
         se18.volume(0);
         se19.volume(0);
         se20.volume(0);
+        se21.volume(0);
         jingle.volume(0);
         jingle2.volume(0);
         jingle3.volume(0);
       }else{
-      se1.volume(0.25*sBar);
+      se1.volume(0.6*sBar);
       se2.volume(0.4*sBar);
       se3.volume(0.3*sBar);
       se4.volume(0.3*sBar);
@@ -13531,7 +13553,8 @@ function alertButton(parent,text){
       se17.volume(0.3*sBar);
       se18.volume(0.18*sBar);
       se19.volume(0.6*sBar);
-      se20.volume(0.15*sBar);
+      se20.volume(0.6*sBar);
+      se21.volume(0.12*sBar);
       jingle.volume(0.3*sBar);
       jingle2.volume(0.3*sBar);
       jingle3.volume(0.3*sBar);
