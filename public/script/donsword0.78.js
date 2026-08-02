@@ -417,6 +417,8 @@ function ResizeGame(){
   var chrlist=new Array("名無しさん","エルス","アイシャ","レナ","レイヴン","イヴ","ラシェ","アラ","エリシス","エド")//"ラビィ"
   var chrimg_src= new Array("don/Don_chara0.png","don/Don_chara1.png","don/Don_chara2.png","don/Don_chara3.png","don/Don_chara4.png","don/Don_chara5.png","don/Don_chara6.png","don/Don_chara7.png","don/Don_chara8.png","don/Don_chara9.png");
   var chrimgR_src= new Array("don/Don_chara0.png","don/Don_chara1R.png","don/Don_chara2R.png","don/Don_chara3R.png","don/Don_chara4R.png","don/Don_chara5R.png","don/Don_chara6R.png","don/Don_chara7R.png","don/Don_chara8R.png","don/Don_chara9R.png");
+  var chrimg_AryX=[500,500,500,530,480,520,490,400,510,500]
+  var chrimg_AryY=[50,100,80,50,90,60,100,100,130,70]
   //説明用
   var epic_src =new Array("don/elstudio_bg1.png","don/Don_epic1.png","don/Don_epic2.png","don/Don_epic3.png","don/Don_epic6.png","don/Don_ss11.png","don/Don_epic4.png","don/Don_epic5.png");
   //パイの裏
@@ -1204,7 +1206,7 @@ function MouseCircle(event){
   //クリックした場所を教える
   //プレイ中はマナブレも
   if(mpmoving){
-  mpC+=0.2;
+  mpC+=0.3;
   if(mpC>DP[1]){mpC=DP[1]};
     if(mpC>0){
     DPlist[0].scaleX=mpC/30;
@@ -2557,8 +2559,6 @@ function menuMap(p=0){
           UsernameText.y=88;
           menu_main.addChild(UsernameText);
           createText(menu_main,"称号："+Usercrest,200,125,18);
-          var AryX=[500,500,500,530,480,520,490,400,510,500]
-          var AryY=[50,100,80,50,90,60,100,100,130,70]
           for(var i=0;i<chrimg_src.length;i++){
             var j=i%4;
             var k=Math.floor(i/4);
@@ -2576,7 +2576,7 @@ function menuMap(p=0){
               }else{
                 e11 = new createjs.Bitmap(queue.getResult(chrimg_src[i]));
               }
-            e11.sourceRect={x:AryX[i],y:AryY[i],width:200,height:200}
+            e11.sourceRect={x:chrimg_AryX[i],y:chrimg_AryY[i],width:200,height:200}
             e11.x=530+50*j;
             e11.y=350+50*k;
             e11.scale=1/4;
@@ -2881,6 +2881,11 @@ function menuMap(p=0){
         btn1.y = 420;
         menu_guide.addChild(btn1);
         btn1.addEventListener("click", {card:9,handleEvent:HowtoBt});
+        var btn1 = createButton("簡易点数計算表", 130, 40);
+        btn1.x = 60;
+        btn1.y = 460;
+        menu_guide.addChild(btn1);
+        btn1.addEventListener("click", {card:10,handleEvent:HowtoBt});
         break;
       case 1:
         //プレイ画面
@@ -2906,7 +2911,7 @@ function menuMap(p=0){
           Textlist[0].text="3ペアは最も基本的な役です。";
           Textlist[1].text="同じキャラ3枚を1組として、3組を揃える役です。"
           var e = new createjs.Bitmap(queue.getResult(epic_src[2]));
-          e.sourceRect={x:0,y:0,width:600,height:128};
+          e.sourceRect={x:0,y:155,width:600,height:135};
           e.x=90;
           e.y=125;
           menu_guide.addChild(e)
@@ -2915,12 +2920,7 @@ function menuMap(p=0){
           t.y=90;
           menu_guide.addChild(t);
           var Y=280;
-          var t = new createjs.Text("エルコレドンジャラでは9枚のパイで役を作る必要があります。", "22px 'Century Gothic'", "black");
-          t.x=90;
-          t.y=Y;
-          Y+=30;
-          menu_guide.addChild(t);
-          var t = new createjs.Text("3ペアは、「アイシャ」「ラシェ」「エリシス」のように、", "22px 'Century Gothic'", "black");
+          var t = new createjs.Text("3ペアは、「アイシャ」「ラシェ」「ロゼ」のように、", "22px 'Century Gothic'", "black");
           t.x=90;
           t.y=Y;
           Y+=30;
@@ -2956,7 +2956,7 @@ function menuMap(p=0){
             Textlist[0].text="ライン通貫は、同じラインのキャラを9枚揃える役です。";
             Textlist[1].text="シナジーでの高得点が狙いやすいかもしれません。"
             var e = new createjs.Bitmap(queue.getResult(epic_src[2]));
-            e.sourceRect={x:0,y:0,width:600,height:128};
+            e.sourceRect={x:0,y:0,width:600,height:135};
             e.x=90;
             e.y=125;
             menu_guide.addChild(e)
@@ -2965,11 +2965,6 @@ function menuMap(p=0){
             t.y=90;
             menu_guide.addChild(t);
             var Y=280;
-            var t = new createjs.Text("エルコレドンジャラでは9枚のパイで役を作る必要があります。", "22px 'Century Gothic'", "black");
-            t.x=90;
-            t.y=Y;
-            Y+=30;
-            menu_guide.addChild(t);
             var t = new createjs.Text("「1」「2」「3」「4」のように、パイに書かれた数字が", "22px 'Century Gothic'", "black");
             t.x=90;
             t.y=Y;
@@ -3020,7 +3015,7 @@ function menuMap(p=0){
               t.y=Y;
               Y+=30;
               menu_guide.addChild(t);
-              var t = new createjs.Text("「クレスト」シリーズは、マスターロードのパイを含み", "22px 'Century Gothic'", "black");
+              var t = new createjs.Text("「クレスト」シリーズは、マスターロードのパイを含む", "22px 'Century Gothic'", "black");
               t.x=90;
               t.y=Y;
               Y+=30;
@@ -3274,6 +3269,41 @@ function menuMap(p=0){
                         paiviewer.x=60;
                         paiviewer.alpha=1;
                         Remaincheck(-2);
+                        break;
+                      case 10:
+                        //点数表
+                        var btn1 = createButton("目次", 80, 40);
+                        btn1.x = 5;
+                        btn1.y = 80;
+                        menu_guide.addChild(btn1);
+                        btn1.addEventListener("click", {card:0,handleEvent:HowtoBt});
+                        var btn2 = createButton("　", 130, 40,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
+                        btn2.x = 380;
+                        btn2.y = 80;
+                        menu_guide.addChild(btn2);
+                        var guideText=[1,"一般","ヘル"]
+                        var t=createText(menu_guide,guideText[guideText[0]],420,85,24,{color:"#fff"})
+                        btn2.addEventListener("click",()=>{
+                          switch(guideText[0]){
+                            case 1:
+                              guideText[0]=2;
+                              t.text=guideText[guideText[0]];
+                              e.sourceRect={x:0,y:364,width:976,height:363}
+                            break;
+                            case 2:
+                              guideText[0]=1;
+                              t.text=guideText[guideText[0]];
+                              e.sourceRect={x:0,y:0,width:976,height:363}
+                          }
+                        })
+                        var e = new createjs.Bitmap('don/Don_tokuten.png');
+                        e.x=50;
+                        e.y=150;
+                        e.sourceRect={x:0,y:0,width:976,height:363}
+                        e.scale=64/90;
+                        menu_guide.addChild(e);
+                        Textlist[0].text="点数表です。基本100符、符数はポン等で変化します。";
+                        Textlist[1].text="細かいダメージ式：(符数+2)×3×(16×(翻数+2)+(翻数の3乗)÷3)"
                         break;
     }
     break;
@@ -3845,9 +3875,7 @@ function NameChange(){
       .lineTo(220, 0)
       .lineTo(200, 0)
       .lineTo(30, 160);
-    var Ary=[500,500,500,500,500,520,500,400,550,460];
-    var Ary2=[0,50,0,0,20,0,60,0,80,50];
-    chrIcon_img.sourceRect={x:Ary[chara[1]],y:Ary2[chara[1]]+45,width:300,height:300}
+    chrIcon_img.sourceRect={x:chrimg_AryX[chara[1]],y:chrimg_AryY[chara[1]]+45,width:300,height:300}
     chrIcon_img.x=0;
     chrIcon_img.y=0;
     chrIcon_img.scale=0.6;
@@ -4789,13 +4817,12 @@ function NameChange(){
         }
     for(var i=1;i<5;i++){
       var e1;
-      var AryX=[500,500,500,500,500,520,500,400,500,500];
     if(fool){
         e1 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[i]]));          
         }else{
         e1 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[i]]));
         }
-        e1.sourceRect={x:AryX[chara[i]],y:0,width:200,height:600}
+        e1.sourceRect={x:chrimg_AryX[chara[i]],y:0,width:200,height:600}
         e1.x=200*(i-1);
         var t1 = new createjs.Text(Ary[i], "32px 'Century Gothic'", "black");
           t1.x=40+200*(i-1);
@@ -5021,7 +5048,7 @@ function NameChange(){
         }else{
           e11 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[1]]));
         }
-        e11.sourceRect={x:Ary[chara[1]],y:Ary2[chara[1]],width:300,height:600}
+        e11.sourceRect={x:chrimg_AryX[chara[1]],y:chrimg_AryY[chara[1]],width:300,height:600}
         e11.x=0;
         e11.y=400;
         e11.scale=1/3;
@@ -5030,7 +5057,7 @@ function NameChange(){
         }else{
           e12 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[2]]));
         }
-        e12.sourceRect={x:Ary[chara[2]],y:Ary2[chara[2]],width:300,height:300}
+        e12.sourceRect={x:chrimg_AryX[chara[2]],y:chrimg_AryY[chara[2]],width:300,height:300}
         e12.x=0;
         e12.y=100;
         e12.scale=1/3;
@@ -5039,7 +5066,7 @@ function NameChange(){
         }else{
         e13 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[3]]));
           }
-        e13.sourceRect={x:Ary[chara[3]],y:Ary2[chara[3]],width:300,height:300}
+        e13.sourceRect={x:chrimg_AryX[chara[3]],y:chrimg_AryY[chara[3]],width:300,height:300}
         e13.x=0;
         e13.y=200;
         e13.scale=1/3;
@@ -5048,7 +5075,7 @@ function NameChange(){
         }else{
         e14 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[4]]));
         }
-        e14.sourceRect={x:Ary[chara[4]],y:Ary2[chara[4]],width:300,height:300}
+        e14.sourceRect={x:chrimg_AryX[chara[4]],y:chrimg_AryY[chara[4]],width:300,height:300}
         e14.x=0;
         e14.y=300;
         e14.scale=1/3;
@@ -8761,64 +8788,78 @@ function NameChange(){
         }else{
           se15.play()
         }
-        cx2.textAlign = "start";
-        cx2.fillStyle ="white";
-        cx2.font = "26px 'Century Gothic'";
-        cx2.fillText(fu+"符",530,330)
-        cx2.fillText(han[player]+"翻",530,360)
-        cx2.font = "28px 'Century Gothic'";
+        createText(handmap,fu+"符",530,325,26,{bold:true,color:"#fff"});
+        createText(handmap,han[player]+"翻",530,360,26,{bold:true,color:"#fff"});
         if(mode==0){
         if(rootscore==220000){
-        cx2.fillStyle ="red";
-        cx2.fillText("数え役満",640,360);}
+        createText(handmap,"数え役満",640,360,32,{bold:true,color:"rgba(255, 255, 255, 0.9)",outline:5});
+        createText(handmap,"数え役満",640,360,32,{bold:true,color:"#d51717"});}
         if(rootscore==150000){
-        cx2.fillStyle ="red";
-        cx2.fillText("三倍満",640,360);}
+        createText(handmap,"三倍満",640,360,32,{bold:true,color:"rgba(255, 255, 255, 0.9)",outline:5});
+        createText(handmap,"三倍満",640,360,32,{bold:true,color:"#d51717"});}
         if(rootscore==100000){
-        cx2.fillStyle ="red";
-        cx2.fillText("二倍満",640,360);}
+        createText(handmap,"二倍満",640,360,32,{bold:true,color:"rgba(255, 255, 255, 0.9)",outline:5});
+        createText(handmap,"二倍満",640,360,32,{bold:true,color:"#d51717"});}
         if(rootscore==75000){
-        cx2.fillStyle ="red";
-        cx2.fillText("跳満",640,360);}
+        createText(handmap,"跳満",640,360,32,{bold:true,color:"rgba(255, 255, 255, 0.9)",outline:5});
+        createText(handmap,"跳満",640,360,32,{bold:true,color:"#d51717"});}
         if(rootscore==50000){
-        cx2.fillStyle ="red";
-        cx2.fillText("満貫",640,360);}
+        createText(handmap,"満貫",640,360,32,{bold:true,color:"rgba(255, 255, 255, 0.9)",outline:5});
+        createText(handmap,"満貫",640,360,32,{bold:true,color:"#d51717"});}
         }
-        //cx2.font = "28px 'Century Gothic'";
-        cx2.strokeStyle ="#ff4c38";
-        cx2.lineWidth = 5;
-        cx2.lineJoin = 'round';
-        cx2.fillStyle ="white";
-        cx2.strokeText("　　　 "+score,530,400)
-        cx2.fillText("戦闘力 "+score,530,400)
-        cx2.font = "24px 'Century Gothic'";
-        cx2.fillStyle ="white";
+        createText(handmap,"戦闘力 ",530,405,24,{bold:true,color:"#ffb44b"});
+        createText(handmap,score,620,400,30,{bold:true,color:"#f9f8f7",outline:5});
+        createText(handmap,score,620,400,30,{bold:true,color:"#d57917"});
+        var x=30;
+        var y=430;
         if(pvpmode==1){
-          var x=30;
-          var y=430
           for(var i=0;i<MEMBER.length;i++){
-          cx2.fillText(MEMBER[i].name, x, y);
+          createText(handmap,MEMBER[i].name,x,y,24,{bold:true,color:"#fff"});
           x+=200;
           };
         }else{
-        cx2.fillText(Username,30,430)
-          cx2.fillText("ＣＰＵ１",230,430)
-            cx2.fillText("ＣＰＵ２",430,430)
-              cx2.fillText("ＣＰＵ３",630,430)
+          var Ary_RM=[Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"]
+          createText(handmap,Ary_RM[i],x,y,24,{bold:true,color:"#fff"});
+          x+=200;
         }
-        cx2.fillText(chrlist[chara[1]],30,460)
-        cx2.fillText(LPtemp[1],30,490)
-        cx2.fillText(chrlist[chara[2]],230,460)
-        cx2.fillText(LPtemp[2],230,490)
-        cx2.fillText(chrlist[chara[3]],430,460)
-        cx2.fillText(LPtemp[3],430,490)
-        cx2.fillText(chrlist[chara[4]],630,460)
-        cx2.fillText(LPtemp[4],630,490)
+        x=30;
+        y=430;
+        for(var i=1;i<5;i++){
+          var t;
+          if(fool){
+            t = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[i]]));    
+            t.sourceRect={x:chrimg_AryX[i],y:chrimg_AryY[i],width:200,height:200}
+            t.scale=5/20;
+            t.x=x-30;
+            t.y=y;
+            handmap.addChild(t);      
+              }else{
+            t = new createjs.Bitmap(queue.getResult(chrimg_src[chara[i]]));
+            t.sourceRect={x:chrimg_AryX[i],y:chrimg_AryY[i],width:200,height:200}
+            t.scale=5/20;
+            t.x=x;
+            t.y=y;
+            handmap.addChild(t);
+          }
+          if(LPtemp[i]>0){
+          createText(handmap,"+"+LPtemp[i],x+150,y,24,{bold:true,color:"#4075e8",align:"right"});
+          }else if(LPtemp[i]<0){
+          createText(handmap,LPtemp[i],x+150,y,24,{bold:true,color:"#f52424",align:"right"});
+          }else{
+          createText(handmap,LPtemp[i],x+150,y,24,{bold:true,color:"#fff",align:"right"});
+          }
+          if(LP[i]>0){
+          createText(handmap,LP[i],x+150,y+30,24,{bold:true,color:"#fff",align:"right"});
+          }else{
+          createText(handmap,LP[i],x+150,y+30,24,{bold:true,color:"#f52424",align:"right"});
+          }
+          x+=200;
+        }
         var C=canvas.toDataURL();
         var Cb = new createjs.Bitmap(C);
         Cb.scale=1/stage.scale;
         console.log(Cb.image.width,Cb.image.height)
-        handmap.addChild(Cb);
+        //handmap.addChild(Cb);
       }
     }; 
     function Score(player){
@@ -11741,6 +11782,7 @@ function createText(parent, text, x, y, size = 24, option = {}) {
     );
     t.x = x;
     t.y = y;
+    t.outline = option.outline || 0;
     t.textAlign = option.align || "left";
     t.textBaseline = option.baseline || "top";
     if(option.alpha!=null) t.alpha=option.alpha;
