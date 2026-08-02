@@ -1,9 +1,8 @@
 // var1.21　season2 UI
 // npm run dev
 // 国士無双で進行不能になる？
-// 魔界血戦後に操作不能になる
+// 魔界血戦後に操作不能になる->cLockか？
 // スマホ対応に向けて
-// canvas to DataURLの拡大率問題がわからん
 window.onload = function(){
   draw();
   };
@@ -385,7 +384,7 @@ function ResizeGame(){
   var mpC=0;
   var ManaBreak=0;
   var pvpmode=0;
-  var raidscore=new Array(0,0,0,0,0);//魔界ルールで使用 0->終了時1に 1->和了回数 2->1けっかはっぴょう 2
+  var raidscore=new Array(0,0,0,[],[]);//魔界ルールで使用 0->終了時1に 1->和了回数 2->1けっかはっぴょう 3,4 和了した人を記録
   var drawcard;
   var Cskillprepare=[0,0,0,0,0];
   //chara0 0->cpuランダム 1->cpu決める
@@ -1203,10 +1202,9 @@ function UpdateParticles(event){
   updateParticles();
 }
 function MouseCircle(event){
-  //クリックした場所を教える
   //プレイ中はマナブレも
   if(mpmoving){
-  mpC+=0.3;
+  mpC+=0.2;
   if(mpC>DP[1]){mpC=DP[1]};
     if(mpC>0){
     DPlist[0].scaleX=mpC/30;
@@ -1644,7 +1642,7 @@ function Soundcircle(){
     }
   }else{
     //結果発表へ
-    if(cLock==1 || raidscore[2]==1){
+    if(cLock==1 || raidscore[2]==1 || raidscore[2]==2){
     ResultPhase();
     }
   }
@@ -3052,10 +3050,9 @@ function menuMap(p=0){
                   Textlist[0].text="1つ前のプレイヤーが捨てたパイと同じキャラのパイが";
                   Textlist[1].text="手元に2枚以上ある時、捨てパイを貰うことができます。"
                   var e = new createjs.Bitmap(queue.getResult(epic_src[3]));
-                  e.sourceRect={x:50,y:0,width:500,height:526};
                   e.x=365;
-                  e.y=55;
-                  e.scale=38/50;
+                  e.y=120;
+                  e.scale=0.57;
                   menu_guide.addChild(e)
                   var t = new createjs.Text("ポン", "26px 'Century Gothic'", "black");
                   t.x=90;
@@ -5235,7 +5232,7 @@ function NameChange(){
         Extrash=[];
         c1=0
         opLock=0;
-        raidscore=[0,0,0,0,0];
+        raidscore=[0,0,0,[],[]];
         Reverse = false;
         if(debugmode){Reverse = true;}
         //ポンポポン
@@ -7314,7 +7311,6 @@ function NameChange(){
      }};
   
      function cpuskill(chr){
-      console.log(chr,reach,skillswitch[0])
       if(skillswitch[0] !==0){return false};
       if(reach[chr]==1 && skillswitch[chr]==0){//スキルを使用するかここで決める
         switch(chara[chr]){
@@ -7444,7 +7440,6 @@ function NameChange(){
     var end=0;
     for(var i=1; i<handtemp.length;i++){
       var C=donpai.findIndex(value=>value.id==handtemp[i])
-      console.log(C,handtemp[i]);
       var elm=donpai[C].name;
       var elm2=donpai[C].line
       var elm3=donpai[C].color;
@@ -8323,8 +8318,6 @@ function NameChange(){
         }
         achievetempB[A].count+=count;
         }};
-      cx2.font = "20px 'Century Gothic'";
-      cx2.fillStyle ="white";
       Resultary=[];
       console.log(Astyle);
       Resultary.push(Astyle)
@@ -8409,210 +8402,65 @@ function NameChange(){
         if(rootscore==50000){
         PB("満貫");}
       opLock=-1;
-      //gamestate =2;
       tweeNsquare.paused=true;
       Csquare.visible=false;
-      //描画 魔界モード以外の時はResultmapで描画
+      //描画 魔界モード以外時
       if(LP[0]==4){
-        //従来通りツモ画面の描画のみ
-        if(fool){
-          e15 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[player]]));          
-        }else{
-        e15 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[player]]));
-        }
-      if(ippatu[player]==1 && chara[player]==6 && skillusage[player]==1){
-        e15.sourceRect={x:0,y:10,width:400,height:400};
-        }else if(chara[player]==6){
-          e15.sourceRect={x:400,y:10,width:400,height:400}
-        }else{
-          e15.sourceRect={x:0,y:10,width:800,height:400};
-        }
-        if(chara[player]==6){
-        e15.x=400+raidscore[1]*800;
-        }else{
-        e15.x=raidscore[1]*800
-        }
-        e15.y=100;
-      fieldmap.addChild(e15);
-      var e = new createjs.Bitmap(eltearB_src[1]);
-      e.scale=0.7;
-      e.x=raidscore[1]*800;
-      e.y=230;
-      fieldmap.addChild(e);
-      if(num==0){
-        e16 = new createjs.Bitmap(queue.getResult(win_src[4]));
-      }else{
-        e16 = new createjs.Bitmap(queue.getResult(win_src[5]));
-      }
-      e16.scale=0.7;
-      e16.x=raidscore[1]*800;
-      e16.y=230;
-      fieldmap.addChild(e16);
-      var s = new createjs.Shape();
-        s.graphics.beginFill("rgba(15,15,15,0.6)");
-        s.graphics.drawRect(10, 100, 780, 400);
-        s.x=raidscore[1]*800
-      fieldmap.addChild(s);
-        s.addEventListener("click", {handleEvent:Menu}); 
-        for (var i=1;i<vichand.length;i++){
-        var drawcard=new createjs.Bitmap(queue.getResult(eltear_src[vichand[i]]));
-        drawcard.x=15+size*(i-1)+raidscore[1]*800;
-        if(i==vichand.length-1){drawcard.x+=15}
-        drawcard.y=120;
-        drawcard.scaleX=7/12;
-        drawcard.scaleY=31/52;
-        fieldmap.addChild(drawcard);
-        }
-        var haix
-        var haiy
-        haix=30;
-        haiy=250;
-        cx2.font = "20px 'Century Gothic'";
-        cx2.fillStyle ="white";
-        cx2.fillText(Astyle,haix,haiy)
-        haiy+=50;
-        if(counter[player] ==0){
-          if(num==0){cx2.fillText('天和 4翻',haix,haiy)}
-          haiy +=25
-          }
-        if(nuki[0]>0){
-          if(num==0){
-            cx2.fillText('嶺上開花 1翻',haix,haiy)
-        }else{
-            cx2.fillText('槍槓 1翻',haix,haiy);
-        }
-          haiy +=25
-        }
-        if(num==0 && ponsw[player]==0){
-        cx2.fillText('門前ツモ 1翻',haix,haiy)
-        haiy +=25
-        }
-        if(ippatu[player]==1){
-        cx2.fillText('一発 1翻',haix,haiy)
-        haiy +=25
-        }
-        if(deck.length ==0){
-        cx2.fillText('海底 1翻',haix,haiy)
-        haiy +=25
-        }
-        if(doracheck>0){
-          cx2.fillText('ドラ '+doracheck+'翻',haix,haiy)
-          haiy +=25
-          }
-        if(ponsw[player] >0){
-            cx2.fillText('鳴き -2翻',haix,haiy)
-            haiy +=25
-        }
-          haiy=250
-          haix=480;
-        cx2.textAlign = "right";
-        if(nodyaku[0] >0){
-          for(var i=1 ;i<nodyaku.length;i++){
-          cx2.fillText(nodyaku[i],haix,haiy)
-          haiy+=25
-          if(haiy>=400){
-            haix+=240
-            haiy=250
-          }
-          }}
-        cx2.textAlign = "start";
-        cx2.fillStyle ="white";
-        cx2.font = "26px 'Century Gothic'";
-        cx2.fillText(fu+"符",530,330)
-        cx2.fillText(han[player]+"翻",530,360)
-        cx2.font = "28px 'Century Gothic'";
-        if(mode==0){
-        if(rootscore==220000){
-        cx2.fillStyle ="red";
-        cx2.fillText("数え役満",640,360);
-        PB("数え役満");}
-        if(rootscore==150000){
-        cx2.fillStyle ="red";
-        cx2.fillText("三倍満",640,360);
-        PB("三倍満");}
-        if(rootscore==100000){
-        cx2.fillStyle ="red";
-        cx2.fillText("二倍満",640,360);
-        PB("二倍満");}
-        if(rootscore==75000){
-        cx2.fillStyle ="red";
-        cx2.fillText("跳満",640,360);
-        PB("跳満");}
-        if(rootscore==50000){
-        cx2.fillStyle ="red";
-        cx2.fillText("満貫",640,360);
-        PB("満貫");}
-        }
-        cx2.strokeStyle ="#ff4c38";
-        cx2.lineWidth = 5;
-        cx2.lineJoin = 'round';
-        cx2.fillStyle ="white";
-        cx2.strokeText("　　　 "+score,530,400)
-        cx2.fillText("戦闘力 "+score,530,400)
-        cx2.font = "24px 'Century Gothic'";
-        cx2.fillStyle ="white";
-        if(pvpmode==1){
-          var x=30;
-          var y=430
-          for(var i=0;i<MEMBER.length;i++){
-          cx2.fillText(MEMBER[i].name, x, y);
-          x+=200;
-          };
-    }else{
-        cx2.fillText(Username,30,430)
-          cx2.fillText("ＣＰＵ１",230,430)
-            cx2.fillText("ＣＰＵ２",430,430)
-              cx2.fillText("ＣＰＵ３",630,430)
-    }
-        cx2.fillText(chrlist[chara[1]],30,460)
-        cx2.fillText(LPtemp[1],30,490)
-        cx2.fillText(chrlist[chara[2]],230,460)
-        cx2.fillText(LPtemp[2],230,490)
-        cx2.fillText(chrlist[chara[3]],430,460)
-        cx2.fillText(LPtemp[3],430,490)
-        cx2.fillText(chrlist[chara[4]],630,460)
-        cx2.fillText(LPtemp[4],630,490)  
-        N1= cx2.getImageData(10, 100, 780, 400);
-        var C=canvas.toDataURL();
-        var Cb = new createjs.Bitmap(C);
-        Cb.x=raidscore[1]*800;
-        fieldmap.addChild(Cb);
         Buff[player].push(11);
         raidscore[1]+=1;
+        raidscore[3].push([player,num]);
+        var AryforRaid=[{hand:[],yakuA:Astyle,yakuB:[],yakuC:[],score:rootscore,fu:fu,han:han[player]}];        
+        AryforRaid[0].hand=vichand.concat();
+        AryforRaid[0].yakuB=Resultary.concat();
+        AryforRaid[0].yakuC=nodyaku.concat();
+        raidscore[4].push(AryforRaid);
         if(raidscore[1]>=3){
           raidscore[2]=1;
         };
         if(LP[1]<0 || LP[2]<0 || LP[3]<0 || LP[4]<0){
           raidscore[2]=1;
         };
-        cx2.clearRect(10,100,780,400);
       };
     }
     //一つずつ描画するパターン loopanimation から呼ばれる
     function Resultmap(player,num){
+      if(debugmode){console.log('Resultmap',player,num,msgstate)}
+      var Astyle;
+      var e15_image
+      if(LP[0]==4){
+        console.log(raidscore[4][msgstate][0]);
+        vichand=raidscore[4][msgstate][0].hand.concat();
+        Astyle=raidscore[4][msgstate][0].yakuA;
+        Resultary=raidscore[4][msgstate][0].yakuB;
+        nodyaku=raidscore[4][msgstate][0].yakuC.concat();
+        rootscore=raidscore[4][msgstate][0].score;
+        fu=raidscore[4][msgstate][0].fu;
+        han[player]=raidscore[4][msgstate][0].han;
+      }else{
+        Astyle=Nodyaku(player);
+      }
       gamestate=-1;
       guidemap.alpha=0;
-      cx2.clearRect(0,0,800,600);
       handmap.removeAllChildren();
       if(fool){
-        e15 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[player]]));          
+        e15_image = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[player]]));          
       }else{
-      e15 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[player]]));
+        e15_image = new createjs.Bitmap(queue.getResult(chrimg_src[chara[player]]));
       }
       if(ippatu[player]==1 && chara[player]==6 && skillusage[player]==1){
-        e15.sourceRect={x:0,y:10,width:400,height:400};
+        e15_image.sourceRect={x:0,y:10,width:400,height:400};
       }else if(chara[player]==6){
-        e15.sourceRect={x:400,y:10,width:400,height:400}
+        e15_image.sourceRect={x:400,y:10,width:400,height:400}
       }else{
-        e15.sourceRect={x:0,y:10,width:800,height:400};
+        e15_image.sourceRect={x:0,y:10,width:800,height:400};
       }
       if(chara[player]==6){
-      e15.x=400+raidscore[1]*800;
+      e15_image.x=400;
       }else{
-      e15.x=raidscore[1]*800
+      e15_image.x=0
       }
-      e15.y=100;
-     field.addChild(e15);
+      e15_image.y=100;
+     field.addChild(e15_image);
      var e = new createjs.Bitmap(eltearB_src[1]);
      e.scale=1.2;
      e.alpha=0.7;
@@ -8634,8 +8482,7 @@ function NameChange(){
        s.x=0
      field.addChild(s);
       s.addEventListener("click", {handleEvent:Menu}); 
-      //handmap.alpha=1; 
-      switch(Nodyaku(player)){
+      switch(Astyle){
         case "クレストオブガイア":
           flashYaku(0);
         break;
@@ -8810,6 +8657,7 @@ function NameChange(){
         createText(handmap,"戦闘力 ",530,405,24,{bold:true,color:"#ffb44b"});
         createText(handmap,score,620,400,30,{bold:true,color:"#f9f8f7",outline:5});
         createText(handmap,score,620,400,30,{bold:true,color:"#d57917"});
+        if(LP[0]==4){return true}
         var x=30;
         var y=430;
         if(pvpmode==1){
@@ -8854,12 +8702,7 @@ function NameChange(){
           createText(handmap,LP[i],x+150,y+30,24,{bold:true,color:"#f52424",align:"right"});
           }
           x+=200;
-        }
-        var C=canvas.toDataURL();
-        var Cb = new createjs.Bitmap(C);
-        Cb.scale=1/stage.scale;
-        console.log(Cb.image.width,Cb.image.height)
-        //handmap.addChild(Cb);
+        };
       }
     }; 
     function Score(player){
@@ -9062,7 +8905,6 @@ function NameChange(){
     function Nodyaku(){//アガリ条件チェック
       //ラインとペアの確認
       var result=0
-      cx2.fillStyle = "white";
         handtemp.sort(compareFunc);
         //console.log(handtemp[9],handtemp)
             var Count={};
@@ -10946,14 +10788,9 @@ function NameChange(){
     console.log('流局',ctl)
     }
     function ResultPhase(){
-      //ccanvasに保存した画像を順に見せる
       cLock=0;
-      console.log('操作禁止',cLock);
       if(raidscore[2]==1){
         //はじめて
-        fieldmap.x=800;
-        field.addChild(fieldmap);
-        guidemap.alpha=0;
         raidscore[2]=2;
         msgstate=0;
         cLock=1;
@@ -10964,32 +10801,12 @@ function NameChange(){
       if(raidscore[1]<=msgstate){
         raidscore[0]=1;
         return false;
+      };
+      if(raidscore[2]==2){
+      Resultmap(raidscore[3][msgstate],raidscore[4][msgstate])
+      msgstate+=1;
+      console.log(msgstate);
       }
-      //ツモ画面を順番に表示
-        switch(msgstate){
-          case 0:
-            createjs.Tween.get(fieldmap)
-            .to({x:0},250, createjs.Ease.cubicInOut)
-            .call(next);
-            break;
-          case 1:
-            createjs.Tween.get(fieldmap)
-            .to({x:-800},250, createjs.Ease.cubicInOut)  
-            .call(next);
-            break;
-          case 2:
-            createjs.Tween.get(fieldmap)
-            .to({x:-1600},250, createjs.Ease.cubicInOut)  
-            .call(next);
-            break;
-          default:
-            console.log(msgstate);
-            return false;
-        }
-        function next(){
-          msgstate+=1;
-          cLock=1;
-        }
     }
     function SortButton(){
       //一番右のパイを除いて並び替える
@@ -12150,10 +11967,10 @@ function alertButton(parent,text){
       function end(){
         Container.removeAllChildren();
         stage.removeChild(Container);
-        if(LP[0]==4){Raidscore()};
+        if(LP[0]==4){Raidscore(player,type)};
       }
       };
-      function Raidscore(){
+      function Raidscore(player,type){
           if(raidscore[0]==0 && raidscore[2] ==0){
             gamestate=1;
             ctl=new Array(0,0,0,0,0)
