@@ -1,14 +1,13 @@
 // var1.21　season2 UI
 // npm run dev
-// 国士無双で進行不能になる？
-// 魔界血戦後に操作不能になる->cLockか？
+// 魔界血戦後に操作不能になる？
 // スマホ対応に向けて
 window.onload = function(){
   draw();
   };
   function draw(){
   var titletext="v1.2/Click to START";
-  var debugmode=true;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
+  var debugmode=false;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
   if(debugmode){titletext+="　でばっぐも～ど"};
   var today = new Date();
   var fool=false;
@@ -26,7 +25,7 @@ window.onload = function(){
       index = 0,
       timer = null;  
     document.addEventListener('keydown', function (ev) {
-      if(gamestate==10 && pagestate==-1){
+      if(gamestate ==10 && pagestate==-1){
       // タイマーのリセット
       clearTimeout(timer);
       // コマンドの確認
@@ -62,7 +61,7 @@ window.onload = function(){
       index = 0,
       timer = null;  
     document.addEventListener('keydown', function (ev) {
-      if(gamestate==10 && pagestate==-1){
+      if(gamestate ==10 && pagestate==-1){
       // タイマーのリセット
       clearTimeout(timer);
       // コマンドの確認
@@ -343,6 +342,7 @@ function ResizeGame(){
   stage.addChild(Dlvup);
     //アップデートする
     createjs.Ticker.timingMode = createjs.Ticker.RAF;
+    createjs.Ticker.framerate = 60;
     createjs.Ticker.addEventListener("tick",function(){
         stage.update();
       });
@@ -1204,7 +1204,7 @@ function UpdateParticles(event){
 function MouseCircle(event){
   //プレイ中はマナブレも
   if(mpmoving){
-  mpC+=0.2;
+  mpC+=0.3* (event.delta / 16.6667);
   if(mpC>DP[1]){mpC=DP[1]};
     if(mpC>0){
     DPlist[0].scaleX=mpC/30;
@@ -1655,9 +1655,6 @@ function Soundcircle(){
     }else{gameover();}
           break;
     }
-  }else if(gamestate ==-2){
-    //ツモのアニメーション中
-    //gamestate=-1;
     }else if(gamestate ==2){//次のゲームへ
     field.addChild(OKtext1);
     field.addChild(OKtext2);
@@ -1738,23 +1735,6 @@ function Soundcircle(){
         if(mouseX >460 && mouseY > 240 && mouseX <580 && mouseY <300){
           opLock=0;
           se3.play();
-        }
-        //escによる終了
-        if(mouseX >220 && mouseY > 240 && mouseX <340 && mouseY <300){
-        se3.play();
-        scoretemp[0]=-2;
-        scoretemp_rate=[];
-        opLock=0;
-        if(pvpmode==1){
-        cx4.globalAlpha=1;
-        cx4.font = "bold 26px 'メイリオ'";
-        cx4.fillStyle = "white";
-        var RsString=['ルーム長がトイレに行きました','ルーム長権限が発動しました','ルーム長がゲームを終了させました'];
-        var A=Math.floor(Math.random()*RsString.length);
-        gameover(RsString[A]);
-        }else{
-        gameover();
-        }
         }
       return false;
       }
@@ -4503,15 +4483,29 @@ function NameChange(){
           if(IsHost(IAM.room)){
           //pvp
           if(opLock==0 && gamestate ==1){
-            var Cbutton=alertButton(field,"タイトル画面に戻りますか？"); 
-            Cbutton.addEventListener("click", {handleEvent:Menu}); 
+            var Cbutton=alertButton(field,"ゲームを中止してメニュー画面に戻りますか？"); 
+            Cbutton.addEventListener("click", {handleEvent:ToGameover}); 
           }}
         }else{
           //pve
           if(opLock==0 && gamestate ==1){
-          var Cbutton=alertButton(field,"タイトル画面に戻りますか？"); 
-          Cbutton.addEventListener("click", {handleEvent:Menu}); 
+          var Cbutton=alertButton(field,"ゲームを中止してメニュー画面に戻りますか？"); 
+          Cbutton.addEventListener("click", {handleEvent:ToGameover}); 
           }}
+        function ToGameover(){
+          //escによる終了
+          se3.play();
+          scoretemp[0]=-2;
+          scoretemp_rate=[];
+          opLock=0;
+          if(pvpmode==1){
+          var RsString=['ルーム長がトイレに行きました','ルーム長権限が発動しました','ルーム長がゲームを終了させました'];
+          var A=Math.floor(Math.random()*RsString.length);
+          gameover(RsString[A]);
+          }else{
+          gameover();
+          }
+        }
       }
     }
   var yakumapYmax;
@@ -8424,9 +8418,9 @@ function NameChange(){
     }
     //一つずつ描画するパターン loopanimation から呼ばれる
     function Resultmap(player,num){
-      if(debugmode){console.log('Resultmap',player,num,msgstate)}
+      if(debugmode){console.log('Resultmap',player,num,msgstate,raidscore[4].length)}
       var Astyle;
-      var e15_image
+      var e15_image= new Image();
       if(LP[0]==4){
         console.log(raidscore[4][msgstate][0]);
         vichand=raidscore[4][msgstate][0].hand.concat();
@@ -8460,13 +8454,13 @@ function NameChange(){
       e15_image.x=0
       }
       e15_image.y=100;
-     field.addChild(e15_image);
+     handmap.addChild(e15_image);
      var e = new createjs.Bitmap(eltearB_src[1]);
      e.scale=1.2;
      e.alpha=0.7;
      e.x=20;
      e.y=180;
-     field.addChild(e);
+     handmap.addChild(e);
      if(num==0){
        e16 = new createjs.Bitmap(queue.getResult(win_src[4]));
      }else{
@@ -8475,12 +8469,12 @@ function NameChange(){
      e16.scale=0.7;
      e16.x=0;
      e16.y=230;
-     field.addChild(e16);
+     handmap.addChild(e16);
      var s = new createjs.Shape();
        s.graphics.beginFill("rgba(15,15,15,0.6)");
        s.graphics.drawRect(10, 100, 780, 400);
        s.x=0
-     field.addChild(s);
+     handmap.addChild(s);
       s.addEventListener("click", {handleEvent:Menu}); 
       switch(Astyle){
         case "クレストオブガイア":
@@ -8657,7 +8651,16 @@ function NameChange(){
         createText(handmap,"戦闘力 ",530,405,24,{bold:true,color:"#ffb44b"});
         createText(handmap,score,620,400,30,{bold:true,color:"#f9f8f7",outline:5});
         createText(handmap,score,620,400,30,{bold:true,color:"#d57917"});
-        if(LP[0]==4){return true}
+        if(LP[0]==4){
+          if(raidscore[4].length>msgstate){
+            gamestate=0;
+            createText(handmap,"次へ",700,500,16,{bold:true,align:"right",outline:5,color:"white"});
+            createText(handmap,"次へ",700,500,16,{bold:true,align:"right"});
+          }else{
+            gamestate=2;
+          }
+          return true;
+        };
         var x=30;
         var y=430;
         if(pvpmode==1){
@@ -10734,8 +10737,6 @@ function NameChange(){
       //emit
       //tweeNsquare.paused=true;
       Csquare.visible=false;
-      field.addChild(OKtext1);
-      field.addChild(OKtext2);
       if(pvpmode==1){
       if(IsHost(IAM.room)){
         MEMBER[0].turnflag=1;
@@ -10751,6 +10752,8 @@ function NameChange(){
       OKtext1.text="OK ("+MM+")";
       OKtext2.text="OK ("+MM+")";
     }
+    field.addChild(OKtext1);
+    field.addChild(OKtext2);
     yakumap.alpha=0;
     opLock=-1;
     se10.play();
@@ -10759,10 +10762,8 @@ function NameChange(){
               s.graphics.drawRect(10, 100, 680, 400);
               field.addChild(s);
               s.addEventListener("click", {handleEvent:Menu}); 
-    var t = new createjs.Text("流局", "36px 'Century Gothic'", "white");
-    t.x=390;
-    t.y=300;
-    field.addChild(t);
+    createText(field,"流局",390,300,36,{bold:true,color:"white",outline:6});
+    createText(field,"流局",390,300,36,{bold:true});
     createjs.Tween.get(s)
             .wait(300)
             .call(next);
@@ -10803,7 +10804,7 @@ function NameChange(){
         return false;
       };
       if(raidscore[2]==2){
-      Resultmap(raidscore[3][msgstate],raidscore[4][msgstate])
+      Resultmap(raidscore[3][msgstate][0],raidscore[3][msgstate][1])
       msgstate+=1;
       console.log(msgstate);
       }
@@ -11238,7 +11239,7 @@ function NameChange(){
             break;
             case 3:
               Textlist[0].text=LPlist[LP[0]]+"：際限なく自由に打ち続けるモードです。";
-              Textlist[1].text="Escキーでタイトル画面に戻ることで抜けられます。";  
+              Textlist[1].text="Escキーでメニュー画面に戻ることで抜けられます。";  
             break;
             case 4:
               Textlist[0].text=LPlist[LP[0]]+"：一局に最大3人和了できる持ち点150,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦です。";
@@ -11991,14 +11992,12 @@ function alertButton(parent,text){
               s.graphics.drawRect(10, 100, 700, 400);
               field.addChild(s);
               s.addEventListener("click", {handleEvent:Menu});
-              var t = new createjs.Text("TIME UP", "36px 'Century Gothic'", "white");
-              t.x=320;
-              t.y=300;
-              field.addChild(t);
+              createText(field,"TIME UP",390,300,36,{bold:true,color:"white",outline:6});
+              createText(field,"TIME UP",390,300,36,{bold:true});
               gamestate =2;
               }
           };
-        function handleTick(){
+        function handleTick(event){
             var Ary=[0,450,150,250,350]
             for(var i=1;i<LPtemp.length;i++){
               if(LPtemp[i]>0){
@@ -12023,7 +12022,7 @@ function alertButton(parent,text){
                 Container.addChild(t);
               }
             }
-          count+=1;
+          count+=1* (event.delta / 16.6667);
           var M=count/Vmax;
           if(M>1){M==1};
           for(var i=1;i<LPtemp.length;i++){
@@ -12736,7 +12735,6 @@ function alertButton(parent,text){
     gamestate =-2;//終了時3に
     tweeNsquare.paused=true;
     Csquare.visible=false;
-    //tweeNcor.paused=true;
     CorsorKey.visible=false;
     guidemap.removeAllChildren();
     handmap.removeAllChildren();
@@ -13421,8 +13419,23 @@ function alertButton(parent,text){
     }   
   };
   //PWA
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-        .then(() => console.log("Service Worker Registered"))
-        .catch(err => console.log(err));
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register("./script/sw.js")
+            .then(registration => {
+
+                console.log(
+                    "Service Worker registered:",
+                    registration.scope
+                );
+            })
+            .catch(error => {
+
+                console.error(
+                    "Service Worker registration failed:",
+                    error
+                );
+            });
+    });
 }
