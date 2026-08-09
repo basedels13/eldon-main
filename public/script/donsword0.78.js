@@ -1,7 +1,7 @@
 // var1.21　season2 UI
 // npm run dev
 // 魔界血戦後に操作不能になる？
-// スマホ対応に向けて
+// 対戦モードにそろそろ着手
 window.onload = function(){
   draw();
   };
@@ -20,7 +20,6 @@ window.onload = function(){
     var wait = 1500,
       standby = true,
       command = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"],
-      //command = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65],
       length = command.length,
       index = 0,
       timer = null;  
@@ -397,8 +396,9 @@ function ResizeGame(){
   var Bufflist =new Array(0,[],[],[],[])
   var mode=0
   var musicnum=0;
-  var musictemp=0;//ランダム再生時
   var musicset=new Array(0,0,0);
+  var musictemp=new Array(0,0,0);//ランダム再生時を考慮する
+  var nowplaying=0;
   //通常時、自分の立直時、オーラス時
   var musicrandom=[[1,2,5,6,7],[3,8,9,11],[4,10,12]];
   //ランダム向けプレイリスト
@@ -3335,22 +3335,36 @@ var rect = new createjs.Shape();
   }    
     break;
   case 2:
+    //room updated側でも描画をしているよ
     RoomConfigAry=[];
     var rect = new createjs.Shape();
       rect.graphics
         .beginFill("#001c0d")
         .drawRect(0, 0, 800, 600);
       menu_duel.addChild(rect);
+    var duel = new createjs.Bitmap('don/stadium2.png');
+        duel.sourceRect={x:0,y:0,width:800,height:510};
+        duel.x=0;
+        duel.y=0;
+        duel.alpha=0.3;
+        menu_duel.addChild(duel);
+    var rect = new createjs.Shape();
       rect.graphics
-      .beginFill("#126e60")
-      .drawRect(11, 100, 148, 300)
-      .drawRect(161, 100, 148, 300)
-      .drawRect(311, 100, 148, 300)
-      .drawRect(461, 100, 148, 300);
+        .beginFill("rgba(18, 110, 96, 0.9)")
+        .drawRect(2, 125, 148, 300)
+        .drawRect(152, 125, 148, 300)
+        .drawRect(302, 125, 148, 300)
+        .drawRect(452, 125, 148, 300);
     menu_duel.addChild(rect);
+    var duel = new createjs.Bitmap(queue.getResult(win_src[1]));
+        duel.sourceRect={x:0,y:0,width:300,height:150};
+        duel.x=1;
+        duel.y=4;
+        duel.scale=0.5;
+        menu_duel.addChild(duel);
     var s = new createjs.Shape();
     s.graphics.beginFill("rgba(107, 218, 203, 0.7)");
-    s.graphics.drawRoundRect(620,100,170,380,10,10,);
+    s.graphics.drawRoundRect(620,100,170,380,10,10);
     menu_duel.addChild(s);
     s.addEventListener("click", {handleEvent:Menu}); 
     for(var i=0;i<4;i++){
@@ -3373,11 +3387,11 @@ var rect = new createjs.Shape();
     var rect = new createjs.Shape();
       rect.graphics
         .beginFill("rgba(16, 7, 79, 0.7)")
-        .drawRect(1, 1, 80, 40)
+        .drawRect(1, 79, 150, 30)
       menu_duel.addChild(rect);
       var t = new createjs.Text("ルーム"+IAM.room, "14px Arial", "white");
       t.x=10;
-      t.y=10;
+      t.y=85;
       menu_duel.addChild(t);
       if(IsHost(IAM.room)){
         var Ary=["ルール","◀"+LP_PVP.Rule[LP_PVP.Rule[0]]+"▶",'持ち点',"◀"+LP_PVP.LP[LP_PVP.LP[0]]+"▶",'東風/半荘',"◀"+LP_PVP.Length[LP_PVP.Length[0]]+"▶",'満貫打ち止め',"◀"+LP_PVP.Block[LP_PVP.Block[0]]+"▶",'スキル',"◀"+LP_PVP.Skill[LP_PVP.Skill[0]]+"▶"]
@@ -3513,6 +3527,14 @@ function NameChange(){
         //実績等
         pagestate=5;
         msgstate=0;
+        se5.play();
+        menuMap(2);
+        field.addChild(menu_main);
+        break;
+      case 6:
+        //実績等
+        pagestate=5;
+        msgstate=2;
         se5.play();
         menuMap(2);
         field.addChild(menu_main);
@@ -4002,7 +4024,7 @@ function NameChange(){
     zoom.y=400;
     field.addChild(zoom);
     //実績・名前変更する画面へ
-    btn1.addEventListener("click", {card:5,handleEvent:Menubutton});
+    btn1.addEventListener("click", {card:6,handleEvent:Menubutton});
     menuMap();
     break;
         case 3:
@@ -4343,13 +4365,13 @@ function NameChange(){
           menu_duel.addChild(t);
         }
         if(IsHost(IAM.room)){
-          var btn1 = createButton("対局開始", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
-          btn1.x = 260;
-          btn1.y = 420;
+          var btn1 = createButton("対局開始", 160, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
+          btn1.x = 270;
+          btn1.y = 450;
           menu_duel.addChild(btn1);   
-          var btn2 = createButton("退出する", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
+          var btn2 = createButton("退出する", 160, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn2.x = 440;
-          btn2.y = 420;
+          btn2.y = 450;
           menu_duel.addChild(btn2);   
           btn1.addEventListener("click", {card:1,handleEvent:getReady}); 
           btn2.addEventListener("click", {card:0,handleEvent:getReady}); 
@@ -4360,24 +4382,24 @@ function NameChange(){
               A=0;
             }
             if(A>0 && data.list[A].ready){
-          var btn1 = createButton("Quit", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
-          btn1.x = 260;
-          btn1.y = 420;
+          var btn1 = createButton("Quit", 160, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
+          btn1.x = 270;
+          btn1.y = 450;
           menu_duel.addChild(btn1);   
-          var btn2 = createButton("退出する", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
+          var btn2 = createButton("退出する", 160, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn2.x = 440;
-          btn2.y = 420;
+          btn2.y = 450;
           menu_duel.addChild(btn2);  
           btn1.addEventListener("click", {card:1,handleEvent:getReady}); 
           btn2.addEventListener("click", {card:-1,handleEvent:getReady}); 
             }else if(A>0){
-          var btn1 = createButton("Ready", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
-          btn1.x = 260;
-          btn1.y = 420;
+          var btn1 = createButton("Ready", 160, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
+          btn1.x = 270;
+          btn1.y = 450;
           menu_duel.addChild(btn1);   
-          var btn2 = createButton("退出する", 170, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
+          var btn2 = createButton("退出する", 160, 60,"#ffbb4d","#ff7b00","#eeb64f","#27160e");
           btn2.x = 440;
-          btn2.y = 420;
+          btn2.y = 450;
           menu_duel.addChild(btn2);  
           btn1.addEventListener("click", {card:1,handleEvent:getReady}); 
           btn2.addEventListener("click", {card:0,handleEvent:getReady}); 
@@ -4425,37 +4447,37 @@ function NameChange(){
             e.sourceRect={x:400,y:0,width:298,height:600};
             }
             e.scale=1/2;
-            e.x=10+150*i
-            e.y=100;
+            e.x=2+150*i
+            e.y=125;
             menu_duel.addChild(e);
             var rect = new createjs.Shape();
-            rect.graphics.beginFill("rgba(20,20,20,0.7)").drawRect(11+150*i, 340, 148, 60);
-            rect.graphics.beginFill("rgba(111, 255, 231, 0.7)").drawRect(11+150*i, 105, 148, 32);
+            rect.graphics.beginFill("rgba(20,20,20,0.7)").drawRect(2+150*i, 365, 148, 60);
+            rect.graphics.beginFill("rgba(111, 255, 231, 0.7)").drawRect(2+150*i, 130, 148, 32);
             menu_duel.addChild(rect);
             var t = new createjs.Text(data.list[i].crest, "14px Arial", "white");
-            t.x=12+150*i
-            t.y=350;
+            t.x=2+150*i
+            t.y=375;
             menu_duel.addChild(t);
             var t = new createjs.Text(data.list[i].name, "bold 24px Arial", "white");
-            t.x=13+150*i
-            t.y=375;
+            t.x=3+150*i
+            t.y=400;
             menu_duel.addChild(t);
             if(i==0){
             var t = new createjs.Text("ルーム長", "bold 26px Arial", "rgb(255, 111, 55)");
-            t.x=50+150*i
-            t.y=110;
+            t.x=40+150*i
+            t.y=135;
             menu_duel.addChild(t);
             }else{
             if(data.list[i].ready){
               var t = new createjs.Text("READY", "bold 26px Arial", "rgb(255, 111, 55)");
-              t.x=45+150*i
-              t.y=110;
+              t.x=35+150*i
+              t.y=135;
               menu_duel.addChild(t);
             }}
             }
             var Cstar = new createjs.Shape(graphics);
-            Cstar.x=30;
-            Cstar.y=120;
+            Cstar.x=20;
+            Cstar.y=145;
             Cstar.rotation=-15;
             Cstar.scale=0.6;
             menu_duel.addChild(Cstar)
@@ -4815,24 +4837,14 @@ function NameChange(){
         }
         e1.sourceRect={x:chrimg_AryX[chara[i]],y:0,width:200,height:600}
         e1.x=200*(i-1);
-        var t1 = new createjs.Text(Ary[i], "32px 'Century Gothic'", "black");
-          t1.x=40+200*(i-1);
-          t1.y=500;
-          t1.outline=6;
-          t1.rotation=6;
-        var t = new createjs.Text(Ary[i], "32px 'Century Gothic'", "white");
-          t.x=40+200*(i-1);
-          t.y=500;
-          t.outline=2;
-          t.rotation=6;
       if(i%2==1){
         ContainerA.addChild(e1);
-        ContainerA.addChild(t1);
-        ContainerA.addChild(t);
+        createText(ContainerA,Ary[i],40+200*(i-1),500,32,{outline:6,rotation:6,color:"black"});
+        createText(ContainerA,Ary[i],40+200*(i-1),500,32,{outline:2,rotation:6,color:"white"});
       }else{
         ContainerB.addChild(e1);
-        ContainerB.addChild(t1);
-        ContainerB.addChild(t);
+        createText(ContainerB,Ary[i],40+200*(i-1),500,32,{outline:6,rotation:6,color:"black"});
+        createText(ContainerB,Ary[i],40+200*(i-1),500,32,{outline:2,rotation:6,color:"white"});
       }
     }
         var ty=new createjs.Text("対局開始",  "46px 'bold Century Gothic'", "#c5faeb");
@@ -4926,7 +4938,7 @@ function NameChange(){
             console.log(MEMBER[i].turnflag)
           };
           if((LP_PVP.Length[0]==1 && skillusage2[0]==4)||(LP_PVP.Length[0]==2 && skillusage2[0]==8)){
-            cx.fillText("オーラス"+(skillusage2[5]),10,88);
+            createText(field,"オーラス"+(skillusage2[5]),10,68,24,{color:"white"});
             auras=1;
             Dlvup.alpha=0;
             Dlvup.x=-60;
@@ -4937,8 +4949,9 @@ function NameChange(){
             .to({scale:1,x:0,y:0,alpha:1},150,createjs.Ease.backOut)
             .wait(1000)
             .to({scale:1.5,x:-200,y:-150,alpha:0},250,createjs.Ease.backOut);
-          }else{cx.fillText("第"+(skillusage2[0])+"局 "+(skillusage2[5])+"本場",10,88);
-               }
+          }else{
+            createText(field,"第"+(skillusage2[0])+"局 "+(skillusage2[5])+"本場",10,68,24,{color:"white"})
+          }
         }
         var t = new createjs.Text("第"+(skillusage2[0])+"局 "+(skillusage2[5])+"本場", "24px 'Century Gothic'", "white");
         t.x=10;
@@ -4950,7 +4963,7 @@ function NameChange(){
           Dlvup.x=-60;
           Dlvup.y=-40;
           Dlvup.scale=1.2;
-          se12.play();
+          if(skillusage2[5]==0){se12.play()};
           createjs.Tween.get(Dlvup)
           .to({scale:1,x:0,y:0,alpha:1},150,createjs.Ease.backOut)
           .wait(1000)
@@ -4988,26 +5001,32 @@ function NameChange(){
         }
         field.addChild(t);
         //music
-        console.log(auras,musicset)
-        if(auras==0 && musicset[0]!==musicnum){
+        if(auras==0){
           if(musicset[0]==0){
-            musicnum=musicrandom[0][Math.floor(Math.random()*musicrandom[0].length)]
+            if(skillusage2[5]==0 || musictemp[0]==0){
+            musictemp[0]=musicrandom[0][Math.floor(Math.random()*musicrandom[0].length)];
+            }
+            musicnum=musictemp[0];
           }else{
             musicnum=musicset[0]
           }
-          if(musicnum!==musictemp){
+          console.log(musicnum);
+          if(musicnum!==nowplaying){
             musicStart(musicnum);
           }
-        }else if(auras==1 && musicset[2]!==musicnum){
+        }else if(auras==1){
           if(musicset[2]==0){
             //曲の抽選は最初だけ
-            if(skillusage2[5]==0){
-            musicnum=musicrandom[2][Math.floor(Math.random()*musicrandom[2].length)];
+            if(skillusage2[5]==0 || musictemp[2]==0){
+            musictemp[2]=musicrandom[2][Math.floor(Math.random()*musicrandom[2].length)];
             }
+            musicnum=musictemp[2];
           }else{
             musicnum=musicset[2]
           }
-        musicStart(musicnum);
+          if(musicnum!==nowplaying){
+            musicStart(musicnum);
+          }
       };
       //リーチの選曲も予め入力
       if(musicset[1]<=0){
@@ -5490,8 +5509,8 @@ function NameChange(){
       ctl[turn+1]=0;
   };
   function musicStart(num){
+    nowplaying=musicnum;
     if(debugmode){console.log('musicStart',num,mute)}
-    musictemp=musicnum;
     if( mute=="ON" ){
       Bgm.stop();
     switch (num){
@@ -6057,6 +6076,7 @@ function NameChange(){
           if(LP[1]<0 || Fr1!==-1 || Flame1!==-1){return true}
             if(Kan(1)){
               //カンができるということはポンもできる
+              ponsw[1]=1;
               se5.play();
               turntemp =turn
               turn=4
@@ -8501,6 +8521,12 @@ function NameChange(){
       }
       var drawcard;
       var drawcardlist=[];
+      if(pvpmode==1){
+          createText(handmap,MEMBER[player].name,15,120,24,{bold:true,color:"#fff"});
+        }else{
+          var Ary_RM=[Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"]
+          createText(handmap,Ary_RM[player],15,120,24,{bold:true,color:"#fff"});
+        }
       for (var i=1;i<vichand.length;i++){
       drawcard=new createjs.Bitmap(queue.getResult(eltear_src[vichand[i]]));
       drawcard.alpha=0;
@@ -8661,8 +8687,39 @@ function NameChange(){
           }
           return true;
         };
+        if(LP[0]==2){
+          //デスマッチ
         var x=30;
-        var y=430;
+        var y=420;
+        var LPrank=[
+          {chara:1, elia:death[0].kill,nod:death[0].assist,city:death[0].death},
+          {chara:2, elia:death[1].kill,nod:death[1].assist,city:death[1].death},
+          {chara:3, elia:death[2].kill,nod:death[2].assist,city:death[2].death},
+          {chara:4, elia:death[3].kill,nod:death[3].assist,city:death[3].death},
+            ]
+          LPrank.sort(compareFunc4);
+        for(var i=1;i<5;i++){
+          var t;
+          if(fool){
+            t = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[LPrank[i-1].chara]]));    
+            t.sourceRect={x:chrimg_AryX[chara[LPrank[i-1].chara]],y:chrimg_AryY[chara[LPrank[i-1].chara]],width:200,height:200}
+            t.scale=2/20;
+            t.x=x;
+            t.y=y;
+            handmap.addChild(t);      
+              }else{
+            t = new createjs.Bitmap(queue.getResult(chrimg_src[chara[LPrank[i-1].chara]]));
+            t.sourceRect={x:chrimg_AryX[chara[LPrank[i-1].chara]],y:chrimg_AryY[chara[LPrank[i-1].chara]],width:200,height:200}
+            t.scale=2/20;
+            t.x=x;
+            t.y=y;
+            handmap.addChild(t);
+            }
+          createText(handmap,"キル："+LPrank[i-1].elia+"/アシ："+LPrank[i-1].nod+"/デス："+LPrank[i-1].city,x+30,y,20,{color:"white"});
+          y+=20;
+          }
+          return true;
+        }
         if(pvpmode==1){
           for(var i=0;i<MEMBER.length;i++){
           createText(handmap,MEMBER[i].name,x,y,24,{bold:true,color:"#fff"});
@@ -8679,14 +8736,14 @@ function NameChange(){
           var t;
           if(fool){
             t = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[i]]));    
-            t.sourceRect={x:chrimg_AryX[i],y:chrimg_AryY[i],width:200,height:200}
+            t.sourceRect={x:chrimg_AryX[chara[i]],y:chrimg_AryY[chara[i]],width:200,height:200}
             t.scale=5/20;
-            t.x=x-30;
+            t.x=x;
             t.y=y;
             handmap.addChild(t);      
               }else{
             t = new createjs.Bitmap(queue.getResult(chrimg_src[chara[i]]));
-            t.sourceRect={x:chrimg_AryX[i],y:chrimg_AryY[i],width:200,height:200}
+            t.sourceRect={x:chrimg_AryX[chara[i]],y:chrimg_AryY[chara[i]],width:200,height:200}
             t.scale=5/20;
             t.x=x;
             t.y=y;
@@ -11067,7 +11124,6 @@ function NameChange(){
             if(debugmode){console.log('ポン・カン・スルー')}
             cLock=0;
             se3.play();
-            cx2.clearRect(630,400,80,40)
             ponkanmap.removeAllChildren();
             ponsw[1]=pon1.length;
             ponsw[0]=1;
@@ -11078,8 +11134,8 @@ function NameChange(){
               }
             break;
           case 1:
+            if(debugmode){console.log(ponsw[1]);}
             if(ponsw[1]==1 && turn !==0){
-                if(debugmode){console.log(ponsw[1]);}
                     Pon(1,tumotemp);
                     if(pvpmode==1){
                       socket.emit("pon", {Token:IAM.token,room:RoomName[IAM.room],who:MEMBER[0].id,status:true});
@@ -11103,8 +11159,6 @@ function NameChange(){
                 socket.emit("nuki", {Token:IAM.token,room:RoomName[IAM.room],who:MEMBER[0].id,pai:tumotemp,status:true});
               }
               cLock=0;
-              console.log('操作禁止',cLock);
-              console.log(turn,turntemp);
               Kan(1,tumotemp);
             break;
         }
@@ -11601,6 +11655,7 @@ function createText(parent, text, x, y, size = 24, option = {}) {
     t.x = x;
     t.y = y;
     t.outline = option.outline || 0;
+    t.rotation = option.rotation || 0;
     t.textAlign = option.align || "left";
     t.textBaseline = option.baseline || "top";
     if(option.alpha!=null) t.alpha=option.alpha;
@@ -13342,6 +13397,7 @@ function alertButton(parent,text){
   Ponrate=0.4;
   mpVelocity=1;
   dahaiSE=1;
+  HiddenChara=3;
   for(var i=0; i<achieveA.length;i++){
     achieveA[i].id=i;
     achieveA[i].cleared=0;
@@ -13424,14 +13480,12 @@ if ("serviceWorker" in navigator) {
         navigator.serviceWorker
             .register("./script/sw.js")
             .then(registration => {
-
                 console.log(
                     "Service Worker registered:",
                     registration.scope
                 );
             })
             .catch(error => {
-
                 console.error(
                     "Service Worker registration failed:",
                     error

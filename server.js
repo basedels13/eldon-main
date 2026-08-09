@@ -48,6 +48,7 @@ io.on("connection", (socket)=>{
     MEMBER[socket.id] = {token: token, name:null};
     // 本人にトークンを送付
     io.to(socket.id).emit("token", {token:token});
+    LobbyUpdate();
   })();
    
  //入場
@@ -302,6 +303,7 @@ socket.on("setup_member", (data)=>{
   console.log('leave', data.name,data.room);
   socket.leave(data.room);
   Roomleave(data.room,data.token);
+  LobbyUpdate();
 });
  //接続切れイベントを設定
   socket.on("disconnect", function () {
@@ -314,6 +316,7 @@ socket.on("setup_member", (data)=>{
       Roomleave("room3",token);
       delete MEMBER[socket.id]; 
       io.emit('xxx', { message: iCountUser });
+      LobbyUpdate();
   });
 
     // Clientにメッセージを送信
