@@ -794,6 +794,7 @@ function ResizeGame(){
   var MBicon= new createjs.Bitmap("don/Don_mbicon.png");
   var zoom=  new createjs.Bitmap("don/zoom650.png");
   var pen=  new createjs.Bitmap("don/zoompen100.png");
+  var dialogue=  new createjs.Bitmap("don/soL_cregit.png");
   zoom.scale=0.4;
   pen.scale=0.35;
   //ツモロンボタン
@@ -4023,6 +4024,9 @@ function NameChange(){
     zoom.x=710;
     zoom.y=400;
     field.addChild(zoom);
+    function Cregit(){
+      
+    }
     //実績・名前変更する画面へ
     btn1.addEventListener("click", {card:6,handleEvent:Menubutton});
     menuMap();
@@ -5883,7 +5887,7 @@ function NameChange(){
         //キャラごとにtargetの扱いが異なる
         //エルス、レナ→targetの相手に対して
         //アイシャ、レイヴン、ラシェ、アラ→targetの値そのまま
-        skillswitch[N]=0;
+        skillswitch[player]
         SkillAnimation(N,Tg,data.SEtype,1);
       };
     })
@@ -6503,19 +6507,7 @@ function NameChange(){
             deck.splice(N.length-2,1,M);
           }};
           }
-        //イヴ様
-        var EVE=0;
-        for(var i=1;i<5;i++){
-          if(chara[i]==5 && DP[i]>=10){
-          if(skillswitch[0] !==-2 && i!==player && chara[i]==5 && skillusage[i]==0){
-            DP[i]-=10;
-            skillusage[i]=player;
-            if(EVE==0){EVE=i};
-            }
-          }
-        }
-        //代表者の演出
-        if(EVE>0){SkillAnimation(EVE,0,1,1);};
+        //イヴ様->reachanimation後
         //姉
         if(skillswitch[0] !==-2 && skillusage[player]==0 && chara[player]==8){
           if(DP[player]>=20){
@@ -8521,12 +8513,6 @@ function NameChange(){
       }
       var drawcard;
       var drawcardlist=[];
-      if(pvpmode==1){
-          createText(handmap,MEMBER[player].name,15,120,24,{bold:true,color:"#fff"});
-        }else{
-          var Ary_RM=[Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"]
-          createText(handmap,Ary_RM[player],15,120,24,{bold:true,color:"#fff"});
-        }
       for (var i=1;i<vichand.length;i++){
       drawcard=new createjs.Bitmap(queue.getResult(eltear_src[vichand[i]]));
       drawcard.alpha=0;
@@ -8537,6 +8523,13 @@ function NameChange(){
       drawcard.scaleY=31/52;
       drawcardlist[i-1]=drawcard;
       handmap.addChild(drawcard);
+      }
+      if(pvpmode==1){
+        createText(handmap,MEMBER[player].name,15,100,24,{bold:true,color:"#fff"});
+      }else{
+        var Ary_RM=[0,Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"]
+        console.log(Ary_RM[player])
+        createText(handmap,Ary_RM[player],15,100,24,{bold:true,color:"#fff"});
       }
       var t;
       var tlist=[];
@@ -8698,40 +8691,47 @@ function NameChange(){
           {chara:4, elia:death[3].kill,nod:death[3].assist,city:death[3].death},
             ]
           LPrank.sort(compareFunc4);
-        for(var i=1;i<5;i++){
+        for(var i=4;i>0;i--){
           var t;
           if(fool){
-            t = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[LPrank[i-1].chara]]));    
-            t.sourceRect={x:chrimg_AryX[chara[LPrank[i-1].chara]],y:chrimg_AryY[chara[LPrank[i-1].chara]],width:200,height:200}
+            t = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[LPrank[i].chara]]));    
+            t.sourceRect={x:chrimg_AryX[chara[LPrank[i].chara]],y:chrimg_AryY[chara[LPrank[i].chara]],width:200,height:200}
             t.scale=2/20;
             t.x=x;
             t.y=y;
             handmap.addChild(t);      
               }else{
-            t = new createjs.Bitmap(queue.getResult(chrimg_src[chara[LPrank[i-1].chara]]));
-            t.sourceRect={x:chrimg_AryX[chara[LPrank[i-1].chara]],y:chrimg_AryY[chara[LPrank[i-1].chara]],width:200,height:200}
+            t = new createjs.Bitmap(queue.getResult(chrimg_src[chara[LPrank[i].chara]]));
+            t.sourceRect={x:chrimg_AryX[chara[LPrank[i].chara]],y:chrimg_AryY[chara[LPrank[i].chara]],width:200,height:200}
             t.scale=2/20;
             t.x=x;
             t.y=y;
             handmap.addChild(t);
             }
-          createText(handmap,"キル："+LPrank[i-1].elia+"/アシ："+LPrank[i-1].nod+"/デス："+LPrank[i-1].city,x+30,y,20,{color:"white"});
+          if(pvpmode==1){
+          createText(handmap,MENBER[LPrank[i-1].chara].name+" キル："+LPrank[i].elia+"/アシ："+LPrank[i].nod+"/デス："+LPrank[i].city,x+30,y,20,{color:"white"});
+          }else{
+          createText(handmap,Ary_RM[LPrank[i-1].chara]+" キル："+LPrank[i].elia+"/アシ："+LPrank[i].nod+"/デス："+LPrank[i].city,x+30,y,20,{color:"white"});
+          }
           y+=20;
           }
           return true;
         }
+        x=30;
+        y=430;
         if(pvpmode==1){
           for(var i=0;i<MEMBER.length;i++){
-          createText(handmap,MEMBER[i].name,x,y,24,{bold:true,color:"#fff"});
+          createText(handmap,MEMBER[i].name,x,483,24,{color:"#fff"});
           x+=200;
           };
         }else{
           var Ary_RM=[Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"]
-          createText(handmap,Ary_RM[i],x,y,24,{bold:true,color:"#fff"});
+          for(var i=0;i<4;i++){
+          createText(handmap,Ary_RM[i],x,483,12,{color:"#fff"});
           x+=200;
+          };
         }
         x=30;
-        y=430;
         for(var i=1;i<5;i++){
           var t;
           if(fool){
@@ -12176,6 +12176,21 @@ function alertButton(parent,text){
     function next (){
       Container.removeAllChildren();
       stage.removeChild(Container);
+      var EVE=0;
+      for(var i=1;i<5;i++){
+        if(chara[i]==5 && DP[i]>=10){
+        if(skillswitch[0] !==-2 && i!==p && chara[i]==5 && skillusage[i]==0){
+          DP[i]-=10;
+          skillusage[i]=p;
+          skillswitch[i]=0;
+          if(EVE==0){EVE=i};
+          }
+        }
+      }
+      if(EVE>0){
+        SkillAnimation(EVE,0,1,1);
+        return false;
+      };
       turnchecker();
     }
     };
@@ -12425,29 +12440,32 @@ function alertButton(parent,text){
         }else{
         var C = new createjs.Bitmap(queue.getResult(chrimg_src[chara[p]]));
         }
-    if(chara[p]==6){
-      C.sourceRect={x:0,y:0,width:400,height:600};
-      C.x=-200
-      C.y=0;
-      C.scaleX=14/8;
-      C.scaleY=2;
-      Container.addChild(C);
-      createjs.Tween.get(C)
-      .to({x:400, scaleX:1, scaleY:1},200, createjs.Ease.cubicInOut)
-      .wait(760)
-      .to({x:-400, scaleX:1.1, scaleY:1.1,alpha:0.5},150);
-    }else{
-      C.sourceRect={x:0,y:0,width:800,height:600}
-      C.x=-600
-      C.y=0;
-      C.scaleX=14/8;
-      C.scaleY=2;
-      Container.addChild(C);
-      createjs.Tween.get(C)
-      .to({x:0, scaleX:1, scaleY:1},200, createjs.Ease.cubicInOut)
-      .wait(760)
-      .to({x:-800, scaleX:1.1, scaleY:1.1,alpha:0.5},150);
-    }
+      switch(chara[p]){
+        case 6:
+          C.sourceRect={x:0,y:0,width:400,height:600};
+          C.x=-200
+          C.y=0;
+          C.scaleX=14/8;
+          C.scaleY=2;
+          Container.addChild(C);
+          createjs.Tween.get(C)
+          .to({x:400, scaleX:1, scaleY:1},200, createjs.Ease.cubicInOut)
+          .wait(760)
+          .to({x:-400, scaleX:1.1, scaleY:1.1,alpha:0.5},150);
+        break;
+        default:
+          C.sourceRect={x:0,y:0,width:800,height:600}
+          C.x=-600
+          C.y=0;
+          C.scaleX=14/8;
+          C.scaleY=2;
+          Container.addChild(C);
+          createjs.Tween.get(C)
+          .to({x:0, scaleX:1, scaleY:1},200, createjs.Ease.cubicInOut)
+          .wait(760)
+          .to({x:-800, scaleX:1.1, scaleY:1.1,alpha:0.5},150);
+        break;
+      }
     createjs.Tween.get(Container)
     .to({alpha: 1},60)
     .wait(820)
@@ -12483,7 +12501,6 @@ function alertButton(parent,text){
   Container.removeAllChildren();
   field.removeChild(Container);
   SpecialSkill(p,target)
-  if(debugmode){console.log('4789'+ctl)};
   }
   };
   function SpecialSkill(player,target=0){
@@ -12716,6 +12733,10 @@ function alertButton(parent,text){
           cLock=4;
         }
       }
+    if(p==5){//イヴ様
+      drawDP(1);
+      turnchecker();
+    }
     if(p==6){//ラシェ
       if(pvpmode==1 && target>=0){
         tumo2=target;
