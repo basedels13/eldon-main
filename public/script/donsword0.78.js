@@ -1,13 +1,13 @@
 // var1.21　season2 UI
 // npm run dev
+// ルシエルのパッシブとスキル使用制限とCPU発動に関して
 // 魔界血戦後に操作不能になる？
-// 対戦モードにそろそろ着手
 window.onload = function(){
   draw();
   };
   function draw(){
   var titletext="v1.2/Click to START";
-  var debugmode=false;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
+  var debugmode=true;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
   if(debugmode){titletext+="　でばっぐも～ど"};
   var today = new Date();
   var fool=false;
@@ -15,7 +15,6 @@ window.onload = function(){
     fool=true;
     titletext+="　えいぷりるふ～る";
   }
-  //epril fool
   (function () {
     var wait = 1500,
       standby = true,
@@ -51,7 +50,6 @@ window.onload = function(){
     }
     });
   })();
-  //
     (function () {
     var wait = 1500,
       standby = true,
@@ -223,7 +221,18 @@ function ResizeGame(){
     stage.addChild(backyard);
     var field = new createjs.Container();//メイン
     stage.addChild(field);
-    stage.addChild(menu_main);//キャラ・実績画面で使用しているよ
+    //field関連
+      var Cbt=canvas.toDataURL();
+      var Cbutton = new createjs.Bitmap(Cbt);
+      var menu_main = new createjs.Container();//メイン画面（実績等）
+      var menu_solo = new createjs.Container();//ソロ受付
+      var menu_setting = new createjs.Container();//設定
+      var menu_guide = new createjs.Container();//プレイガイド
+      var menu_duel = new createjs.Container();//対戦
+      var menu_solo_list=[];//createjsの可変リスト
+      var menu_main_list=[];//createjsの可変リスト
+      var Cregitmap = new createjs.Container();
+      stage.addChild(menu_main);//キャラ・実績画面で使用しているよ
     var titleyard = new createjs.Container();//タイトル画面
     stage.addChild(titleyard);
     stage.addChild(guidemap);
@@ -242,7 +251,6 @@ function ResizeGame(){
     stage.addChild(handmap);
     var ponkanmap = new createjs.Container();//プレイ中のボタン系
     stage.addChild(ponkanmap);
-    var fieldmap = new createjs.Container();//魔界血戦時のツモ画面の描画に使用
     var fieldpai = new createjs.Container();//同じ色のパイとか
     stage.addChild(fieldpai);
     var soundmap = new createjs.Container();
@@ -413,11 +421,11 @@ function ResizeGame(){
   //データベース
   var LPlist=new Array("一般","ヘル","デスマッチ","∞","魔界血戦")
   var musiclist=new Array("ランダム（試聴できません）","盲目のアストライア","Nine Jack","The Evil Sacrifice Archenemies","ロベリア","夜の迷宮の入口","決闘のテーマ","エルの樹の麓","リーチっぽい音楽","竜の道","ウォーリーの城メドレー","歎きの塔Phase3","狂乱のコンサート","リーチっぽい音楽R")
-  var chrlist=new Array("名無しさん","エルス","アイシャ","レナ","レイヴン","イヴ","ラシェ","アラ","エリシス","エド")//"ラビィ"
-  var chrimg_src= new Array("don/Don_chara0.png","don/Don_chara1.png","don/Don_chara2.png","don/Don_chara3.png","don/Don_chara4.png","don/Don_chara5.png","don/Don_chara6.png","don/Don_chara7.png","don/Don_chara8.png","don/Don_chara9.png");
-  var chrimgR_src= new Array("don/Don_chara0.png","don/Don_chara1R.png","don/Don_chara2R.png","don/Don_chara3R.png","don/Don_chara4R.png","don/Don_chara5R.png","don/Don_chara6R.png","don/Don_chara7R.png","don/Don_chara8R.png","don/Don_chara9R.png");
-  var chrimg_AryX=[500,500,500,530,480,520,490,400,510,500]
-  var chrimg_AryY=[50,100,80,50,90,60,100,100,130,70]
+  var chrlist=new Array("名無しさん","エルス","アイシャ","レナ","レイヴン","イヴ","ラシェ","アラ","エリシス","エド","ルシエル")//"ラビィ"
+  var chrimg_src= new Array("don/Don_chara0.png","don/Don_chara1.png","don/Don_chara2.png","don/Don_chara3.png","don/Don_chara4.png","don/Don_chara5.png","don/Don_chara6.png","don/Don_chara7.png","don/Don_chara8.png","don/Don_chara9.png","don/Don_chara10.png");
+  var chrimgR_src= new Array("don/Don_chara0.png","don/Don_chara1R.png","don/Don_chara2R.png","don/Don_chara3R.png","don/Don_chara4R.png","don/Don_chara5R.png","don/Don_chara6R.png","don/Don_chara7R.png","don/Don_chara8R.png","don/Don_chara9R.png","don/Don_chara10R.png");
+  var chrimg_AryX=[500,500,500,530,480,520,490,400,510,500,420]
+  var chrimg_AryY=[50,100,80,50,90,60,100,100,130,70,220]
   //説明用
   var epic_src =new Array("don/elstudio_bg1.png","don/Don_epic1.png","don/Don_epic2.png","don/Don_epic3.png","don/Don_epic6.png","don/Don_ss11.png","don/Don_epic4.png","don/Don_epic5.png");
   //パイの裏
@@ -430,8 +438,6 @@ function ResizeGame(){
   eltear_src.push("don/Don_img46.png","don/Don_img47.png","don/Don_img48.png","don/Don_img49.png");
   eltear_src.push("don/Don_imgM1.png","don/Don_imgM2.png","don/Don_imgM3.png","don/Don_imgM4.png","don/Don_imgM5.png","don/Don_imgM6.png","don/Don_imgM7.png","don/Don_imgM8.png","don/Don_img44.png","don/Don_img45.png");
   //create用
-  console.log(eltear_src.length);
-  //expected 62
   //バフアイコン
   var donicon_src= new Array("don/Don_buff.png","don/Don_mbicon.png","don/Don_fever.png")
   var yakuicon_src= new Array("don/Yaku_Gaia.png","don/Yaku_Rosso.png","don/Yaku_Denif.png","don/Yaku_Adrian.png","don/Yaku_Solace.png","don/Yaku_Hernia.png","don/Yaku_Kokushi.png")
@@ -462,6 +468,7 @@ function ResizeGame(){
   {fir:"龍牙爆砕",sec:"DRAGON ARTS 'BLAST'",thr:"0"},
   {fir:"克己-強",sec:"Iron Body - Strong",thr:"0"},
   {fir:"リバースサークル",sec:"Reverse Circle",thr:"0"},
+  {fir:"フィアトゥモロー",sec:"FEAR TOMORROW",thr:"0"},
   ]
   var skilldetail_passive=[
     {height:0,fig:"スキルなし",name:"スキル①",sub:""},
@@ -474,6 +481,7 @@ function ResizeGame(){
     {height:48,fig:"[パッシブ]",name:"連技-龍牙爆砕",sub:"1局に1度だけ、\n1,2,3,4ラインの順に\nパイを切ると、\nドラが1つ増える。"},
     {height:32,fig:"[パッシブ]",name:"ウォープレリュード",sub:"連続で和了し続けるほど、\n初手で同じラインの\nパイが入りやすくなる。"},
     {height:16,fig:"[パッシブ]",name:"量子化",sub:"ポンをした際の食い下がりが\n2翻から1翻に減る。"},
+    {height:64,fig:"[パッシブ]",name:"スイッチング",sub:"「SORT」ボタンに応じて\nキャラクターが切り替わる。\n自分の捨てたパイと異なる\nキャラ(ルー)・ライン(シエル)\nをそれぞれ引きやすくなる。"},
   ];
     var skilldetail_active=[
     {fig:"スキルなし",name:"スキル②",sub:""},
@@ -486,6 +494,7 @@ function ResizeGame(){
     {fig:"[パッシブ]MP消費：1ゲージ",name:"花蓮",sub:"カンをした時にMPを\n消費して自動発動する。\nドラか当たりパイを引く。"},
     {fig:"[パッシブ]MP消費：2ゲージ",name:"克己-強",sub:"リーチ時にMPを消費して\n自動発動する。\nウォープレリュードの\n効果を1局延長する。"},
     {fig:"[アクティブ]MP消費：1ゲージ",name:"リバースサークル",sub:"逆転の空間を作り出し、\nその局の間、パイを切る順が\n逆回りになる。"},
+    {fig:"[アクティブ]MP消費：1ゲージ",name:"フィアトゥモロー",sub:"発動時に手札のパイを1枚選ぶ。\n山からパイを引いた後、\n選んだパイを一番下(ルー)か、\n一番上(シエル)に戻す。"},
   ];
   //name->キャラsub->職、役判定で使用　line->ライン役判定に使用 0->all　color->1234567陽水風月土火E 0->all
   var donpai=[
@@ -563,7 +572,7 @@ function ResizeGame(){
   for(var i=0; i<donpai.length;i++){
     donpai[i].id=i;
   }
-  console.log(donpai.length);//70
+  console.log(donpai.length);//69
   //han ->必要な枚数 han2 翻数
   var Sinagy=[
     {id:"貫徹する足取り",chr:[24],han:[1],han2:[1]},
@@ -794,6 +803,7 @@ function ResizeGame(){
   var MBicon= new createjs.Bitmap("don/Don_mbicon.png");
   var zoom=  new createjs.Bitmap("don/zoom650.png");
   var pen=  new createjs.Bitmap("don/zoompen100.png");
+  var patch=  new createjs.Bitmap("don/Don_patchnotes.png");
   var dialogue=  new createjs.Bitmap("don/soL_cregit.png");
   zoom.scale=0.4;
   pen.scale=0.35;
@@ -1391,16 +1401,21 @@ function Soundcircle(){
   paiView();
   var s;
   var ary=[];
+  const randomNumbers = [];
+  while (randomNumbers.length < 12) {
+      const n = Math.floor(Math.random() * 70);
+      if (!randomNumbers.includes(n)) {
+          randomNumbers.push(n);
+      }
+  }
   for(var i=0;i<6;i++){
-    var A=Math.floor(Math.random()*70);
-    s = new createjs.Bitmap(queue.getResult(eltear_src[A]));
+    s = new createjs.Bitmap(queue.getResult(eltear_src[randomNumbers[i]]));
     s.x=-120;
     s.y=5;
     ary.push(s);
   };
   for(var j=0;j<6;j++){
-    var A=Math.floor(Math.random()*70);
-    s = new createjs.Bitmap(queue.getResult(eltear_src[A]));
+    s = new createjs.Bitmap(queue.getResult(eltear_src[randomNumbers[j+6]]));
     s.x=920;
     s.y=425;
     ary.push(s);
@@ -1794,17 +1809,6 @@ function Soundcircle(){
     }
     }//gamestate
   }
-  //画面を描画したものを用意しておく
-  var Cbt=canvas.toDataURL();
-  var Cbutton = new createjs.Bitmap(Cbt);
-  var menu_main = new createjs.Container();//メイン画面（実績等）
-  var menu_solo = new createjs.Container();//ソロ受付
-  var menu_setting = new createjs.Container();//設定
-  var menu_guide = new createjs.Container();//プレイガイド
-  var menu_duel = new createjs.Container();//対戦
-  var menu_solo_list=[];//createjsの可変リスト
-  var menu_main_list=[];//createjsの可変リスト
-
 function menuMap(p=0){
   //各画面の描画
   if(debugmode){console.log('menuMap',p,pagestate)}
@@ -2135,7 +2139,7 @@ function menuMap(p=0){
             if(handsort==0){
               handsort=1;
               }else{
-                handsort=0
+                handsort=0;
               }
           sortT.text=tumoaryB[handsort];
         });
@@ -2575,10 +2579,22 @@ function menuMap(p=0){
           }else{
             e10 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[1]]));
           }
-          e10.sourceRect={x:400,y:0,width:400,height:500}
+          e10.sourceRect={x:400,y:0,width:400,height:600}
+          switch(chara[1]){
+            case 8:
+              e10.y=80;
+            break;
+            case 6:
+            case 9:
+            case 10:
+              e10.y=100;
+            break;
+            default:
+              e10.y=140;
+            break;
+          }
           e10.x=200;
-          e10.y=140;
-          e10.scale=0.8;
+          e10.scale=0.75;
           menu_main.addChild(e10);
           menu_main_list.push(e10);
           var t = createText(menu_main,chrlist[chara[1]],205,470,40, {color:"#f9fafa"});
@@ -3545,15 +3561,15 @@ function NameChange(){
   };
   function Menu(){
     mouseX=stage.mouseX*(1/stage.scaleX);
-    mouseY=stage.mouseY*(1/stage.scaleY);
-    if(debugmode){console.log('click!',cLock,"pagestate",pagestate,"msgstate",msgstate,"gamestate",gamestate)}; 
+    mouseY=stage.mouseY*(1/stage.scaleY); 
     if(gamestate!==10){clickInGame();return false;};
     switch(pagestate){
       case 0:
         musicnum=0;
         Bgm.stop();
+        msgstate=0;
         pagestate=1;
-        if(debugmode){HiddenChara=9};
+        if(debugmode){HiddenChara=10};
     //実績解放
     var A=achieveB.findIndex(value=>value.name=="国士無双")
     if(achieveB[A].cleared>0){
@@ -3851,11 +3867,11 @@ function NameChange(){
     textmap.visible=true;
     field.removeAllChildren();
     etitle.x=400;
-    etitle.y=40;
+    etitle.y=30;
     etitle.scale=0.5;
     field.addChild(etitle)
     Panel(field,40,50,360,60,0,0,"rgba(0,0,0,0.8)");
-    Panel(field,410,210,350,240,0,0,"rgba(0,0,0,0.7)");
+    Panel(field,410,130,350,240,0,0,"rgba(0,0,0,0.7)");
     var Container = new createjs.Container();
     field.addChild(Container);
     var shapeMask = new createjs.Shape();
@@ -3875,25 +3891,18 @@ function NameChange(){
       .lineTo(220, 0)
       .lineTo(200, 0)
       .lineTo(30, 160);
-    chrIcon_img.sourceRect={x:chrimg_AryX[chara[1]],y:chrimg_AryY[chara[1]]+45,width:300,height:300}
+    chrIcon_img.sourceRect={x:chrimg_AryX[chara[1]],y:chrimg_AryY[chara[1]]+45,width:300,height:300};
+    if(chara[1]==10 && handsort==1){
+      chrIcon_img.sourceRect={x:530,y:70,width:300,height:600};
+    }
     chrIcon_img.x=0;
     chrIcon_img.y=0;
     chrIcon_img.scale=0.6;
     Container.addChild(chrIcon_img);
     Container.addChild(s);
-    var t = new createjs.Text(Username, "24px 'Century Gothic'", "white");
-    t.x=232;
-    t.y=75;
-    field.addChild(t);
-    var t = new createjs.Text(Usercrest, "14px 'Century Gothic'", "white");
-    t.x=222;
-    t.y=55;
-    field.addChild(t);
-    var t = new createjs.Text("戦 ★ 績", "28px 'Century Gothic'", "#ffffff");
-    t.x=582;
-    t.y=215;
-    t.textAlign = "center";
-    field.addChild(t);
+    createText(field,Username,232,75,24,{color:"#ffffff"});
+    createText(field,Usercrest,222,55,14,{color:"#ffffff"});
+    createText(field,"戦 　 績",582,135,28,{color:"#ffffff",align:"center"});
     var solo = new createjs.Bitmap(queue.getResult(win_src[0]));
     solo.x=100;
     solo.y=130;
@@ -3918,16 +3927,42 @@ function NameChange(){
     setting.sourceRect={x:0,y:150,width:300,height:150};
     setting.scale=0.5;
     field.addChild(setting);
+    var A=Math.floor(Math.random()*3);
+    patch.sourceRect={x:0,y:A*400,width:620,height:400};
+    patch.scale=0.42;
+    patch.x=540;
+    patch.y=500;
+    field.addChild(patch);
+    createjs.Tween.get(patch)
+      .to({y:370},250, createjs.Ease.cubicInOut);
     shapeMask.addEventListener("click", {card:5,handleEvent:Menubutton});
     solo.addEventListener("click", {card:2,handleEvent:Menubutton});
     multi.addEventListener("click", {card:4,handleEvent:Menubutton});
     howto.addEventListener("click", {card:1,handleEvent:Menubutton});
     setting.addEventListener("click", {card:3,handleEvent:Menubutton});
+    patch.addEventListener("click", {handleEvent:Cregit});
     shapeMask.isHover=false;
     solo.isHover=false;
     multi.isHover=false;
     howto.isHover=false;
     setting.isHover=false;
+    patch.isHover=false;
+    patch.updateHover = function(){
+      if(pagestate!==1){return false;}
+          const pt = this.globalToLocal(stage.mouseX, stage.mouseY);
+          const hit = this.hitTest(pt.x, pt.y);
+          if (hit === this._isHover) return;
+          this._isHover = hit;
+      if(hit){
+        Textlist[0].text="更新履歴など";
+        Textlist[1].text="　"; 
+        createjs.Tween.get(patch)
+              .to({y:355,x:530,scale:0.44},130, createjs.Ease.cubicInOut)
+      }else{
+        createjs.Tween.get(patch)
+              .to({y:370,x:540,scale:0.42},130, createjs.Ease.cubicInOut)
+      }
+    }
     shapeMask.updateHover = function(){
       if(pagestate!==1){return false;}
           const pt = this.globalToLocal(stage.mouseX, stage.mouseY);
@@ -4008,24 +4043,60 @@ function NameChange(){
     var Ach=achieveA.filter(value=>value.cleared>0);
     var Ary=["打数　ソロ："+highscore[0]+"回 /対戦："+highscore[4]+"回","勝率："+winrate+"%（"+LPlist[[winrank[0][4]]]+"）","最大戦闘力："+highscore[1],"瞬間最大火力："+highscore[2],"実績："+Ach.length+"/"+achieveA.length]
     for( i=0 ; i<Ary.length ; i++ ) {
-      var t=new createjs.Text(Ary[i],"22px 'Century Gothic'","#ffffff");
-      t.x=420;
-      t.y=250+i*40;
-      field.addChild(t);
+    createText(field,Ary[i],420,170+i*40,22,{color:"#ffffff"})
     };
-    var t=new createjs.Text( "(1位："+winrank[winrank[0][4]][0]+" /2位："+winrank[winrank[0][4]][1]+" /3位："+winrank[winrank[0][4]][2]+" /4位："+winrank[winrank[0][4]][3]+")","16px 'Century Gothic'","#ffffff");
-    t.x=420;
-    t.y=310;
-    field.addChild(t);
+    createText(field,"(1位："+winrank[winrank[0][4]][0]+" /2位："+winrank[winrank[0][4]][1]+" /3位："+winrank[winrank[0][4]][2]+" /4位："+winrank[winrank[0][4]][3]+")",420,230,16,{color:"#ffffff"})
     var btn1 = createButton("　", 60, 60);
           btn1.x = 700;
-          btn1.y = 390;
+          btn1.y = 310;
           field.addChild(btn1);
     zoom.x=710;
-    zoom.y=400;
+    zoom.y=320;
     field.addChild(zoom);
+    field.addChild(Cregitmap);
+    Cregitmap.removeAllChildren();
+    Cregitmap.y=600;
+    Cregitmap.visible=false;
+    dialogue.x=100;
+    dialogue.y=60;
+    Cregitmap.addChild(dialogue);
+    var E=new createjs.Bitmap("don/don_chara10.png");
+    E.scale=0.5;
+    E.x=220;
+    E.y=130;
+    E.alpha=0.9;
+    Cregitmap.addChild(E);
+    createText(Cregitmap,"Patch notes/version 2.00",330,150,24,{align:"center"});
+    createText(Cregitmap,"・ウインドウのリサイズに対応、UI改善\n・PWA化、タッチ端末対応\n・11番目のキャラクターを追加\n・実績画面に手札の記録を追加\n・一部スキルのバランス調整\n・一部効果音を変更\n・タイトル画面にミュートボタン追加\n\n【クレジット】\nこのゲームは個人制作の2次創作です。\n原作　ELSWORD/KOG",130,180,18);
+    var option_bt5 = new createjs.Bitmap('don/soL_batu.png');
+    option_bt5.x=559;
+    option_bt5.y=67;
+    option_bt5.scale=0.4;
+    Cregitmap.addChild(option_bt5);
+    option_bt5.addEventListener("click", ()=>{
+        if(msgstate ==-1){
+        msgstate=0;
+        se2.play();
+        createjs.Tween.get(Cregitmap)
+          .to({y:600},500, createjs.Ease.cubicInOut)
+          .call(end);
+        createjs.Tween.get(patch)
+          .to({y:370,x:540,scale:0.42},130, createjs.Ease.cubicInOut)
+        }
+        function end(){
+        pagestate=1;
+        Cregitmap.visible=false;
+      }
+      });
     function Cregit(){
-      
+      if(pagestate ==1){
+      pagestate=-1;
+      msgstate=-1;
+      se3.play();
+      Cregitmap.visible=true;
+        createjs.Tween.get(Cregitmap)
+          .to({y:0},500, createjs.Ease.cubicInOut);
+      }
     }
     //実績・名前変更する画面へ
     btn1.addEventListener("click", {card:6,handleEvent:Menubutton});
@@ -4090,7 +4161,7 @@ function NameChange(){
                   se3.play();
                   }else{
                   se2.play();
-                  var Ary=["①「殴り合い」達成　②2連荘する","①「ナソード研究」達成　②一度も放銃せずに勝利","①半荘戦で3回以上放銃する　②一発ツモ5回達成","①「足取り」シナジー4つ達成　②10回以上カンをする","①「魔界血戦」1位3回達成　②ライン通貫10回達成","①100回ポンをする　②いずれかのクレスト役を和了する"];
+                  var Ary=["①「殴り合い」達成　②2連荘する","①「ナソード研究」達成　②一度も放銃せずに勝利","①1プレイで3回以上放銃する　②一発ツモ5回達成","①「足取り」シナジー4つ達成　②10回以上カンをする","①「魔界血戦」1位3回達成　②ライン通貫10回達成","①100回ポンをする　②いずれかのクレスト役を和了","①いずれかの役満を和了　②「デスマッチ」を11回プレイ"];
                   Textlist[0].text="？？？（開放条件を満たすと開放）";
                   Textlist[1].text="NEXT："+Ary[HiddenChara-3];
                   return false;
@@ -4840,6 +4911,9 @@ function NameChange(){
         e1 = new createjs.Bitmap(queue.getResult(chrimg_src[chara[i]]));
         }
         e1.sourceRect={x:chrimg_AryX[chara[i]],y:0,width:200,height:600}
+        if(chara[i]==10){
+          e1.sourceRect={x:470,y:0,width:200,height:600}
+        }
         e1.x=200*(i-1);
       if(i%2==1){
         ContainerA.addChild(e1);
@@ -4902,8 +4976,6 @@ function NameChange(){
         //背景
         if(LP[0]==4){
           backyard.y=-600;
-          fieldmap.removeAllChildren();
-          fieldmap.x=0;
         }else{
           backyard.y=0;
         }
@@ -5054,9 +5126,7 @@ function NameChange(){
       t.y=450;
       field.addChild(t);
       };
-        parentY =400
-        var Ary=[500,500,500,500,500,500,500,400,430,460];
-        var Ary2=[0,50,0,0,60,0,60,0,80,50];
+        parentY =400;
         if(fool){
           e11 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[1]]));          
         }else{
@@ -5066,6 +5136,9 @@ function NameChange(){
         e11.x=0;
         e11.y=400;
         e11.scale=1/3;
+        if(chara[1]==10 && handsort==1){
+          e11.sourceRect={x:530,y:70,width:300,height:600};
+        }
         if(fool){
           e12 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[2]]));          
         }else{
@@ -5075,6 +5148,14 @@ function NameChange(){
         e12.x=0;
         e12.y=100;
         e12.scale=1/3;
+        if(chara[2]==10){
+          if(Math.random() < 0.5){
+          e12.sourceRect={x:530,y:70,width:300,height:600};
+          skillusage2[2]=1;
+          }else{
+          skillusage2[2]=0;
+          }
+        }
         if(fool){
           e13 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[3]]));          
         }else{
@@ -5084,6 +5165,14 @@ function NameChange(){
         e13.x=0;
         e13.y=200;
         e13.scale=1/3;
+        if(chara[3]==10){
+          if(Math.random() < 0.5){
+          e13.sourceRect={x:530,y:70,width:300,height:600};
+          skillusage2[3]=1;
+          }else{
+          skillusage2[3]=0;
+          }
+        }
         if(fool){
           e14 = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[4]]));          
         }else{
@@ -5093,6 +5182,14 @@ function NameChange(){
         e14.x=0;
         e14.y=300;
         e14.scale=1/3;
+        if(chara[4]==10){
+          if(Math.random() < 0.5){
+          e12.sourceRect={x:530,y:70,width:300,height:600};
+          skillusage2[4]=1;
+          }else{
+          skillusage2[4]=0;
+          }
+        }
         field.addChild(e11);
         field.addChild(e12);
         field.addChild(e13);
@@ -5465,7 +5562,6 @@ function NameChange(){
         for (var i = 0; i < 10; i++) {
           king.push(Math.floor(Math.random() * 67));
         }
-        //deck.splice(0,7)
         hand1b=deck.splice(0,8-hand1.length)
         hand1=hand1.concat(hand1b)
         hand1b=deck.splice(0,8-hand2.length)
@@ -6866,7 +6962,7 @@ function NameChange(){
     return false;
   }
   if(cLock==3){
-    if(chara[1]==2){SkillAnimation(1,num)};
+    if(chara[1]==2 || chara[1]==10){SkillAnimation(1,num)};
     return false;
   };
   if(mpC>=10){
@@ -7110,6 +7206,7 @@ function NameChange(){
         switch(chara[1]){
           case 1:
           case 9:
+          case 10:
         if(DP[1]>=10){
           skillswitch[1]=0       
         }
@@ -8768,7 +8865,7 @@ function NameChange(){
     function Score(player){
       //符　tumoronで一部出してる
       //オールマイティ1枚につき-10
-      var All=handtemp.filter(value=>value==69 || value==70)
+      var All=handtemp.filter(value=>value==68 || value==69)
       //console.log(All.length);
       fu-=10*(All.length)
       var Wind=Buff[player].filter(value=>value==3 || value==4);
@@ -10871,6 +10968,11 @@ function NameChange(){
       if(cLock==1 && turn ==0 && reach[1]!==2){
         if(handsort==1){
           handsort=0;
+          if(chara[1]==10){
+            var rect= new createjs.Rectangle(530, 70, 300, 600);
+            e11.sourceRect=rect;
+            createjs.Tween.get(rect).to({x:chrimg_AryX[10],y:chrimg_AryY[10]},50);
+          }
           var Hlast=hand1.pop();
           if(debugmode){console.log(Hlast)};
           hand1.sort(compareFunc) 
@@ -10884,6 +10986,11 @@ function NameChange(){
           }
             }else if(handsort==0){
           handsort=1;
+          if(chara[1]==10){
+            var rect= new createjs.Rectangle(chrimg_AryX[10], chrimg_AryY[10], 300, 600);
+            e11.sourceRect=rect;
+            createjs.Tween.get(rect).to({x:530,y:70},50);
+          }
           var Hlast=hand1.pop();
           if(debugmode){console.log(Hlast)};
           hand1.sort(compareFunc3);
@@ -10899,18 +11006,14 @@ function NameChange(){
     }
     function paiCut(){
     //クリックしてから捨て牌を描写してturnroleに繋げるところまで
-    mouseX=stage.mouseX*(1/stage.scaleX);
-    mouseY=stage.mouseY*(1/stage.scaleY);
     if(cLock==3){
       //スキルで自分のパイ選択画面 手札
-    if(mouseY >490 && mouseY < 590){
-        if(hand1[this.card] ==69 || hand1[this.card] ==70){
+        if(chara[1]==2 && (hand1[this.card] ==68 || hand1[this.card] ==69)){
         cLock=1;
         return false;
         }
         PlayertoCpu(this.card);
         return true;
-      }
     };
     if(cLock==1 && opLock>=0 && opLock !==2){
       ///switch(this.card)
@@ -11624,10 +11727,11 @@ function NameChange(){
       //
     }
     function SoundConfig(){
-      SEbuffer(-1)
-      if(!cLock && debugmode){
+      SEbuffer(-1);
+      if(debugmode){console.log('click!',cLock,"pagestate",pagestate,"msgstate",msgstate,"gamestate",gamestate)};
+      if(cLock==0 && debugmode){
         //for debug
-        cLock=true;
+        cLock=1;
       }
       //ミュートの切り替え
       if( mute=="OFF" ){
@@ -12790,6 +12894,56 @@ function alertButton(parent,text){
               cLock=4;
             }
     }
+    if(p==10){//ルシ
+      if(player==1){
+      if(target==0){
+        se5.play()
+        var s = new createjs.Shape();
+          s.graphics.beginFill("rgba(20,20,20,0.3)");
+          s.graphics.drawRect(0, 0, 630, 490)
+          ponkanmap.addChild(s);
+          var btn1 = createButton("キャンセル", 80, 40);
+            btn1.x = 710;
+            btn1.y = 440;
+            ponkanmap.addChild(btn1)
+            btn1.addEventListener("click",{card:1,handleEvent:SkillBt});
+        cLock=3;
+        return true;
+      }
+      cLock=0;
+      console.log('操作禁止')
+      skillusage2[player]=handsort;
+      var element=hand1.splice(target,1)[0];
+      hand1.push(100);
+      DP[player]-=10;
+      drawDP(player);
+      handgraph(0,1,1);
+      if(skillusage2[player]==0){
+        //一番上に戻してドロー 内部処理としては山の上から２枚目に戻して自分のターン
+        deck.splice(1,0,element);
+        player1();
+        return false;
+      }else if(skillusage2[player]==1){
+        //一番下に戻してドロー
+        deck.push(element)
+        player1();
+        return false;
+      }
+      }else{//cpu
+      var element=hand1.splice(target,1)[0];
+      DP[player]-=10;
+      drawDP(player);
+      if(skillusage2[player]==0){
+        deck.splice(1,0,element);
+      }else{
+        deck.push(element)
+      }
+      skillswitch[player]=1
+      if(skillusage[player]>=2){skillswitch[player]=2}
+        ctl[player]=4
+        cpu(player);
+      }
+      }
     }
     };//specialskill
     
@@ -13165,6 +13319,7 @@ function alertButton(parent,text){
     {height:48,fig:"[パッシブ]",name:"連技-龍牙爆砕",sub:"1局に1度だけ、\n1,2,3,4ラインの順に\nパイを切ると、\nドラが1つ増える."},
     {height:32,fig:"[パッシブ]",name:"ウォープレリュード",sub:"連続で和了し続けるほど、\n初手で同じラインの\nパイが入りやすくなる."},
     {height:16,fig:"[パッシブ]",name:"量子化",sub:"ポンの食い下がりが\n2翻から1翻に減る."},
+    {height:64,fig:"[パッシブ]",name:"スイッチング",sub:"「SORT」ボタンで\nキャラが切り替わる.\n自分の捨パイと異なる\nキャラやラインを\nを引きやすくなる."},
   ];
     var skilldetail_activeS=[
     {name:"スキル②",sub:"スキルなし"},
@@ -13176,7 +13331,8 @@ function alertButton(parent,text){
     {name:"スキル②",sub:"スキルなし"},
     {name:"花蓮",sub:"MP消費：1ゲージ\nカン時にMPを消費して\n自動発動.\n非リーチ時はドラを、\nリーチ時は当たりパイを引く."},
     {name:"克己-強",sub:"MP消費：2ゲージ\nリーチ時にMPを消費して\n自動発動.\nウォープレリュードの\n効果を1局延長."},
-    {name:"リバースサークル",sub:"MP消費：1ゲージ\n対象：雀卓\n逆転の空間を作り出し、\nその局の間、\nパイを切る順が\n逆回りになる。"},
+    {name:"リバースサークル",sub:"MP消費：1ゲージ\n対象：雀卓\n逆転の空間を作り出し、\nその局の間、\nパイを切る順が\n逆回りになる."},
+    {name:"フィアトゥモロー",sub:"MP消費：1ゲージ\n対象：手札のパイ\n山からパイを引いた後、\n選んだパイを\n山の一番上か下に戻す."},
   ];
   switch(p){
     case 2:
