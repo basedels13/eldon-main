@@ -1,7 +1,7 @@
 // var1.21　season2 UI
 // npm run dev
-// ルシエルのパッシブとスキル使用制限とCPU発動に関して
-// 魔界血戦後に操作不能になる？
+// ルシエルのCPU発動に関して
+// ヘニル　ギミックの演出とか解除とか
 window.onload = function(){
   draw();
   };
@@ -419,13 +419,14 @@ function ResizeGame(){
   //オーラスの時1　現在音楽のみに影響
   var Ronturn=[];
   //データベース
-  var LPlist=new Array("一般","ヘル","デスマッチ","∞","魔界血戦")
+  var LPlist=new Array("一般","ヘル","デスマッチ","ヘニルの時空","魔界血戦")
   var musiclist=new Array("ランダム（試聴できません）","盲目のアストライア","Nine Jack","The Evil Sacrifice Archenemies","ロベリア","夜の迷宮の入口","決闘のテーマ","エルの樹の麓","リーチっぽい音楽","竜の道","ウォーリーの城メドレー","歎きの塔Phase3","狂乱のコンサート","リーチっぽい音楽R")
   var chrlist=new Array("名無しさん","エルス","アイシャ","レナ","レイヴン","イヴ","ラシェ","アラ","エリシス","エド","ルシエル")//"ラビィ"
   var chrimg_src= new Array("don/Don_chara0.png","don/Don_chara1.png","don/Don_chara2.png","don/Don_chara3.png","don/Don_chara4.png","don/Don_chara5.png","don/Don_chara6.png","don/Don_chara7.png","don/Don_chara8.png","don/Don_chara9.png","don/Don_chara10.png");
   var chrimgR_src= new Array("don/Don_chara0.png","don/Don_chara1R.png","don/Don_chara2R.png","don/Don_chara3R.png","don/Don_chara4R.png","don/Don_chara5R.png","don/Don_chara6R.png","don/Don_chara7R.png","don/Don_chara8R.png","don/Don_chara9R.png","don/Don_chara10R.png");
   var chrimg_AryX=[500,500,500,530,480,520,490,400,510,500,420]
   var chrimg_AryY=[50,100,80,50,90,60,100,100,130,70,220]
+  var henir=["ダークアゲート"];
   //説明用
   var epic_src =new Array("don/elstudio_bg1.png","don/Don_epic1.png","don/Don_epic2.png","don/Don_epic3.png","don/Don_epic6.png","don/Don_ss11.png","don/Don_epic4.png","don/Don_epic5.png");
   //パイの裏
@@ -3466,19 +3467,8 @@ function Nyusitu(){
   var clientChr=chara[1];
   var roomId=RoomName[rn];
   socket.emit('join_to_room',{token: IAM.token,name:clientId,crest:clientCrest,chr:clientChr,room:roomId});
-  cx4.globalAlpha=1;
   se3.play();
-  cx4.fillStyle = "rgba(20,20,20,0.7)";
-  cx4.fillRect(0,0,800,600)
-  cx4.font = "bold 26px 'メイリオ'";
-  cx4.fillStyle = "black";
-  cx4.strokeStyle ="rgba(250,250,250,0.9)";
-  cx4.lineWidth=5;
-  cx4.strokeText("入室しています",240,200);
-  cx4.fillText("入室しています",240,200);   
-  var C=canvas4.toDataURL();
-  var Cb = new createjs.Bitmap(C);
-  yakumap.addChild(Cb);
+  Textlist[1].text="入室しています…"
   }
 function NameChange(){
   se3.play();
@@ -5321,7 +5311,6 @@ function NameChange(){
         rect.graphics.beginFill("rgba(20,20,20,0.5)")
                       .drawRect(630, 400, 160, 80)
         field.addChild(rect);
-        //handsort=0;
         var btn1 = createButton("SORT", 80, 40);
         btn1.x = 10;
         btn1.y = 550;
@@ -6984,9 +6973,6 @@ function NameChange(){
   if(turn ==0 && ctl[1]==0){
   if(ippatu[1]==1){ippatu[1]=2}
   if(reach[1] ==2){
-  cx.font = "bold 16px 'Century Gothic'";
-  cx.fillStyle = "orange";
-  cx.fillText("リーチ",640,465)
   ippatu[1]=1;
   reach[1]=3;
   }
@@ -7001,7 +6987,6 @@ function NameChange(){
   if(Reverse){ctl[4]=0;}else{ctl[2]=0;}
   handgraph(0,1)  
   //ボタンとカーソルを消す
-  cx2.clearRect(630,440,160,80)
   ponkanmap.removeAllChildren();
   if(hand1[0] ==-3){
     hand1[0]=-1}
@@ -7134,9 +7119,30 @@ function NameChange(){
         cLock=1;
         console.log('操作可',cLock)
         },100)
-    if(reach[1] ==0){cx2.clearRect(630,440,80,40)}
     }else{
     //山から1枚引いてくる nuki>0の場合はデッキ外からランダムにドロー
+    if(LP[0]==3){
+      //ギミック
+    Panel(backyard,0,0,800,600,0,0,"rgba(0,0,0,0.9)");
+    Panel(stage,150,60,480,350,0,0,"rgba(0,0,0,1)");
+    const darkness = new createjs.Shape();
+    darkness.graphics
+    .beginLinearGradientFill(
+        ["rgba(0,0,0,0)", "rgba(0,0,0,0.9)"],
+        [0, 1],
+        0, 0, 150, 600
+    )
+    .drawRect(0, 0, 150, 500)
+    .beginRadialGradientFill(
+        ["rgba(0,0,0,0)", "rgba(0,0,0,0.9)"],
+        [0, 1],
+        400, 450, 50,
+        400, 450, 450
+    )
+    .drawRect(0, 500, 800, 100);
+    //.drawRect(0, 480, 800, 120);
+    stage.addChild(darkness);
+    }
     if(nuki[0]>0){
       if(chara[1]==7 && skillswitch[0] !==-2 && DP[1]>10){
         //アラ裁定
@@ -7165,6 +7171,15 @@ function NameChange(){
       ryukyoku();
       return false;
     }else{
+      if(reach[1]!==3 && chara[1]==10 && skillswitch[0] !==-2 && trash[0].length){
+        //さっき捨てたキャラorライン以外
+        if(chrlinecheck(deck[0],trash[0][trash[0].length-1],handsort) && deck.length>1){
+              const temp = deck[0];
+              deck[0] = deck[1];
+              deck[1] = temp;
+          if(debugmode){console.log('switching!',deck[0],deck[1])}
+        }
+      }
       tumo =deck.shift();
       if(pvpmode==1){
         socket.emit("deck_length",{Token:IAM.token,room:RoomName[IAM.room],Deck:deck});
@@ -7206,9 +7221,13 @@ function NameChange(){
         switch(chara[1]){
           case 1:
           case 9:
-          case 10:
         if(DP[1]>=10){
-          skillswitch[1]=0       
+          skillswitch[1]=0;      
+        }
+          break;
+          case 10:
+        if(DP[1]>=10 && ponsw[1]!==1){
+          skillswitch[1]=0;      
         }
           break;
           case 2:
@@ -7338,6 +7357,15 @@ function NameChange(){
             if(nuki[0]>0){
               tumo2=Math.floor(Math.random()*60);
             }else{
+                if(reach[chr]!==3 && chara[chr]==10 && skillswitch[0] !==-2 && trash[chr-1].length){
+                //さっき捨てたキャラorライン以外
+                if(chrlinecheck(deck[0],trash[chr-1][trash[chr-1].length-1],skillusage2[chr]) && deck.length>1){
+                      const temp = deck[0];
+                      deck[0] = deck[1];
+                      deck[1] = temp;
+                  if(debugmode){console.log('switching!',deck[0],deck[1])}
+                }
+              }
               tumo2=deck.shift();
             }
           var PEP=handtemp.findIndex(value=>value==100);
@@ -11109,7 +11137,7 @@ function NameChange(){
           X[i] =143
           }
           if(counterR[i]>=0 && counterR[i]==j){
-            if(chrlinecheck(pai,Ary[j])){
+            if(chrlinecheck(pai,Ary[j],handsort)){
             var rect = new createjs.Shape();
             rect.graphics.beginFill("rgba(0, 200, 173, 0.5)").drawRoundRect(X[i]-10.5, Y[i]+5.25, 43.5, 33,5,5)
             rect.compositeOperation = "lighter";
@@ -11117,7 +11145,7 @@ function NameChange(){
             }
             X[i]+=43.5;
           }else{
-            if(chrlinecheck(pai,Ary[j])){
+            if(chrlinecheck(pai,Ary[j],handsort)){
             var rect = new createjs.Shape();
             rect.graphics
             .beginFill("rgba(0, 200, 173, 0.5)").drawRoundRect(X[i], Y[i], 33, 43.5,5,5)
@@ -11129,8 +11157,9 @@ function NameChange(){
         }
       }
     };
-    function chrlinecheck(a,b){
-      if(handsort==0){
+  }
+    function chrlinecheck(a,b,sort){
+      if(sort==0){
         if(a>=0 && a<=67){
           //エルス-リティア
           if(a<60 && b<60){
@@ -11145,7 +11174,7 @@ function NameChange(){
             }
           }
         }
-      }else if(handsort==1){
+      }else if(sort==1){
         if(a>=0 && a<=67 && b>=0 && b<=67){
           //ライン
             if(Math.floor(a%4)==Math.floor(b%4)){
@@ -11153,7 +11182,6 @@ function NameChange(){
             }
         }
       }
-    }
     }
     function ReachBt(){
       switch(this.card){
@@ -11395,8 +11423,8 @@ function NameChange(){
               Textlist[1].text=LP_PVP.Length[LP_PVP.Length[0]]+"戦終了までにより多くの人を飛ばした人が勝者となります。";  
             break;
             case 3:
-              Textlist[0].text=LPlist[LP[0]]+"：際限なく自由に打ち続けるモードです。";
-              Textlist[1].text="Escキーでメニュー画面に戻ることで抜けられます。";  
+              Textlist[0].text=LPlist[LP[0]]+"：持ち点150,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦。";
+              Textlist[1].text="対局中ランダムにギミックが発生します。";  
             break;
             case 4:
               Textlist[0].text=LPlist[LP[0]]+"：一局に最大3人和了できる持ち点150,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦です。";
@@ -11528,8 +11556,6 @@ function NameChange(){
             //たいせん
             switch(msgstate){
               case 2:
-                cx2.fillStyle = "white";
-                cx2.font = "18px Arial";
                 var elskunn=[
                   {name:"サバイバル　一般的な麻雀のようなルールです。",sub:"誰かが飛ぶかオーラス終了までドンジャラをします。"},
                   {name:"デスマッチ　より多くの相手を飛ばした人が勝つルールです。",sub:"和了で自分の得点が増えず、飛んだ人は1局経過後に復活します。"},
@@ -11569,7 +11595,6 @@ function NameChange(){
                 }
                 if(IsHost(IAM.room)){
                   if(mouseX >610 && mouseX <790 && mouseY >80 && mouseY <150){
-                    cx2.clearRect(10,521,400,70)
                     if(LP_PVP.Rule[0]==1){
                       Textlist[0].text=elskunn[0].name
                       Textlist[1].text=elskunn[0].sub
@@ -11628,7 +11653,6 @@ function NameChange(){
               ElnameM=num;
             };
           guidemap.removeAllChildren();
-          cx2.clearRect(0,0,800,600);
           var type1=donpai.findIndex(value=>value.id==num)
           if(type1==-1){
             console.log('Donpai error!')
@@ -12917,7 +12941,15 @@ function alertButton(parent,text){
       hand1.push(100);
       DP[player]-=10;
       drawDP(player);
+      if(handsort==0){
+        hand1.sort(compareFunc);
+      }else{
+        var Hlast=hand1.pop();
+        hand1.sort(compareFunc3) 
+        hand1=hand1.concat(Hlast)
+      }
       handgraph(0,1,1);
+      skillswitch[player]=1
       if(skillusage2[player]==0){
         //一番上に戻してドロー 内部処理としては山の上から２枚目に戻して自分のターン
         deck.splice(1,0,element);
@@ -13101,15 +13133,13 @@ function alertButton(parent,text){
     .to({x: 120,alpha:1}, 200, createjs.Ease.cubicInOut)
       }
     field.addChild(e10);
-    var Ary=[500,500,500,500,480,500,500,400,430,460];
-    var Ary2=[50,120,50,50,70,50,70,50,80,50];
     for(var i=0;i<3;i++){
     if(fool){
       var e10 = new createjs.Bitmap(queue.getResult(chrimgR_src[LPresult[2-i].chara]));          
      }else{
       var e10 = new createjs.Bitmap(queue.getResult(chrimg_src[LPresult[2-i].chara]));
      }
-      e10.sourceRect={x:Ary[LPresult[2-i].chara],y:Ary2[LPresult[2-i].chara],width:215,height:215}
+      e10.sourceRect={x:chrimg_AryX[LPresult[2-i].chara],y:chrimg_AryY[LPresult[2-i].chara],width:215,height:215}
       e10.scale=60/215;
       e10.x=-100;
       e10.y=231+100*i;
@@ -13148,7 +13178,11 @@ function alertButton(parent,text){
     .wait(600*(2-i))
     .to({x: 120,alpha:1}, 200, createjs.Ease.cubicInOut)
       }else{
-    var D= new createjs.Text("戦闘力："+LPresult[2-i].elia, "bold 24px Arial", "white");
+    if(LPresult[2-i].elia<0){
+    var D= new createjs.Text(LPresult[2-i].elia, "bold 24px Arial", "#c73131");
+    }else{
+    var D= new createjs.Text(LPresult[2-i].elia, "bold 24px Arial", "white");
+    }
     D.x=-100;
     D.y=260+100*i;    
     D.alpha=0;  
@@ -13367,18 +13401,16 @@ function alertButton(parent,text){
     break;
   }
     if(p==10){
-      cx2.font = "bold 15px Arial";
-      cx2.fillText("万能ニーシャ", 635, 130);
-      cx2.font = "14px Arial";
-      cx2.fillText("MP消費:1ゲージ", 635, 150);
-      cx2.fillText("1局に1度だけ, ", 635, 170);
-      cx2.fillText("以下のどちらかを", 635, 190);
-      cx2.fillText("発動できる.", 635, 210);
-      cx2.fillText("①次の局,ニーシャが", 635, 230);
-      cx2.fillText("助けに来てくれる!", 635, 250);
-      cx2.fillText("②手札の「ニーシャ」を", 635, 270);
-      cx2.fillText("好きなパイに変える.", 635, 290);
-      cx2.fillText("(オールマイティを除く)", 635, 310);
+      //cx2.fillText("万能ニーシャ", 635, 130);
+      //cx2.fillText("MP消費:1ゲージ", 635, 150);
+      //cx2.fillText("1局に1度だけ, ", 635, 170);
+      //cx2.fillText("以下のどちらかを", 635, 190);
+      //cx2.fillText("発動できる.", 635, 210);
+      //cx2.fillText("①次の局,ニーシャが", 635, 230);
+      //cx2.fillText("助けに来てくれる!", 635, 250);
+      //cx2.fillText("②手札の「ニーシャ」を", 635, 270);
+      //cx2.fillText("好きなパイに変える.", 635, 290);
+      //cx2.fillText("(オールマイティを除く)", 635, 310);
       }
     break;
    default:
