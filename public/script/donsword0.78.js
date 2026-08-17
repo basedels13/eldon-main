@@ -1847,6 +1847,7 @@ function menuMap(p=0){
         bt.y=430;
         menu_solo.addChild(bt);
         bt.addEventListener("click",  ()=>{
+          if(!debugmode && LP[0]==3){se3.play();return false;}
           if(gamestate!==1){
             gamestate=1;
             field.removeAllChildren();
@@ -6754,7 +6755,6 @@ function NameChange(){
   function Setup(pvp=0){
     //デュエル開始の宣言をする pvp時1に
     if(pvp==0){
-      if(!debugmode && LP[0]==3){se3.play();return false;}
       pvpmode=0;
       se5.play();
     }else{
@@ -11429,8 +11429,8 @@ function NameChange(){
               Textlist[1].text=LP_PVP.Length[LP_PVP.Length[0]]+"戦終了までにより多くの人を飛ばした人が勝者となります。";  
             break;
             case 3:
-              Textlist[0].text=LPlist[LP[0]]+"：COMING SOON";
-              Textlist[1].text="　";
+              Textlist[0].text=LPlist[LP[0]]+"：ヘニルへの扉は閉ざされている";
+              Textlist[1].text="　COMING SOON!";
               //Textlist[0].text=LPlist[LP[0]]+"：持ち点150,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦。";
               //Textlist[1].text="対局中ランダムにギミックが発生します。";  
             break;
