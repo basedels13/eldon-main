@@ -7,7 +7,7 @@ window.onload = function(){
   };
   function draw(){
   var titletext="v1.2/Click to START";
-  var debugmode=true;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
+  var debugmode=false;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
   if(debugmode){titletext+="　でばっぐも～ど"};
   var today = new Date();
   var fool=false;
@@ -3728,6 +3728,11 @@ function NameChange(){
           CharaUnlock(HiddenChara);
         }
         break;
+      case 9:
+      var A=achieveA.findIndex(value=>value.name=="変化無双");
+        if(achieveA[A].cleared>0 && winrank[2][0]+winrank[2][1]+winrank[2][2]+winrank[2][3]>=11){
+          CharaUnlock(HiddenChara);
+        }
         default:
           break;
     }
@@ -3738,11 +3743,12 @@ function NameChange(){
       jingle3.play();
       var Ary=[
         ["パッシブスキル：ナソードコア","a","　太陽パイを切る度にナソードコアを生成","a","　ナソードコア1つにつき+10符","a","　コアがある時、一度だけ食いしばり発動","b","アクティブスキル：グラウンドクラッシュ","a","　MPを3ゲージ消費","a","　台パンによりその局を流局にする"],
-        ["パッシブスキル：チートコード","a","　リーチが発生した時に一度だけ危険パイを察知する"],
-        ["パッシブスキル：変身/ルナティックフューリー","a","　MPが満タンの時にリーチ時、","a","　MPを全消費してバーサクモードに変身","a","　変身時、高確率で一発ツモが発生する"],
+        ["パッシブスキル：チートコード","a","　リーチが発生した時、MPを1ゲージ消費して","a","危険パイを察知する（1局に1度）"],
+        ["パッシブスキル：変身/ルナティックフューリー","a","　MPが満タンの時にリーチ時、","a","　MPを全消費してバーサクモードに変身","a","　変身時、ルナティック一発ツモが発生する"],
         ["パッシブスキル：連技-龍牙爆砕","a","　1,2,3,4ライン順にパイを切った時、","a","　ドラを1つ増やす","b","パッシブスキル：花蓮","a","　カンした時にMPを1ゲージ消費して発動","a","　リーチしていれば当たりパイを、","a","　非リーチ時であればドラをドローする"],
-        ["パッシブスキル：ウォープレリュード","a","　連続で和了すればするほど、","a","　次の局で同じラインのパイが初手で入りやすくなる","b","パッシブスキル：克己-強","a","　リーチした時にMPを2ゲージ消費して発動","a","　その局の勝敗に関わらず、次の局まで","a","　ウォープレリュードの効果が維持される"],
+        ["パッシブスキル：ウォープレリュード","a","　連続で和了すればするほど、","a","　次の局で同じラインのパイが初手で入りやすくなる","b","パッシブスキル：克己-強","a","　リーチした時にMPを2ゲージ消費して発動","a","　ウォープレリュードの効果を","a","　重ね掛けする"],
         ["パッシブスキル：量子化","a","　ポンする時の食い下がり（鳴き）が","a","　2翻から1翻に減少する","b","アクティブスキル：リバースサークル","a","　MPを1ゲージ消費して発動","a","　時間の流れを逆行する空間により","a","　その局の間、パイを切る順番が逆になってしまう"],
+        ["パッシブスキル：スイッチング","a","　SORTキーでルー・シエルをチェンジ","a","　自分が直前に捨てたパイと異なる","a","　キャラ（ルー）・ライン（シエル）を引きやすい","b","アクティブスキル：フィアトゥモロー","a","　MPを1ゲージ消費して発動","a","　山から1枚引いた後、手札を1枚選んで","a","　山の一番上（ルー）・下（シエル）に戻す"],
       ]
       HiddenChara+=1;
       handmap.removeAllChildren();
@@ -4151,7 +4157,7 @@ function NameChange(){
                   se3.play();
                   }else{
                   se2.play();
-                  var Ary=["①「殴り合い」達成　②2連荘する","①「ナソード研究」達成　②一度も放銃せずに勝利","①1プレイで3回以上放銃する　②一発ツモ5回達成","①「足取り」シナジー4つ達成　②10回以上カンをする","①「魔界血戦」1位3回達成　②ライン通貫10回達成","①100回ポンをする　②いずれかのクレスト役を和了","①いずれかの役満を和了　②「デスマッチ」を11回プレイ"];
+                  var Ary=["①「殴り合い」達成　②2連荘する","①「ナソード研究」達成　②一度も放銃せずに勝利","①1プレイで3回以上放銃する　②一発ツモ5回達成","①「足取り」シナジー4つ達成　②10回以上カンをする","①「魔界血戦」1位3回達成　②ライン通貫10回達成","①100回ポンをする　②いずれかのクレスト役を和了","①国士無双を達成　②「デスマッチ」を11回プレイ"];
                   Textlist[0].text="？？？（開放条件を満たすと開放）";
                   Textlist[1].text="NEXT："+Ary[HiddenChara-3];
                   return false;
@@ -6748,6 +6754,7 @@ function NameChange(){
   function Setup(pvp=0){
     //デュエル開始の宣言をする pvp時1に
     if(pvp==0){
+      if(!debugmode && LP[0]==3){se3.play();return false;}
       pvpmode=0;
       se5.play();
     }else{
@@ -7241,6 +7248,7 @@ function NameChange(){
         if(DP[1]>=20){
           skillswitch[1]=0;    
         }
+          break;
         case 4:
           if(DP[1]>=30){
             skillswitch[1]=0       
@@ -8649,11 +8657,11 @@ function NameChange(){
       drawcardlist[i-1]=drawcard;
       handmap.addChild(drawcard);
       }
+      var Ary_RM=[0,Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"]
       if(pvpmode==1){
         createText(handmap,MEMBER[player].name,15,100,24,{bold:true,color:"#fff"});
       }else{
-        var Ary_RM=[0,Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"]
-        console.log(Ary_RM[player])
+        if(debugmode){console.log(Ary_RM[player])}
         createText(handmap,Ary_RM[player],15,100,24,{bold:true,color:"#fff"});
       }
       var t;
@@ -8816,7 +8824,7 @@ function NameChange(){
           {chara:4, elia:death[3].kill,nod:death[3].assist,city:death[3].death},
             ]
           LPrank.sort(compareFunc4);
-        for(var i=4;i>0;i--){
+        for(var i=3;i>=0;i--){
           var t;
           if(fool){
             t = new createjs.Bitmap(queue.getResult(chrimgR_src[chara[LPrank[i].chara]]));    
@@ -8834,9 +8842,9 @@ function NameChange(){
             handmap.addChild(t);
             }
           if(pvpmode==1){
-          createText(handmap,MENBER[LPrank[i-1].chara].name+" キル："+LPrank[i].elia+"/アシ："+LPrank[i].nod+"/デス："+LPrank[i].city,x+30,y,20,{color:"white"});
+          createText(handmap,MENBER[LPrank[i].chara].name+" キル："+LPrank[i].elia+"/アシ："+LPrank[i].nod+"/デス："+LPrank[i].city,x+30,y,20,{color:"white"});
           }else{
-          createText(handmap,Ary_RM[LPrank[i-1].chara]+" キル："+LPrank[i].elia+"/アシ："+LPrank[i].nod+"/デス："+LPrank[i].city,x+30,y,20,{color:"white"});
+          createText(handmap,Ary_RM[LPrank[i].chara]+" キル："+LPrank[i].elia+"/アシ："+LPrank[i].nod+"/デス："+LPrank[i].city,x+30,y,20,{color:"white"});
           }
           y+=20;
           }
@@ -8850,7 +8858,6 @@ function NameChange(){
           x+=200;
           };
         }else{
-          var Ary_RM=[Username,"ＣＰＵ１","ＣＰＵ２","ＣＰＵ３"]
           for(var i=0;i<4;i++){
           createText(handmap,Ary_RM[i],x,483,12,{color:"#fff"});
           x+=200;
@@ -11113,7 +11120,6 @@ function NameChange(){
     }
     function fieldHint(p=0,pai=-1){
     //handsort時は場の同じキャラのパイ、handsort1時は同じラインに色付けを行う
-    if(debugmode){console.log('fieldHint',p,pai)}
     if(p==-1){
       //カーソルが離れた時
       fieldpai.removeAllChildren();
@@ -11423,8 +11429,10 @@ function NameChange(){
               Textlist[1].text=LP_PVP.Length[LP_PVP.Length[0]]+"戦終了までにより多くの人を飛ばした人が勝者となります。";  
             break;
             case 3:
-              Textlist[0].text=LPlist[LP[0]]+"：持ち点150,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦。";
-              Textlist[1].text="対局中ランダムにギミックが発生します。";  
+              Textlist[0].text=LPlist[LP[0]]+"：COMING SOON";
+              Textlist[1].text="　";
+              //Textlist[0].text=LPlist[LP[0]]+"：持ち点150,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦。";
+              //Textlist[1].text="対局中ランダムにギミックが発生します。";  
             break;
             case 4:
               Textlist[0].text=LPlist[LP[0]]+"：一局に最大3人和了できる持ち点150,000の"+LP_PVP.Length[LP_PVP.Length[0]]+"戦です。";
@@ -12662,7 +12670,6 @@ function alertButton(parent,text){
         //player1();
         }else if(target==0){
         //対象選択画面
-        se5.play()
         var s = new createjs.Shape();
         s.graphics.beginFill("rgba(20,20,20,0.3)");
         s.graphics.drawRect(0, 0, 800, 100)
@@ -12732,7 +12739,6 @@ function alertButton(parent,text){
       }
       //ctlswitch=player
       }else if(target==0){
-      se5.play()
       var s = new createjs.Shape();
         s.graphics.beginFill("rgba(20,20,20,0.3)");
         s.graphics.drawRect(0, 0, 630, 490)
@@ -12790,7 +12796,6 @@ function alertButton(parent,text){
         //player1();
         }else if(target==0){
         //対象選択画面
-        se5.play()
         var s = new createjs.Shape();
         s.graphics.beginFill("rgba(20,20,20,0.3)");
         s.graphics.drawRect(0, 0, 630, 100)
@@ -12839,7 +12844,6 @@ function alertButton(parent,text){
           cLock=1;
           console.log('操作可能')
         }else{
-        se5.play()
         var s = new createjs.Shape();
           s.graphics.beginFill("rgba(20,20,20,0.3)");
           s.graphics.drawRect(150, 100, 480, 390)
@@ -12864,6 +12868,7 @@ function alertButton(parent,text){
     if(p==5){//イヴ様
       drawDP(1);
       turnchecker();
+      skillswitch[1]=1;
     }
     if(p==6){//ラシェ
       if(pvpmode==1 && target>=0){
@@ -12896,7 +12901,6 @@ function alertButton(parent,text){
               cLock=1;
               console.log('操作可能')
           }else{
-            se5.play()
             var s = new createjs.Shape();
               s.graphics.beginFill("rgba(20,20,20,0.3)");
               s.graphics.drawRect(150, 100, 480, 390)
@@ -12921,7 +12925,6 @@ function alertButton(parent,text){
     if(p==10){//ルシ
       if(player==1){
       if(target==0){
-        se5.play()
         var s = new createjs.Shape();
           s.graphics.beginFill("rgba(20,20,20,0.3)");
           s.graphics.drawRect(0, 0, 630, 490)
@@ -13244,12 +13247,10 @@ function alertButton(parent,text){
         if(scoretemp[1]>highscore[3]){highscore[3]=scoretemp[1];};
         if(LP[1]>highscore[1]){highscore[1]=LP[1]};
         //if(LP[1]<=0){};
-        if(pvpmode==0 && LP[0]!==3){
+        if(pvpmode==0){
         var N=LP[0];
-        //3フリバ, 4魔界血戦なので
-        if(N!==3){
+        //3フリバ->ヘニル, 4魔界血戦なので
             winrank[N][scoretemp[0]-1]+=1;
-        }
         };
         if(scoretemp[3]>highscore[2]){
           highscore[2]=scoretemp[3];
