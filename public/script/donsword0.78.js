@@ -6,7 +6,7 @@ window.onload = function(){
   draw();
   };
   function draw(){
-  var titletext="v1.2/Click to START";
+  var titletext="v2.00/Click to START";
   var debugmode=false;  //コンソールログの表示の切り替え/テストプレイ用　リリース時にfalseに
   if(debugmode){titletext+="　でばっぐも～ど"};
   var today = new Date();
@@ -4056,7 +4056,7 @@ function NameChange(){
     dialogue.x=100;
     dialogue.y=60;
     Cregitmap.addChild(dialogue);
-    var E=new createjs.Bitmap("don/don_chara10.png");
+    var E=new createjs.Bitmap("don/Don_chara10.png");
     E.scale=0.5;
     E.x=220;
     E.y=130;
